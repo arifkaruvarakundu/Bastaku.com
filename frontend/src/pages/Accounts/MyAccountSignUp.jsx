@@ -1,0 +1,223 @@
+import React from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux'; // Import useDispatch
+import { setAuthenticated } from '../../redux/authSlice';
+import signupimage from '../../images/signup-g.svg'
+import { Link } from "react-router-dom";
+import ScrollToTop from "../ScrollToTop";
+import Swal from 'sweetalert2';
+import axios from "axios";
+
+const MyAccountSignUp = () => {
+
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name:'',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch();
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,  // Dynamically update the field
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Password Mismatch',
+        text: 'Passwords do not match. Please check your input.',
+      });
+      return;
+    }
+
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // At least 8 characters, alphanumeric
+    if (!passwordRegex.test(formData.password)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Weak Password',
+        text: 'Password must be at least 8 characters long and contain both letters and numbers.',
+      });
+      return;
+    }
+
+
+    const payload = {
+      first_name: formData.first_name,
+      last_name:formData.last_name,
+      email: formData.email,
+      password: formData.password,
+      password2: formData.confirmPassword, // Add `password2` for confirmation
+    }
+  
+    axios
+      .post('http://127.0.0.1:8000/register/', payload, {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+      })
+      .then((response) => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Registration Successful',
+          text: 'Your account has been created successfully!',
+        });
+        const user = { name: formData.name};
+        console.log(user);
+        localStorage.setItem('user_name', user.name);
+        const email = { email: formData.email};
+        localStorage.setItem('email', email.email);
+        localStorage.setItem('access_token', response.data.token.access);
+        dispatch(setAuthenticated(user))
+        navigate('/Grocery-react');
+
+      })
+      .catch((error) => {
+        let errorMessage = 'Registration failed. Please try again.';
+        if (error.response && error.response.data && error.response.data.error) {
+          errorMessage = error.response.data.error;
+        }
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: errorMessage,
+        });
+      });
+  };
+
+  return (
+    <div>
+       <>
+            <ScrollToTop/>
+            </>
+      <>
+        {/* section */}
+        <section className="my-lg-14 my-8">
+          {/* container */}
+          <div className="container">
+            {/* row */}
+            <div className="row justify-content-center align-items-center">
+              <div className="col-12 col-md-6 col-lg-4 order-lg-1 order-2">
+                {/* img */}
+                <img
+                  src={signupimage}
+                  alt="freshcart"
+                  className="img-fluid"
+                />
+              </div>
+              {/* col */}
+              <div className="col-12 col-md-6 offset-lg-1 col-lg-4 order-lg-2 order-1">
+                <div className="mb-lg-9 mb-5">
+                  <h1 className="mb-1 h2 fw-bold">Get Start Shopping</h1>
+                  <p>Welcome to FreshCart! Enter your email to get started.</p>
+                </div>
+                {/* form */}
+                <form onSubmit={handleSubmit}>
+                  <div className="row g-3">
+                    {/* col */}
+                    <div className="col">
+                      {/* input */}
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="first_name"
+                          name="first_name"
+                          placeholder="First name"
+                          value={formData.first_name}
+                          onChange={handleChange}
+                          required
+                        />
+                    </div>
+                    <div className="col">
+                      {/* input */}
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="last_name"
+                        name="last_name"
+                        placeholder="Last name"
+                        value={formData.last_name}
+                        onChange={handleChange}
+                        aria-label="Last name"
+                        required
+                      />
+                    </div>
+                    <div className="col-12">
+                      {/* input */}
+                      <input
+                        type="email"
+                        className="form-control"
+                        id="email"
+                        name="email"
+                        placeholder="Email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="col-12">
+                      <input
+                        type="password"
+                        className="form-control"
+                        id="password"
+                        name="password"
+                        placeholder="Password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="col-12">
+                      {/* input */}
+                      <input
+                        type="password"
+                        className="form-control"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        placeholder="Confirm Password"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    {/* btn */}
+                    <div className="col-12 d-grid">
+                      {" "}
+                      <button type="submit" className="btn btn-primary">
+                        Register
+                      </button>
+                      <span className="navbar-text">
+                          Already have an account?{" "}
+                          <Link to="/MyAccountSignIn">Sign in</Link>
+                        </span>
+                    </div>
+                    {/* text */}
+                    <p>
+                      <small>
+                        By continuing, you agree to our{" "}
+                        <Link to="#!"> Terms of Service</Link> &amp;{" "}
+                        <Link to="#!">Privacy Policy</Link>
+                      </small>
+                    </p>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+      </>
+    </div>
+  );
+};
+
+export default MyAccountSignUp;
