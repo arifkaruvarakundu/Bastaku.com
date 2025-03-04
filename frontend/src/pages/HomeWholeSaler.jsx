@@ -1,5 +1,5 @@
 // import slider1 from "../images/slide-1.jpg";
-import banner_image from "../images/banner_image.png";
+import carousel1 from "../images/carousel1.jpg";
 import abouticon from "../images/about-icons-1.svg";
 import slider2 from "../images/slider-2.jpg";
 // import slider_2 from "../images/slider_2.jpeg";
@@ -35,6 +35,7 @@ import axios from 'axios'
 import { Slide, Zoom } from "react-awesome-reveal";
 import { useEffect } from "react";
 import { MagnifyingGlass } from "react-loader-spinner";
+import ProductItemWholesaler from "../ProductList/ProductItemWholesaler";
 
 const HomeWholesaler = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -42,7 +43,6 @@ const HomeWholesaler = () => {
   const [loaderStatus, setLoaderStatus] = useState(true);
 
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,7 +64,6 @@ const HomeWholesaler = () => {
 
     fetchData();
   }, []);
-
 
   const handleCategoryClick = (category) => {
     // setSelectedCategory(category.name);
@@ -266,7 +265,7 @@ const HomeWholesaler = () => {
                       <div className="carousel-item active">
                         <div
                           style={{
-                            background: `url(${banner_image}) no-repeat`,
+                            background: `url(${carousel1}) no-repeat`,
                             backgroundSize: "cover",
                             borderRadius: ".5rem",
                             backgroundPosition: "center"
@@ -347,50 +346,8 @@ const HomeWholesaler = () => {
               </section>
             </>
             <>
-              <section className="mt-8">
-                {/* contianer */}
-                <div className="container ">
-                  <div className="row">
-                    {/* col */}
-                    <Slide direction="down">
-                      <div className="col-12">
-                        {/* cta */}
-                        <div className="bg-light d-lg-flex justify-content-between align-items-center py-6 py-lg-3 px-8 rounded-3 text-center text-lg-start">
-                          {/* img */}
-                          <div className="d-lg-flex align-items-center">
-                            <img
-                              src={abouticon}
-                              alt="about-icon"
-                              className="img-fluid"
-                            />
-                            {/* text */}
-                            <div className="ms-lg-4">
-                              <h1 className="fs-2 mb-1">
-                                Welcome to Bastaku
-                              </h1>
-                              <span>
-                                {/* Download the app get free food &amp;{" "}
-                                <span className="text-primary">$30</span> off on
-                                your first order. */}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="mt-3 mt-lg-0">
-                            {/* btn */}
-                            <Link to="#" className="btn btn-dark">
-                              Download Bastaku App
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </Slide>
-                  </div>
-                </div>
-              </section>
-            </>
-            <>
               {/* section */}
-              <section className="mt-8">
+              <section className="mt-10">
                 <div className="container">
                   {/* row */}
                   <div className="row">
@@ -610,7 +567,7 @@ const HomeWholesaler = () => {
               </section>
             </>
             <>
-              <ProductItem />
+              <ProductItemWholesaler />
             </>
             <>
               {/* cta section */}
