@@ -8,6 +8,7 @@ import ScrollToTop from "../ScrollToTop";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 const WholesalerAccountSignUp = () => {
   const [formData, setFormData] = useState({
@@ -25,6 +26,8 @@ const WholesalerAccountSignUp = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const {t} = useTranslation("signup")
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -123,8 +126,8 @@ const WholesalerAccountSignUp = () => {
             {/* col */}
             <div className="col-12 col-md-6 offset-lg-1 col-lg-4 order-lg-2 order-1">
               <div className="mb-lg-9 mb-5">
-                <h1 className="mb-1 h2 fw-bold">Get Start Shopping</h1>
-                <p>Welcome to FreshCart! Enter your email to get started.</p>
+                <h1 className="mb-1 h2 fw-bold">{t("get_start_shopping")}</h1>
+                <p>{t("welcome_message")}</p>
               </div>
               {/* form */}
               <form onSubmit={handleSubmit}>
@@ -136,7 +139,7 @@ const WholesalerAccountSignUp = () => {
                       className="form-control"
                       id="company_name"
                       name="company_name"
-                      placeholder="Company Name"
+                      placeholder={t("company_name")}
                       value={formData.company_name}
                       onChange={handleChange}
                       required
@@ -149,7 +152,7 @@ const WholesalerAccountSignUp = () => {
                       className="form-control"
                       id="license_number"
                       name="license_number"
-                      placeholder="Registration Number"
+                      placeholder={t("registration_number")}
                       value={formData.license_number}
                       onChange={handleChange}
                       required
@@ -162,7 +165,7 @@ const WholesalerAccountSignUp = () => {
                       className="form-control"
                       id="email"
                       name="email"
-                      placeholder="Email"
+                      placeholder={t("email_placeholder")}
                       value={formData.email}
                       onChange={handleChange}
                       required
@@ -175,7 +178,7 @@ const WholesalerAccountSignUp = () => {
                       className="form-control"
                       id="mobile_number1"
                       name="mobile_number1"
-                      placeholder="Mobile Number (Whatsapp Number)"
+                      placeholder={t("mobile_number")}
                       value={formData.mobile_number1}
                       onChange={handleChange}
                       required
@@ -188,7 +191,7 @@ const WholesalerAccountSignUp = () => {
                       className="form-control"
                       id="password"
                       name="password"
-                      placeholder="Password"
+                      placeholder={t("password_placeholder")}
                       value={formData.password}
                       onChange={handleChange}
                       required
@@ -208,7 +211,7 @@ const WholesalerAccountSignUp = () => {
                       className="form-control"
                       id="confirmPassword"
                       name="confirmPassword"
-                      placeholder="Confirm Password"
+                      placeholder={t("confirm_password")}
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       required
@@ -235,20 +238,20 @@ const WholesalerAccountSignUp = () => {
                   {/* Submit Button */}
                   <div className="col-12 d-grid">
                     <button type="submit" className="btn btn-primary">
-                      Register
+                      {t("register")}
                     </button>
                     <span className="navbar-text">
-                      Already have an account?{" "}
-                      <Link to="/MyAccountSignIn">Sign in</Link>
+                      {t("already_have_account")}{" "}
+                      <Link to="/MyAccountSignIn" style={{ color: "green" }}>{t("sign_in")}</Link>
                     </span>
                   </div>
                   {/* Terms and Privacy */}
                   <p>
-                    <small>
+                    {/* <small>
                       By continuing, you agree to our{" "}
                       <Link to="#!"> Terms of Service</Link> &amp;{" "}
                       <Link to="#!">Privacy Policy</Link>
-                    </small>
+                    </small> */}
                   </p>
                 </div>
               </form>

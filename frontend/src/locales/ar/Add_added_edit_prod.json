@@ -1,0 +1,22 @@
+{
+    "update": "تحديث",
+    "no_products_found": "لم يتم العثور على منتجات.",
+    "add_your_products": "أضف منتجاتك",
+    "product_name": "اسم المنتج",
+    "description": "الوصف",
+    "price": "السعر (بالدينار الكويتي):",
+    "campaign_discount_percentage": "نسبة خصم الحملة (%):",
+    "minimum_order_quantity_for_offer": "الحد الأدنى للطلب للاستفادة من العرض:",
+    "stock": "المخزون:",
+    "product_category": "فئة المنتج:",
+    "select_category": "اختر فئة",
+    "drop_images_here": "أسقط الصور هنا...",
+    "drag_drop_images": "اسحب الصور وأفلتها هنا، أو انقر لتحديد الملفات",
+    "enter_discount_percentage": "أدخل نسبة الخصم",
+    "enter_minimum_quantity_for_offer": "أدخل الحد الأدنى للكمية للاستفادة من العرض",
+    "add_product": "إضافة منتج",
+    "loading": "جار التحميل...",
+    "edit_product": "تعديل المنتج",
+    "existing_images": "الصور الحالية",
+    "update_product": "تحديث المنتج"
+  }

@@ -9,6 +9,8 @@ import paypal from "../images/paypal.svg";
 import visa from "../images/visa.svg";
 import axios from "axios";
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from "react-i18next";
+import { Trans } from 'react-i18next';
 
 const Footer = () => {
   let date = new Date();
@@ -16,6 +18,7 @@ const Footer = () => {
   const [categories,setCategories] = useState([]);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,7 +101,7 @@ const Footer = () => {
               </div>
               <div className="col-sm-6 col-lg-3 mb-30">
                 <div className="footer-widget mb-0">
-                  <h4>All Category</h4>
+                  <h4>{t("all_category", { ns: "footer" })}</h4>
                   <div className="line-footer" />
                   <div className="row">
                     <div className="col">
@@ -120,7 +123,7 @@ const Footer = () => {
               </div>
               <div className="col-sm-6 col-lg-3 mb-30">
                 <div className="footer-widget mb-0">
-                  <h4>For Consumers</h4>
+                  <h4>{t("for_consumers", { ns: "footer" })}</h4>
                   <div className="line-footer" />
                   <div className="row">
                     <div className="col">
@@ -130,7 +133,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            Careers
+                            {t("careers", { ns: "footer" })}
                           </Link>
                         </li>
                         <li>
@@ -138,7 +141,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            Promos &amp; coupons
+                            {t("promos_coupons", { ns: "footer" })}
                           </Link>
                         </li>
                         <li>
@@ -146,7 +149,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>
-                            Shipping
+                            {t("shipping", { ns: "footer" })}
                           </Link>
                         </li>
                         <li>
@@ -154,7 +157,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            Product Returns
+                            {t("product_returns", { ns: "footer" })}
                           </Link>
                         </li>
                         <li>
@@ -162,7 +165,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            Payments
+                            {t("payments", { ns: "footer" })}
                           </Link>
                         </li>
                         <li>
@@ -170,7 +173,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            FAQ
+                            {t("faq", { ns: "footer" })}
                           </Link>
                         </li>
                         {!isAuthenticated && (
@@ -185,20 +188,20 @@ const Footer = () => {
                                           aria-haspopup="true"
                                           aria-expanded="false"
                                         >
-                                          Are you wholesaler ?
+                                          {t("are_you_wholesaler", { ns: "footer" })}
                                         </Link>
                                         <div
                                           className="dropdown-menu sm-menu"
                                           aria-labelledby="navbarDropdown"
                                         >
                                           <Link className="dropdown-item" to="/WholesalerAccountSignIn">
-                                            Sign in
+                                          {t("sign_in", { ns: "footer" })}
                                           </Link>
                                           {/* <Link className="dropdown-item" to="pages/store-grid.html">
                                             Store Grid
                                           </Link> */}
                                           <Link className="dropdown-item" to="/WholesalerAccountSignUp">
-                                            Signup
+                                          {t("signup", { ns: "footer" })}
                                           </Link>
                                         </div>
                                       </li>
@@ -210,7 +213,7 @@ const Footer = () => {
               </div>
               <div className="col-sm-6 col-lg-3 mb-30">
                 <div className="footer-widget mb-0">
-                  <h4>Get to know us</h4>
+                  <h4>{t("get_to_know_us", { ns: "footer" })}</h4>
                   <div className="line-footer" />
                   <div className="row">
                     <div className="col">
@@ -220,7 +223,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            Company
+                            {t("company", { ns: "footer" })}
                           </Link>
                         </li>
                         <li>
@@ -228,7 +231,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            About
+                            {t("about", { ns: "footer" })}
                           </Link>
                         </li>
                         <li>
@@ -236,7 +239,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            Blog
+                            {t("blog", { ns: "footer" })}
                           </Link>
                         </li>
                         <li>
@@ -244,7 +247,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />{" "}
                             </span>{" "}
-                            Help Center
+                            {t("help_center", { ns: "footer" })}
                           </Link>
                         </li>
                         <li>
@@ -252,7 +255,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            Our Value
+                            {t("our_value", { ns: "footer" })}
                           </Link>
                         </li>
                       </ul>
@@ -305,7 +308,7 @@ const Footer = () => {
             <div className="container text-center">
               <div className="footer-copy">
                 <div className="copyright">
-                  © {year} All Rights Reserved By
+                {t("all_rights_reserved", { ns: "footer" })}
                   {/* <Link to="https://github.com/Mohamed0400" target="_blank">
                     @Mohamed Megahed
                   </Link> */}

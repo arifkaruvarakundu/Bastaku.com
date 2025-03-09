@@ -6,6 +6,7 @@ import axios from "axios";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import ScrollToTop from "../ScrollToTop";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function Dropdown() {
   const [openDropdowns, setOpenDropdowns] = useState([]);
@@ -26,6 +27,8 @@ function Dropdown() {
   
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { t } = useTranslation();
   
   useEffect(() => {
     if (location.state && location.state.displayedCategory) {
@@ -191,7 +194,7 @@ function Dropdown() {
           <div className="container ">
             <div className="row">
               {/* Vertical Dropdowns Column */}
-              <h5 className="mb-3 mt-8">Categories</h5>
+              <h5 className="mb-3 mt-8">{t("categories", { ns: "shop" })}</h5>
               <div className="col-md-3">
               {categories && categories.length > 0 ? (
                 categories.map((category, index) => (
@@ -237,7 +240,7 @@ function Dropdown() {
                   </ul>
                 ))
               ) : (
-                <p>No categories available</p>
+                <p>{t("no_categories_available", { ns: "shop" })}</p>
               )}
                 <div>
                   <div className="py-4">
@@ -508,7 +511,7 @@ function Dropdown() {
                   <div>
                     <p className="mb-3 mb-md-0">
                       {" "}
-                      <span className="text-dark"></span> Products found{" "}
+                      <span className="text-dark"></span> {t("products_found", { ns: "shop" })}{" "}
                     </p>
                   </div>
                   {/* icon */}
@@ -560,7 +563,7 @@ function Dropdown() {
                           <div className="text-center position-relative">
                             {product.is_in_campaign && (
                             <div className="position-absolute top-0 start-0">
-                              <span className="badge bg-danger">Campaign</span>
+                              <span className="badge bg-danger">{t("campaign", { ns: "shop" })}</span>
                             </div>
                             )}
                             <Link to="#!">
@@ -651,7 +654,7 @@ function Dropdown() {
                                   <line x1={12} y1={5} x2={12} y2={19} />
                                   <line x1={5} y1={12} x2={19} y2={12} />
                                 </svg>{" "}
-                                Add
+                                {t("add", { ns: "shop" })}
                                 </a>
                             </div>
                           </div>

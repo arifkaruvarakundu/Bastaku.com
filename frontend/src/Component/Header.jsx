@@ -9,6 +9,10 @@ import { Link,useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { setAuthenticated } from '../redux/authSlice';
 import axios from "axios";
+import Language_selector from "./Language_selector";
+import { Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
+import i18n from "../i18n";
 
 const Header = ({onSearch}) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +33,10 @@ const Header = ({onSearch}) => {
 
   const dropdownRef = useRef(null);
   const notificationRef = useRef(null);
+
+  const { t } = useTranslation();
+
+  console.log("language",i18n.language)
 
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
@@ -80,13 +88,20 @@ const Header = ({onSearch}) => {
         // Filter unread notifications and update state
         const unreadNotifications = response.data.filter((notification) => !notification.is_read);
         console.log("notifications",unreadNotifications)
-        setNotifications(unreadNotifications);
+
+        setNotifications((prev) => {
+          if (JSON.stringify(prev) !== JSON.stringify(unreadNotifications)) {
+            return unreadNotifications;
+          }
+          return prev;
+        });
+  
         setNotificationCount(unreadNotifications.length);
       } catch (error) {
         console.error("Error fetching notifications:", error);
       }
     };
-
+  
     fetchNotifications();
   }, [isAuthenticated]);
 
@@ -116,21 +131,33 @@ const Header = ({onSearch}) => {
   };
 
    // Sync cartItems with localStorage
-   useEffect(() => {
-    // Function to fetch the cart data from localStorage and update state
+  //  useEffect(() => {
+  //   // Function to fetch the cart data from localStorage and update state
+  //   const updateCart = () => {
+  //     const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
+  //     setCartItems(storedCart);
+  //   };
+
+  //   // Run updateCart function once when the component mounts
+  //   updateCart();
+
+  //   // Listen for changes to the cart in localStorage
+  //   const intervalId = setInterval(updateCart, 1000); // Check every second for changes
+
+  //   // Cleanup interval on component unmount
+  //   return () => clearInterval(intervalId);
+  // }, []);
+
+  useEffect(() => {
     const updateCart = () => {
-      const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
-      setCartItems(storedCart);
+      const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+      setCartItems((prev) => (JSON.stringify(prev) !== JSON.stringify(storedCart) ? storedCart : prev));
     };
-
-    // Run updateCart function once when the component mounts
+  
     updateCart();
-
-    // Listen for changes to the cart in localStorage
-    const intervalId = setInterval(updateCart, 1000); // Check every second for changes
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(intervalId);
+  
+    window.addEventListener("storage", updateCart); 
+    return () => window.removeEventListener("storage", updateCart);
   }, []);
  
   const handleClick = () => {
@@ -190,12 +217,14 @@ const Header = ({onSearch}) => {
           <div className="bg-light py-1">
             <div className="container">
               <div className="row">
+                <Language_selector />
                 <div
                   className="col-md-10 col-12 d-flex "
                   style={{ alignItems: "center"}}
                 >
-                  <span> Super Value Deals - Save more with coupons</span>
+                  {/* <span> Super Value Deals - Save more with coupons</span> */}
                 </div>
+                
                 <div
                   className="col-md-2 col-xxl-1 text-end d-none d-lg-block"
                   style={{ marginLeft: "20px"}}
@@ -257,7 +286,7 @@ const Header = ({onSearch}) => {
                       }}
                     >
                       <div className="p-4 border-b border-gray-200 bg-blue-50 rounded-t-xl">
-                        <h4 className="text-lg font-semibold text-blue-700">Notifications</h4>
+                        <h4 className="text-lg font-semibold text-blue-700"><Trans i18nKey="notifications" ns="header">Notifications</Trans></h4>
                       </div>
 
                       {notifications.length > 0 ? (
@@ -277,7 +306,7 @@ const Header = ({onSearch}) => {
                           ))}
                         </ul>
                       ) : (
-                        <p className="px-4 py-6 text-gray-500 text-center">No notifications.</p>
+                        <p className="px-4 py-6 text-gray-500 text-center"><Trans i18nKey = "no_notifications" ns="header" ></Trans>No notifications.</p>
                       )}
                     </div>
                   )}
@@ -359,7 +388,7 @@ const Header = ({onSearch}) => {
                 }}
                 list="datalistOptions"
                 id="exampleDataList"
-                placeholder="Type to search..."
+                placeholder={t("search_placeholder", { ns: "header" })}
               />
             </div>
             <div
@@ -466,7 +495,7 @@ const Header = ({onSearch}) => {
               style={{ width: "200%" }}
               list="datalistOptions"
               id="exampleDataList"
-              placeholder="Type to search..."
+              placeholder={t("search_placeholder", { ns: "header" })}
               value={query}
               onChange={handleInputChange}
             />
@@ -489,7 +518,7 @@ const Header = ({onSearch}) => {
               >
                 {suggestions.products.length > 0 && (
                   <div>
-                    <h5 style={{marginLeft: 10}}>Products</h5>
+                    <h5 style={{marginLeft: 10}}><Trans i18nKey="products" ns="header">Products</Trans></h5>
                     {suggestions.products.map((product) => (
                       <div
                         key={product.id}
@@ -522,7 +551,7 @@ const Header = ({onSearch}) => {
                 )}
                 {suggestions.categories.length > 0 && (
                   <div>
-                    <h5 style={{marginLeft:10}}>Categories</h5>
+                    <h5 style={{marginLeft:10}}><Trans i18nKey="categories" ns="header">Categories</Trans></h5>
                     {suggestions.categories.map((category) => (
                       <div
                         key={category.id}
@@ -625,12 +654,12 @@ const Header = ({onSearch}) => {
               </li> */}
               <li className="nav-item">
                 <Link className="nav-link" to="/Grocery-react/">
-                  Home
+                <Trans i18nKey="home" ns="header">Home</Trans>
                 </Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/Campaigns">
-                  Campaigns
+                  <Trans i18nKey="campaigns" ns ="header">Campaigns</Trans>
                 </Link>
               </li>
               <li className="nav-item dmenu dropdown">
@@ -643,7 +672,7 @@ const Header = ({onSearch}) => {
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  About
+                  <Trans i18nKey="about" ns="header">About</Trans>
                 </Link>
                 <div
                   className="dropdown-menu sm-menu"
@@ -659,13 +688,13 @@ const Header = ({onSearch}) => {
                     Blog Category
                   </Link> */}
                   <Link className="dropdown-item" to="*">
-                    About us
+                    <Trans i18nKey="about_us" ns="header">About us</Trans>
                   </Link>
                   {/* <Link className="dropdown-item" to="pages/404error.html">
                     404 Error
                   </Link> */}
                   <Link className="dropdown-item" to="*">
-                    Contact
+                    <Trans i18nKey="contact" ns="header">Contact</Trans>
                   </Link>
                 </div>
               </li>
@@ -680,23 +709,29 @@ const Header = ({onSearch}) => {
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
+                  <Trans i18nKey="shop" ns="header">
                   Shop
+                  </Trans>
                 </Link>
                 <div
                   className="dropdown-menu sm-menu"
                   aria-labelledby="navbarDropdown"
                 >
                   <Link className="dropdown-item" to="/Shop">
+                  <Trans i18nKey="shop" ns="header">
                     Shop
+                  </Trans>
                   </Link>
                   {/* <Link className="dropdown-item" to="/ShopWishList">
                     Shop Wishlist
                   </Link> */}
                   <Link className="dropdown-item" to="/ShopCart">
-                    Shop Cart
+                    <Trans i18nKey="shop_cart" ns="header">Shop Cart</Trans>
                   </Link>
                   <Link className="dropdown-item" to="/ShopCheckOut">
+                  <Trans i18nKey="shop_checkout" ns="header">
                     Shop Checkout
+                  </Trans>
                   </Link>
                 </div>
               </li>
@@ -924,7 +959,9 @@ const Header = ({onSearch}) => {
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
+                  <Trans i18nKey="account" ns="header">
                   Account
+                  </Trans>
                 </Link>
                 <div
                   className="dropdown-menu sm-menu"
@@ -934,11 +971,15 @@ const Header = ({onSearch}) => {
                     <div>
                     {!isAuthenticated && (
                       <>
-                      <Link className="dropdown-item" to="*">
+                      <Link className="dropdown-item" to="/MyAccountSignIn">
+                      <Trans i18nKey="sign_in" ns="header">
                         Sign in
+                      </Trans>
                       </Link>
-                      <Link className="dropdown-item" to="*">
+                      <Link className="dropdown-item" to="/MyAccountSignUp">
+                      <Trans i18nKey="sign_up" ns="header">
                         Signup
+                      </Trans>
                       </Link>
                       {/* <Link
                         className="dropdown-item"
@@ -955,31 +996,43 @@ const Header = ({onSearch}) => {
                           className="dropdown-item"
                           onClick={handleLogout}
                         >
+                          <Trans i18nKey="logout" ns="header">
                           Logout
+                          </Trans>
                         </button>
                         <Link className="dropdown-item" to="/MyAccountSetting">
+                        <Trans i18nKey="settings" ns="header">
                         Settings
+                        </Trans>
                         </Link>
                         <Link className="dropdown-item" to="/MyAccountAddress">
+                        <Trans i18nKey="address" ns="header">
                         Address
+                        </Trans>
                         </Link>
                         <Link
                         className="dropdown-item"
                         to="/MyAcconutPaymentMethod"
                         >
+                        <Trans i18nKey="bank_details" ns="header">
                         Bank Details
+                        </Trans>
                         </Link>
                         <Link
                         className="dropdown-item"
                         to="/MyAcconutNotification"
                         >
+                        <Trans i18nKey="notifications" ns="header">
                         Notification
+                        </Trans>
                         </Link>
                         <Link
                         className="dropdown-item"
                         to="/MyAccountOrder"
                         >
+                        <Trans i18nKey="your_orders" ns="header">
                         Your Orders
+                        </Trans>
                         </Link>
                         {localStorage.getItem('user_name') && (
                         <>
@@ -987,7 +1040,9 @@ const Header = ({onSearch}) => {
                         className="dropdown-item"
                         to="/MyCampaigns"
                         >
+                        <Trans i18nKey="campaigns" ns="header">
                         Campaigns
+                        </Trans>
                         </Link>
                         </>
                         )}
@@ -995,13 +1050,19 @@ const Header = ({onSearch}) => {
                           {localStorage.getItem('company_name') && (
                             <>
                               <Link className="dropdown-item" to="/AddProducts">
+                              <Trans i18nKey="add_products" ns="header">
                                 Add Products
+                              </Trans>
                               </Link>
                               <Link className="dropdown-item" to="/AddedProducts">
+                              <Trans i18nKey="added_products" ns="header">
                                 Added Products
+                              </Trans>
                               </Link>
                               <Link className="dropdown-item" to="/WholesalerCampaigns">
+                              <Trans i18nKey="campaigns" ns="header">
                                 Campaigns
+                                </Trans>
                               </Link>
                             </>
                           )}
@@ -1067,7 +1128,9 @@ const Header = ({onSearch}) => {
               <div className="modal-content p-4">
                 <div className="modal-header border-0">
                   <h5 className="modal-title fs-3 fw-bold" id="userModalLabel">
+                    <Trans i18nKey="sign_up" ns="header">
                     Sign Up
+                    </Trans>
                   </h5>
                   <button
                     type="button"

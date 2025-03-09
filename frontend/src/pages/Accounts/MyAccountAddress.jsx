@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { MagnifyingGlass } from "react-loader-spinner";
 import ScrollToTop from "../ScrollToTop";
-import axios from 'axios'
+import axios from 'axios';
+import { useTranslation } from "react-i18next";
 
 const MyAccountAddress = () => {
   // loading
@@ -13,7 +14,9 @@ const MyAccountAddress = () => {
   const [isEdit, setIsEdit] = useState(false);  // To toggle between edit and add modes
   const [editAddressId, setEditAddressId] = useState(null); // To store the address ID when editing
 
-  
+  const{t: tCommon} = useTranslation('accounts_common')
+  const{t: tAccounts} = useTranslation('accounts_others')
+  const{t: tModal} = useTranslation('modal')
 
   const [address, setAddress] = useState({
     first_name: '',
@@ -245,7 +248,7 @@ const MyAccountAddress = () => {
                 <div className="col-12">
                   <div className="p-6 d-flex justify-content-between align-items-center d-md-none">
                     {/* heading */}
-                    <h3 className="fs-5 mb-0">Account Settings</h3>
+                    <h3 className="fs-5 mb-0">{tCommon('account_settings')}</h3>
                     <button
                       className="btn btn-outline-gray-400 text-muted d-md-none"
                       type="button"
@@ -271,14 +274,14 @@ const MyAccountAddress = () => {
                           to="/MyAccountOrder"
                         >
                           <i className="fas fa-shopping-bag me-2" />
-                          Your Orders
+                          {tCommon('your_orders')}
                         </Link>
                       </li>
                       {/* nav item */}
                       <li className="nav-item">
                         <Link className="nav-link " to="/MyAccountSetting">
                           <i className="fas fa-cog me-2" />
-                          Settings
+                          {tCommon('settings')}
                         </Link>
                       </li>
                       {/* nav item */}
@@ -288,21 +291,21 @@ const MyAccountAddress = () => {
                           to="/MyAccountAddress"
                         >
                           <i className="fas fa-map-marker-alt me-2" />
-                          Address
+                          {tCommon('address')}
                         </Link>
                       </li>
                       {/* nav item */}
                       <li className="nav-item">
                         <Link className="nav-link" to="/MyAcconutPaymentMethod">
                           <i className="fas fa-credit-card me-2" />
-                          Payment Method
+                          {tCommon('payment_method')}
                         </Link>
                       </li>
                       {/* nav item */}
                       <li className="nav-item">
                         <Link className="nav-link" to="/MyAcconutNotification">
                           <i className="fas fa-bell me-2" />
-                          Notification
+                          {tCommon('notification')}
                         </Link>
                       </li>
                       {/* nav item */}
@@ -311,19 +314,19 @@ const MyAccountAddress = () => {
                         <li className="nav-item">
                         <Link className="nav-link" to="/AddProducts">
                           <i className="bi bi-plus-circle" style={{ marginRight: '8px' }}/>
-                            Add Products
+                          {tCommon('add_products')}
                         </Link>
                         </li>
                         <li className="nav-item">
                         <Link className="nav-link" to="/AddedProducts">
                         <i className="bi bi-card-list " style={{ marginRight: '8px' }}/>
-                          Added Products
+                        {tCommon('added_products')}
                         </Link>
                           </li>
                           <li className="nav-item">
                           <Link className="nav-link" to="/WholesalerCampaigns">
                           <i className="bi bi-collection-fill" style={{ marginRight: '8px' }}/>
-                          Campaigns
+                          {tCommon('campaigns')}
                           </Link>
                       </li>
                       </ul>
@@ -333,14 +336,14 @@ const MyAccountAddress = () => {
                       <li className="nav-item">
                       <Link className="nav-link" to="/MyCampaigns">
                           <i className="bi bi-collection-fill" style={{ marginRight: '8px' }}/>
-                          Campaigns
+                          {tCommon('campaigns')}
                       </Link>
                       </li>
                       )}
                       <li className="nav-item">
                         <Link className="nav-link " to="/Grocery-react/">
                           <i className="fas fa-sign-out-alt me-2" />
-                          Home
+                          {tCommon('home')}
                         </Link>
                       </li>
                     </ul>
@@ -367,7 +370,7 @@ const MyAccountAddress = () => {
                         <div className="p-6 p-lg-10">
                           <div className="d-flex justify-content-between mb-6">
                             {/* heading */}
-                            <h2 className="mb-0">Address</h2>
+                            <h2 className="mb-0">{tAccounts('address')}</h2>
                             {/* button */}
                             {/* {!userDetails && (
                             <Link
@@ -388,7 +391,7 @@ const MyAccountAddress = () => {
                                 {/* Address Card */}
                                 <div className="border p-6 rounded-3">
                                   {/* Address Title */}
-                                  <h5 className="text-dark fw-semi-bold">Address</h5>
+                                  <h5 className="text-dark fw-semi-bold">{tAccounts('address')}</h5>
 
                                   {/* Address Details */}
                                   {!localStorage.getItem('company_name') && (
@@ -405,13 +408,13 @@ const MyAccountAddress = () => {
                                     <p className="mb-6">
                                       {userDetails.company_name}
                                       <br />
-                                      Mob 1: {userDetails.mobile_number1}
+                                      {tAccounts("mob_1")}: {userDetails.mobile_number1}
                                       <br />
-                                      Mob 2: {userDetails.mobile_number2}
+                                      {tAccounts("mob_2")}: {userDetails.mobile_number2}
                                       <br />
-                                      Mob 3: {userDetails.mobile_number3}
+                                      {tAccounts("mob_3")}: {userDetails.mobile_number3}
                                       <br />
-                                      License No.{userDetails.license_number}
+                                      {tAccounts('"license_no"')}.{userDetails.license_number}
                                       <br />
                                       {userDetails.license_image && (
                                         <img
@@ -426,7 +429,7 @@ const MyAccountAddress = () => {
                                   <p className="mb-6">
                                     {userDetails.street_address}
                                     <br />
-                                    <span>ZIP code:</span> {userDetails.zipcode}
+                                    <span>{tAccounts('zip_code')}:</span> {userDetails.zipcode}
                                     <br />
                                     {userDetails.country}
                                     <br />
@@ -440,7 +443,7 @@ const MyAccountAddress = () => {
                                       data-bs-toggle="modal"
                                       data-bs-target="#addAddressModal"
                                     >
-                                      Edit Address
+                                      {tAccounts('edit_address')}
                                     </Link>
 
                                     {/* Delete Button */}
@@ -457,7 +460,7 @@ const MyAccountAddress = () => {
                             ) : (
                               <div className="col-12">
                                 {/* Display if no address is found */}
-                                <p>No address found. Please add one.</p>
+                                <p>{tAccounts('no_address_found')}</p>
                               </div>
                             )}
 
@@ -541,10 +544,10 @@ const MyAccountAddress = () => {
                     <div>
                       {/* heading */}
                       <h5 className="h6 mb-1" id="addAddressModalLabel">
-                        New Shipping Address
+                        {tModal('new_shipping_address')}
                       </h5>
                       <p className="small mb-0">
-                        Add new shipping address for your order delivery.
+                        {tModal('add_new_shipping_address')}
                       </p>
                     </div>
                     <div>
@@ -565,12 +568,13 @@ const MyAccountAddress = () => {
                     {localStorage.getItem('company_name') && (
                     <div className="col-12">
                       {/* input */}
+                      <h6>{tModal('company_name')}</h6>
                       <input
                         type="text"
                         className="form-control"
                         id="company_name"
                         name="company_name"
-                        placeholder="Company Name"
+                        placeholder={tModal('company_name')}
                         aria-label="company Name"
                         value={address.company_name}
                         onChange={handleChange}
@@ -578,36 +582,39 @@ const MyAccountAddress = () => {
                       />
                       <div className="col-12">
                       {/* input */}
+                      <h6>{tModal('whatsapp_number_1')}</h6>
                       <input
                         type="text"
                         id = "mobile_number1"
                         name="mobile_number1"
                         className="form-control"
-                        placeholder="Whatsapp Number 1"
+                        placeholder={tModal('whatsapp_number_1')}
                         value={address.mobile_number1}
                         onChange={handleChange}
                       />
                     </div>
                     <div className="col-12">
                       {/* input */}
+                      <h6>{tModal('whatsapp_number_2')}</h6>
                       <input
                         type="text"
                         id = "mobile_number2"
                         name="mobile_number2"
                         className="form-control"
-                        placeholder="Whatsapp Number 2"
+                        placeholder={tModal('whatsapp_number_2')}
                         value={address.mobile_number2}
                         onChange={handleChange}
                       />
                     </div>
                     <div className="col-12">
                       {/* input */}
+                      <h6>{tModal('whatsapp_number_3')}</h6>
                       <input
                         type="text"
                         id = "mobile_number3"
                         name="mobile_number3"
                         className="form-control"
-                        placeholder="Whatsapp Number 3"
+                        placeholder={tModal('whatsapp_number_2')}
                         value={address.mobile_number3}
                         onChange={handleChange}
                       />
@@ -618,12 +625,13 @@ const MyAccountAddress = () => {
                     {!localStorage.getItem('company_name') && (
                     <div className="col-12">
                       {/* input */}
+                      <h6>{tModal('first_name')}</h6>
                       <input
                         type="text"
                         className="form-control"
                         id="first_name"
                         name="first_name"
-                        placeholder="First name"
+                        placeholder={tModal('first_name')}
                         aria-label="First name"
                         value={address.first_name}
                         onChange={handleChange}
@@ -634,12 +642,13 @@ const MyAccountAddress = () => {
                     {!localStorage.getItem('company_name') && (
                     <div className="col-12">
                       {/* input */}
+                      <h6>{tModal('last_name')}</h6>
                       <input
                         type="text"
                         className="form-control"
                         id="last_name"
                         name="last_name"
-                        placeholder="Last name"
+                        placeholder={tModal('last_name')}
                         aria-label="Last name"
                         value={address.last_name}
                         onChange={handleChange}
@@ -668,24 +677,26 @@ const MyAccountAddress = () => {
                     <>  
                     <div className="col-12">
                       {/* input */}
+                      <h6>{tModal('mobile_number')}</h6>
                       <input
                         type="text"
                         id = "phone_number"
                         name="phone_number"
                         className="form-control"
-                        placeholder="Mobile Number"
+                        placeholder={tModal('mobile_number')}
                         value={address.phone_number}
                         onChange={handleChange}
                       />
                     </div>
                     <div className="col-12">
                       {/* input */}
+                      <h6>{tModal('city')}</h6>
                       <input
                         type="text"
                         id="city"
                         name="city"
                         className="form-control"
-                        placeholder="City"
+                        placeholder={tModal('city')}
                         value={address.city}
                         onChange={handleChange}
                       />
@@ -694,18 +705,20 @@ const MyAccountAddress = () => {
                     )}
                     <div className="col-12">
                       {/* input */}
+                      <h6>{tModal('street_address')}</h6>
                       <input
                         type="text"
                         id="street_address"
                         name="street_address"
                         className="form-control"
-                        placeholder="Street Address"
+                        placeholder={tModal('street_address')}
                         value={address.street_address}
                         onChange={handleChange}
                       />
                     </div>
                     {/* col */}
                     <div className="col-12">
+                    <h6>{tModal('country')}</h6>
                       <select
                         className="form-select"
                         id="country"
@@ -713,10 +726,10 @@ const MyAccountAddress = () => {
                         value={address.country} // Dynamically controlled by state
                         onChange={handleChange} // Updates the state on change
                       >
-                        <option value="UAE">UAE</option>
+                        {/* <option value="UAE">UAE</option>
                         <option value="UK">UK</option>
-                        <option value="USA">USA</option>
-                        <option value="KUWAIT">KUWAIT</option>
+                        <option value="USA">USA</option> */}
+                        <option value="KUWAIT">{tModal('kuwait')}</option>
                       </select>
                     </div>
                     {/* col */}
@@ -735,12 +748,13 @@ const MyAccountAddress = () => {
                     {/* col */}
                     <div className="col-12">
                       {/* input */}
+                      <h6>{tModal('zip_code')}</h6>
                       <input
                         type="text"
                         className="form-control"
                         id="zipcode"
                         name="zipcode"
-                        placeholder="Zip Code"
+                        placeholder={tModal('zip_code')}
                         value={address.zipcode}
                         onChange={handleChange}
                       />
@@ -748,12 +762,13 @@ const MyAccountAddress = () => {
                     {localStorage.getItem('company_name') && (
                     <div className="col-12">
                       {/* input */}
+                      <h6>{tModal('registration_number')}</h6>
                       <input
                         type="text"
                         className="form-control"
                         id="license_number"
                         name="license_number"
-                        placeholder="Registration Number"
+                        placeholder={tModal('registration_number')}
                         aria-label="License Number"
                         value={address.license_number}
                         onChange={handleChange}
@@ -763,13 +778,13 @@ const MyAccountAddress = () => {
                     {localStorage.getItem('company_name') && (
                     <div className="col-12">
                       {/* input */}
-                      <span><p>License / Registration Image</p></span>
+                      <span><h6>{tModal('license_registration_image')}</h6></span>
                       <input
                         type="file"
                         className="form-control"
                         id="license_image"
                         name="license_image"
-                        placeholder="License Image"
+                        placeholder={tModal('license_registration_image')}
                         aria-label="License Image"
                         value={address.license_image}
                         onChange={handleFileChange}
@@ -804,16 +819,16 @@ const MyAccountAddress = () => {
                       </div>
                     </div> */}
                     {/* col */}
-                    <div className="col-12 text-end">
+                    <div className="col-12 d-flex justify-content-end gap-3">
                       <button
                         type="button"
                         className="btn btn-outline-primary"
                         data-bs-dismiss="modal"
                       >
-                        Cancel
+                        {tModal('cancel')}
                       </button>
                       <button className="btn btn-primary" type="submit">
-                        Save Address
+                        {tModal('save_address')}
                       </button>
                     </div>
                   </div>
@@ -892,7 +907,7 @@ const MyAccountAddress = () => {
                   <li className="nav-item">
                     <a className="nav-link " href="/Grocery-react/">
                       <i className="fas fa-sign-out-alt me-2" />
-                      Log out
+                      Home
                     </a>
                   </li>
                 </ul>

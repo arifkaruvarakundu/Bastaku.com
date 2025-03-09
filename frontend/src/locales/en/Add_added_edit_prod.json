@@ -1,0 +1,24 @@
+ 
+  {
+    "update": "Update",
+    "no_products_found": "No products found.",
+    "add_your_products": "Add Your Products",
+    "product_name": "Product Name",
+    "description": "Description",
+    "price": "Price (in KD):",
+    "campaign_discount_percentage": "Campaign Discount Percentage (%):",
+    "minimum_order_quantity_for_offer": "Minimum Order Quantity For Offer:",
+    "stock": "Stock:",
+    "product_category": "Product Category:",
+    "select_category": "Select a category",
+    "drop_images_here": "Drop the images here...",
+    "drag_drop_images": "Drag & drop images here, or click to select files",
+    "enter_discount_percentage": "Enter discount percentage",
+    "enter_minimum_quantity_for_offer": "Enter minimum quantity for offer",
+    "add_product": "Add Product",
+    "loading": "Loading...",
+    "edit_product": "Edit Product",
+    "existing_images": "Existing Images",
+    "update_product": "Update Product"
+  }
+  

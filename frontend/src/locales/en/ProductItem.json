@@ -1,0 +1,9 @@
+{
+    "popular_products": "Popular Products",
+    "campaign": "Campaign",
+    "price_label": "Price: {{price}} KD",
+    "original_price_label": "KD: {{original_price}}",
+    "add": "Add",
+    "campaign_price_label": "Campaign Price: KD {{campaign_price}}"
+  }
+  

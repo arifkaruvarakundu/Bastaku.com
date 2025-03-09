@@ -36,6 +36,8 @@ import { Slide, Zoom } from "react-awesome-reveal";
 import { useEffect } from "react";
 import { MagnifyingGlass } from "react-loader-spinner";
 import ProductItemWholesaler from "../ProductList/ProductItemWholesaler";
+import { useTranslation } from "react-i18next";
+
 
 const HomeWholesaler = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -43,6 +45,8 @@ const HomeWholesaler = () => {
   const [loaderStatus, setLoaderStatus] = useState(true);
 
   const navigate = useNavigate();
+
+  const {t} = useTranslation('home_wh')
 
   useEffect(() => {
     const fetchData = async () => {
@@ -276,10 +280,10 @@ const HomeWholesaler = () => {
                               {/* Opening Sale Discount 50% */}
                             </span>
                             <h2 className="text-dark display-5 fw-bold mt-4">
-                            Expand your reach, multiply your sales!
+                            {t('expand_reach')}
                             </h2>
                             <p className="lead">
-                            Join our platform and connect with thousands of buyers eager for your products. Let’s grow together!
+                            {t('join_platform')}
                             </p>
                             {/* <Link to="/Shop" className="btn btn-dark mt-3" style={{marginLeft: "140px"}}>
                               Shop Now{" "}
@@ -365,13 +369,12 @@ const HomeWholesaler = () => {
                             />
                             <div className="banner-text">
                               <h3 className="mb-0 fw-bold">
-                                Add Your Products Here <br />
-                                and Get More Sales
+                                {t('add_products_here')}
                                 
                               </h3>
                               <div className="mt-4 mb-5 fs-5">
                               <p className="mb-0" style={{ color: "lightyellow" }}>
-                                Add your Variety products<br />here
+                                {t('add_variety_products')}
                               </p>
                                 <span>
                                   {/* Code:{" "} */}
@@ -381,7 +384,7 @@ const HomeWholesaler = () => {
                                 </span>
                               </div>
                               <Link to="/AddProducts" className="btn btn-dark mt-2">
-                                Add Products
+                                {t('add_products')}
                               </Link>
                             </div>
                             {/* Banner Content */}
@@ -405,15 +408,14 @@ const HomeWholesaler = () => {
                             <div className="banner-text text-white">
                               {/* Banner Content */}
                               <h3 className=" fw-bold mb-2 text-white">
-                                Add Your Address<br />
-                                To connect{" "}
+                                {t('add_address_connect')}{" "}
                               </h3>
                               <p className="fs-5">
-                                Refresh your day <br />
-                                the fruity way
+                                {/* Refresh your day <br />
+                                the fruity way */}
                               </p>
                               <Link to="/MyAccountAddress" className="btn btn-dark mt-2">
-                                Add Address
+                                {t('add_address')}
                               </Link>
                             </div>
                           </div>
@@ -434,17 +436,15 @@ const HomeWholesaler = () => {
                             {/* Banner Content */}
                             <div className="banner-text">
                               <h3 className="fs-2 fw-bold lh-1 mb-2">
-                                Add Your
-                                <br />
-                                Bank Details{" "}
+                                {t('add_bank_details')}{" "}
                               </h3>
                               <p className="fs-5">
-                                Here
+                                {t("add_bank_here")}
                                 <br />
                                 
                               </p>
                               <Link to="/MyAcconutPaymentMethod" className="btn btn-dark">
-                                Add Bank Details
+                                {t('add_bank')}
                               </Link>
                             </div>
                           </div>
@@ -466,7 +466,7 @@ const HomeWholesaler = () => {
                         {/* heading */}
                         <div className="section-head text-center mt-8">
                           <h3 className="h3style" data-title="Shop Popular Categories">
-                            Shop Popular Categories
+                            {t('popular_categories')}
                           </h3>
                           <div className="wt-separator bg-primarys"></div>
                           <div className="wt-separator2 bg-primarys"></div>
@@ -522,14 +522,14 @@ const HomeWholesaler = () => {
                           >
                             <div>
                               <h3 className="fw-bold mb-1">
-                                You can see your orders here
+                                {t('see_orders')}
                               </h3>
                               <p className="mb-4">
-                                All Your Orders Are Listed Here<span className="fw-bold"> Click below</span>{" "}
+                               {t('all_orders_listed')}{" "}
                               
                               </p>
                               <Link to="/MyAccountOrder" className="btn btn-dark">
-                                Orders
+                                {t('orders')}
                               </Link>
                             </div>
                           </div>
@@ -549,13 +549,13 @@ const HomeWholesaler = () => {
                           >
                             <div>
                               <h3 className="fw-bold mb-1">
-                                Your on going Campaigns
+                                {t('ongoing_campaigns')}
                               </h3>
                               <p className="mb-4">
-                                Increase Your Sales Through <span className="fw-bold">Campaigns</span>{" "}
+                                {t('increase_sales_campaigns')}{" "}
                               </p>
                               <Link to="/WholesalerCampaigns" className="btn btn-dark">
-                                Campaigns
+                                {t('campaigns')}
                               </Link>
                             </div>
                           </div>
@@ -572,7 +572,7 @@ const HomeWholesaler = () => {
             <>
               {/* cta section */}
               <section>
-                <div className="coming-soon">Coming soon...</div>
+                <div className="coming-soon">{t('coming_soon')}</div>
                 <div
                   className="container"
                   style={{
@@ -588,10 +588,9 @@ const HomeWholesaler = () => {
                         <div className="mb-6">
                           <div className="mb-7">
                             {/* heading */}
-                            <h1>Get the Bastaku app</h1>
+                            <h1>{t('get_app')}</h1>
                             <h5 className="mb-0">
-                              We will send you a link, open it on your phone to
-                              download the app.
+                              {t('send_link_download')}
                             </h5>
                           </div>
                           <div className="mb-5">
@@ -679,7 +678,7 @@ const HomeWholesaler = () => {
             </>
             
             
-            <>
+            {/* <>
               <div className="container">
                 <Slider {...settings2}>
                   
@@ -815,7 +814,7 @@ const HomeWholesaler = () => {
                   </div>
                 </Slider>
               </div>
-            </>
+            </> */}
           </>
         )}
       </div>

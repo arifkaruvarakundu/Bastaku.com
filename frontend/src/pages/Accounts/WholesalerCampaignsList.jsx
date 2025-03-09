@@ -3,11 +3,15 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { MagnifyingGlass } from "react-loader-spinner";
 import ScrollToTop from "../ScrollToTop";
+import { useTranslation } from "react-i18next";
 
 const WholesalerCampaigns = () => {
   // loading
   const [loaderStatus, setLoaderStatus] = useState(true);
   const [campaigns, setCampaigns] = useState([]);
+
+  const {t: tCommon} = useTranslation('accounts_common')
+  const {t: tAccounts} = useTranslation('accounts_others')
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -61,42 +65,42 @@ const WholesalerCampaigns = () => {
                   <li className="nav-item">
                     <Link className="nav-link" to="/MyAccountOrder">
                       <i className="fas fa-shopping-bag me-2" />
-                      Your Orders
+                      {tCommon('your_orders')}
                     </Link>
                   </li>
                   
                   <li className="nav-item">
                                         <Link className="nav-link" to="/MyAccountSetting">
                                           <i className="fas fa-cog me-2" />
-                                          Settings
+                                          {tCommon('settings')}
                                         </Link>
                                       </li>
                                       {/* nav item */}
                                       <li className="nav-item">
                                         <Link className="nav-link" to="/MyAccountAddress">
                                           <i className="fas fa-map-marker-alt me-2" />
-                                          Address
+                                          {tCommon('address')}
                                         </Link>
                                       </li>
                                       {/* nav item */}
                                       <li className="nav-item">
                                         <Link className="nav-link" to="/MyAcconutPaymentMethod">
                                           <i className="fas fa-credit-card me-2" />
-                                          Payment Method
+                                          {tCommon('payment_method')}
                                         </Link>
                                       </li>
                                       {/* nav item */}
                                       <li className="nav-item">
                                         <Link className="nav-link" to="/MyAcconutNotification">
                                           <i className="fas fa-bell me-2" />
-                                          Notification
+                                          {tCommon('notification')}
                                         </Link>
                                       </li>
                                       {localStorage.getItem('company_name') && (
                                                             <li className="nav-item">
                                                               <Link className="nav-link" to="/AddProducts">
                                                                 <i className="bi bi-plus-circle" style={{ marginRight: '8px' }}/>
-                                                                Add Products
+                                                                {tCommon('add_products')}
                                                               </Link>
                                                             </li>
                                                           )}
@@ -105,7 +109,7 @@ const WholesalerCampaigns = () => {
                                                             <li className="nav-item">
                                                             <Link className="nav-link" to="/AddedProducts">
                                                               <i className="bi bi-card-list " style={{ marginRight: '8px' }}/>
-                                                                Added Products
+                                                              {tCommon('added_products')}
                                                             </Link>
                                                             </li>
                                                             
@@ -115,13 +119,13 @@ const WholesalerCampaigns = () => {
                   <li className="nav-item">
                     <Link className="nav-link active" to="/MyCampaigns">
                       <i className="bi bi-collection-fill me-2" />
-                      Campaigns
+                      {tCommon('campaigns')}
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link " to="/Grocery-react/">
                     <i className="fas fa-sign-out-alt me-2" />
-                     Home
+                    {tCommon('home')}
                     </Link>
                   </li>
                 </ul>
@@ -143,17 +147,17 @@ const WholesalerCampaigns = () => {
                   </div>
                 ) : (
                   <div className="p-6 p-lg-10">
-                    <h2 className="mb-6">Your Campaigns</h2>
+                    <h2 className="mb-6">{tAccounts('your_campaigns')}</h2>
                     <div className="table-responsive border-0">
                       <table className="table mb-0 text-nowrap">
                         <thead className="table-light">
                           <tr>
-                            <th className="border-0">Campaign ID</th>
-                            <th className="border-0">Product</th>
-                            <th className="border-0">Image</th>
-                            <th className="border-0">Start Date</th>
-                            <th className="border-0">Progress</th>
-                            <th className="border-0">Status</th>
+                            <th className="border-0">{tAccounts('campaign_id')}</th>
+                            <th className="border-0">{tAccounts('product')}</th>
+                            <th className="border-0">{tAccounts('image')}</th>
+                            <th className="border-0">{tAccounts('start_date')}</th>
+                            <th className="border-0">{tAccounts('progress')}</th>
+                            <th className="border-0">{tAccounts('status')}</th>
                             
                           </tr>
                         </thead>
@@ -181,7 +185,7 @@ const WholesalerCampaigns = () => {
                               {((campaign.current_quantity / campaign.product.minimum_order_quantity_for_offer) * 100).toFixed(2)}%
                               </td>
                               <td className="align-middle border-top-0">
-                              {campaign.is_active ? ( <span className="badge bg-success">Active</span>) : ( <span className="badge bg-danger">Inactive</span>)}
+                              {campaign.is_active ? ( <span className="badge bg-success">{tAccounts('active')}</span>) : ( <span className="badge bg-danger">{tCommon('inactive')}</span>)}
                               </td>
                             </tr>
                           ))}

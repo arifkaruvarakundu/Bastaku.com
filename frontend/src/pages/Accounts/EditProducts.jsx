@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDropzone } from 'react-dropzone';
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -17,6 +18,9 @@ const EditProduct = () => {
   const [croppedImage, setCroppedImage] = useState(null);
   const [files, setFiles] = useState([]);
   const [categories, setCategories] = useState([]);
+
+  const{t: tCommon} = useTranslation("accounts_common")
+  const{t: tProduct} = useTranslation("add_added_edit_prod")
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -38,7 +42,7 @@ const EditProduct = () => {
 
   const onDrop = useCallback((acceptedFiles) => {
     setFiles((prevFiles) => [
-      ...prevFiles,  // ✅ Keep the existing files
+      ...prevFiles,  
       ...acceptedFiles.map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
@@ -99,7 +103,7 @@ const EditProduct = () => {
       formData.append("minimum_order_quantity_for_offer", product.minimum_order_quantity_for_offer);
   
       files.forEach((file) => {
-        formData.append("product_images", file);  // ✅ Fixed
+        formData.append("product_images", file);  
       });
   
       console.log("Updating product with ID:", id);
@@ -107,7 +111,7 @@ const EditProduct = () => {
         console.log(key, value);
       }
   
-      await axios.put(  // ✅ Changed to PATCH
+      await axios.put(  
         `http://127.0.0.1:8000/wholesaler/product_edit/${id}/`,
         formData,
         {
@@ -123,7 +127,7 @@ const EditProduct = () => {
   };
   
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>{tProduct("loading")}</div>;
   if (error) return <div>{error}</div>;
 
   return (
@@ -134,47 +138,47 @@ const EditProduct = () => {
             <ul className="nav flex-column">
               <li className="nav-item">
                 <a className="nav-link active" href="/MyAccountSetting">
-                  <i className="fas fa-cog me-2" /> Settings
+                  <i className="fas fa-cog me-2" /> {tCommon("settings")}
                 </a>
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="/MyAccountOrder">
-                  <i className="fas fa-shopping-bag me-2" /> Your Orders
+                  <i className="fas fa-shopping-bag me-2" /> {tCommon("your_orders")}
                 </a>
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="/MyAccountAddress">
-                  <i className="fas fa-map-marker-alt me-2" /> Address
+                  <i className="fas fa-map-marker-alt me-2" /> {tCommon("address")}
                 </a>
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="/MyAcconutPaymentMethod">
-                  <i className="fas fa-credit-card me-2" /> Payment Method
+                  <i className="fas fa-credit-card me-2" /> {tCommon("payment_method")}
                 </a>
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="/MyAcconutNotification">
-                  <i className="fas fa-bell me-2" /> Notification
+                  <i className="fas fa-bell me-2" /> {tCommon("notification")}
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/wholesaler_profile">
-                  <i className="bi bi-card-list me-2" /> Added Products
+                <a className="nav-link" href="/AddedProducts">
+                  <i className="bi bi-card-list me-2" /> {tCommon("added_products")}
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/">
-                  <i className="fas fa-sign-out-alt me-2" /> Log out
+                <a className="nav-link" href="/Grocery-react/">
+                  <i className="fas fa-sign-out-alt me-2" /> {tCommon("home")}
                 </a>
               </li>
             </ul>
           </div>
 
           <div className="col-lg-9 col-md-8 col-12">
-            <h2 className="mb-4">Edit Product</h2>
+            <h2 className="mb-4">{tProduct("edit_product")}</h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label className="form-label">Product Name</label>
+                <label className="form-label">{tProduct("product_name")}</label>
                 <input
                   type="text"
                   name="product_name"
@@ -182,32 +186,32 @@ const EditProduct = () => {
                   onChange={handleInputChange}
                   required
                   className="form-control"
-                  placeholder="Product Name"
+                  placeholder={tProduct("product_name")}
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Description</label>
+                <label className="form-label">{tProduct('description')}</label>
                 <textarea
                   name="description"
                   value={product.description}
                   onChange={handleInputChange}
                   className="form-control"
-                  placeholder="Description"
+                  placeholder={tProduct('description')}
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Actual Price (in KD)</label>
+                <label className="form-label">{tProduct('price')}</label>
                 <input
                   type="number"
                   name="actual_price"
                   value={product.actual_price}
                   onChange={handleInputChange}
                   className="form-control"
-                  placeholder="Actual Price"
+                  placeholder={tProduct('price')}
                 />
               </div>
               <div className="mb-5">
-                <label className="form-label">Campaign Discount Percentage(%):</label>
+                <label className="form-label">{tProduct("campaign_discount_percentage")}</label>
                   <input
                     type="number"
                     className="form-control"
@@ -216,22 +220,22 @@ const EditProduct = () => {
                     onChange={handleInputChange}
                     min="0"
                     max="100"
-                    placeholder="Enter discount percentage"
+                    placeholder={tProduct('enter_discount_percentage')}
                   />
               </div>
               <div className="mb-3">
-                <label className="form-label">Stock (Kg)</label>
+                <label className="form-label">{tProduct("stock")}</label>
                 <input
                   type="number"
                   name="stock"
                   value={product.stock}
                   onChange={handleInputChange}
                   className="form-control"
-                  placeholder="Stock"
+                  placeholder={tProduct("stock")}
                 />
               </div>
               <div className="mb-5">
-                <label className="form-label">Product Category:</label>
+                <label className="form-label">{tProduct('product_category')}</label>
                 <select
                   id="product_category"
                   className="form-control"
@@ -240,7 +244,7 @@ const EditProduct = () => {
                   onChange={handleInputChange}
                   required
                 >
-                <option value="">Select a category</option>
+                <option value="">{tProduct("select_category")}</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
                   {category.name}
@@ -250,7 +254,7 @@ const EditProduct = () => {
               </div>
               <div className="mb-3">
                 <label className="form-label">
-                  Minimum Order Quantity For Offer (in Kg)
+                {tProduct("minimum_order_quantity_for_offer")}
                 </label>
                 <input
                   type="number"
@@ -258,11 +262,11 @@ const EditProduct = () => {
                   value={product.minimum_order_quantity_for_offer}
                   onChange={handleInputChange}
                   className="form-control"
-                  placeholder="Minimum Order Quantity"
+                  placeholder={tProduct('enter_minimum_quantity_for_offer')}
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Existing Images</label>
+                <label className="form-label">{tProduct("existing_images")}</label>
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                   {product.product_images && product.product_images.map((img, index) => (
                     <img
@@ -282,82 +286,82 @@ const EditProduct = () => {
 
               {/* Image upload */}
               <div
-  {...getRootProps()}
-  style={{
-    border: "2px dashed #aaa",
-    padding: "20px",
-    textAlign: "center",
-    cursor: "pointer",
-  }}
->
-  <input {...getInputProps()} multiple />
-  {isDragActive ? (
-    <p>Drop the images here...</p>
-  ) : (
-    <p>Drag & drop images here, or click to select files</p>
-  )}
+                {...getRootProps()}
+                style={{
+                  border: "2px dashed #aaa",
+                  padding: "20px",
+                  textAlign: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <input {...getInputProps()} multiple />
+                {isDragActive ? (
+                  <p>{tProduct('drop_images_here')}</p>
+                ) : (
+                  <p>{tProduct('drag_drop_images')}</p>
+                )}
 
-  <div
-    style={{
-      display: "flex",
-      gap: "10px",
-      marginTop: "10px",
-      flexWrap: "wrap",
-    }}
-  >
-    {files.map((file, index) => (
-      <div
-        key={file.name}
-        style={{
-          position: "relative",
-          display: "inline-block",
-        }}
-      >
-        <img
-          src={file.preview}
-          alt={file.name}
-          style={{
-            width: "100px",
-            height: "100px",
-            objectFit: "cover",
-            borderRadius: "8px",
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          }}
-        />
-        
-        {/* X Button for removing the image */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();  // Prevents the click from opening file dialog
-            const updatedFiles = files.filter((_, i) => i !== index);
-            setFiles(updatedFiles);  // Update state to remove the image
-          }}
-          style={{
-            position: "absolute",
-            top: "5px",
-            right: "5px",
-            backgroundColor: "rgba(0,0,0,0.6)",
-            color: "white",
-            border: "none",
-            borderRadius: "50%",
-            width: "24px",
-            height: "24px",
-            cursor: "pointer",
-            fontSize: "16px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0",
-          }}
-        >
-          ✕
-        </button>
-      </div>
-    ))}
-  </div>
-</div>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "10px",
+                    marginTop: "10px",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {files.map((file, index) => (
+                    <div
+                      key={file.name}
+                      style={{
+                        position: "relative",
+                        display: "inline-block",
+                      }}
+                    >
+                      <img
+                        src={file.preview}
+                        alt={file.name}
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                        }}
+                      />
+                      
+                      {/* X Button for removing the image */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();  // Prevents the click from opening file dialog
+                          const updatedFiles = files.filter((_, i) => i !== index);
+                          setFiles(updatedFiles);  // Update state to remove the image
+                        }}
+                        style={{
+                          position: "absolute",
+                          top: "5px",
+                          right: "5px",
+                          backgroundColor: "rgba(0,0,0,0.6)",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "50%",
+                          width: "24px",
+                          height: "24px",
+                          cursor: "pointer",
+                          fontSize: "16px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          padding: "0",
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
               <button type="submit" className="btn btn-primary">
-                Update Product
+              {tProduct("update_product")}
               </button>
             </form>
           </div>

@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { useTranslation } from "react-i18next";
 
 const ProductsList = () => {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const { t: tCommon } = useTranslation('accounts_common');
+  const { t: tProduct } = useTranslation('add_added_edit_prod');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -47,56 +51,56 @@ const ProductsList = () => {
                 <ul className="nav flex-column nav-pills nav-pills-dark">
                   <li className="nav-item">
                     <Link className="nav-link" to="/MyAccountOrder">
-                      <i className="fas fa-shopping-bag me-2" /> Your Orders
+                      <i className="fas fa-shopping-bag me-2" /> {tCommon("your_orders")}
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/MyAccountSetting">
-                      <i className="fas fa-cog me-2" /> Settings
+                      <i className="fas fa-cog me-2" /> {tCommon("settings")}
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/MyAccountAddress">
-                      <i className="fas fa-map-marker-alt me-2" /> Address
+                      <i className="fas fa-map-marker-alt me-2" /> {tCommon("address")}
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/MyAcconutPaymentMethod">
-                      <i className="fas fa-credit-card me-2" /> Payment Method
+                      <i className="fas fa-credit-card me-2" /> {tCommon("payment_method")}
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/MyAcconutNotification">
-                      <i className="fas fa-bell me-2" /> Notification
+                      <i className="fas fa-bell me-2" /> {tCommon("notification")}
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/AddProducts">
-                      <i className="bi bi-plus-circle me-2" /> Add Products
+                      <i className="bi bi-plus-circle me-2" /> {tCommon('add_products')}
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link active" to="/AddedProducts">
-                      <i className="bi bi-card-list me-2" /> Added Products
+                      <i className="bi bi-card-list me-2" /> {tCommon('added_products')}
                     </Link>
                   </li>
                   {localStorage.getItem("company_name") && (
                   <li className="nav-item">
                     <Link className="nav-link" to="/WholesalerCampaigns">
-                      <i className="bi bi-collection-fill me-2" /> Campaigns
+                      <i className="bi bi-collection-fill me-2" />{tCommon("campaigns")}
                     </Link>
                   </li>
                   )}
                   {localStorage.getItem("user_name") && (
                   <li className="nav-item">
                     <Link className="nav-link" to="/MyCampaigns">
-                      <i className="bi bi-collection-fill me-2" /> Campaigns
+                      <i className="bi bi-collection-fill me-2" /> {tCommon("campaigns")}
                     </Link>
                   </li>
                   )}
                   <li className="nav-item">
                     <Link className="nav-link" to="/Grocery-react/">
-                      <i className="fas fa-sign-out-alt me-2" /> Home
+                      <i className="fas fa-sign-out-alt me-2" /> {tCommon("home")}
                     </Link>
                   </li>
                 </ul>
@@ -104,7 +108,7 @@ const ProductsList = () => {
             </div>
 
             {/* Product List */}
-            <div className="col-md-9">
+            <div className="col-md-9 mt-6">
               <div className="row g-3">
                 {products.length > 0 ? (
                   products.map((product) => (
@@ -175,7 +179,7 @@ const ProductsList = () => {
                           </div>
                           <div className="d-flex justify-content-between mt-4">
                             <div>
-                              <span className="text-dark">{product.actual_price} KD</span>
+                              <span className="text-dark">{product.actual_price} {tCommon("currency_kd")}</span>
                             </div>
                             <div>
                               <Link to={`/EditProduct/${product.id}`} className="btn btn-primary btn-sm">
@@ -194,7 +198,7 @@ const ProductsList = () => {
                                   <line x1={12} y1={5} x2={12} y2={19} />
                                   <line x1={5} y1={12} x2={19} y2={12} />
                                 </svg>
-                                Update
+                                {tProduct("update")}
                               </Link>
                             </div>
                           </div>
@@ -203,7 +207,7 @@ const ProductsList = () => {
                     </div>
                   ))
                 ) : (
-                  <p>No products found.</p>
+                  <p>{tProduct("no_products_found")}</p>
                 )}
               </div>
             </div>

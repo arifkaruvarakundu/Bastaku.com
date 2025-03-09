@@ -1,0 +1,21 @@
+{
+    "shop_cart": "Shop Cart",
+    "per_unit": "/ unit",
+    "remove": "Remove",
+    "continue_shopping": "Continue Shopping",
+    "cart_empty": "Your cart is empty.",
+    "summary": "Summary",
+    "item_subtotal": "Item Subtotal",
+    "go_to_checkout": "Go to Checkout",
+    "checkout": "Checkout",
+    "delivery_address": "Delivery address",
+    "change_address": "Change address",
+    "address": "Address",
+    "zip_code": "ZIP code:",
+    "no_address_found": "No address found. Please add one.",
+    "order_details": "Order Details",
+    "total": "Total",
+    "currency_kd": "KD",
+    "place_order": "Place order"
+  }
+  

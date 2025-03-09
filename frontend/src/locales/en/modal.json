@@ -1,0 +1,21 @@
+{
+    "new_shipping_address": "New Shipping Address",
+    "add_new_shipping_address": "Add new shipping address for your order delivery.",
+    "company_name": "Company Name",
+    "whatsapp_number_1": "Whatsapp Number 1",
+    "whatsapp_number_2": "Whatsapp Number 2",
+    "whatsapp_number_3": "Whatsapp Number 3",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "mobile_number": "Mobile Number",
+    "city": "City",
+    "street_address": "Street Address",
+    "country": "Country",
+    "kuwait": "KUWAIT",
+    "zip_code": "ZIP Code",
+    "registration_number": "Registration Number",
+    "license_registration_image": "License / Registration Image",
+    "cancel": "Cancel",
+    "save_address": "Save Address"
+  }
+  

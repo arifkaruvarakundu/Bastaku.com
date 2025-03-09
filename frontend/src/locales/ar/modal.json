@@ -1,0 +1,21 @@
+{
+    "new_shipping_address": "عنوان شحن جديد",
+    "add_new_shipping_address": "أضف عنوان شحن جديد لتوصيل طلبك.",
+    "company_name": "اسم الشركة",
+    "whatsapp_number_1": "رقم واتساب 1",
+    "whatsapp_number_2": "رقم واتساب 2",
+    "whatsapp_number_3": "رقم واتساب 3",
+    "first_name": "الاسم الأول",
+    "last_name": "اسم العائلة",
+    "mobile_number": "رقم الهاتف المحمول",
+    "city": "المدينة",
+    "street_address": "عنوان الشارع",
+    "country": "الدولة",
+    "kuwait": "الكويت",
+    "zip_code": "الرمز البريدي",
+    "registration_number": "رقم التسجيل",
+    "license_registration_image": "صورة الترخيص / التسجيل",
+    "cancel": "إلغاء",
+    "save_address": "حفظ العنوان"
+  }
+  

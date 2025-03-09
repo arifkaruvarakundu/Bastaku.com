@@ -5,9 +5,10 @@ import { useDropzone } from 'react-dropzone';
 import ScrollToTop from "../ScrollToTop";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
-
+import { useTranslation } from "react-i18next";
 
 const AddProducts = () => {
+
   // loading
   const [loaderStatus, setLoaderStatus] = useState(true);
   const [image, setImage] = useState(null);
@@ -26,6 +27,9 @@ const AddProducts = () => {
   });
 
   const [categories, setCategories] = useState([]); // To store product categories
+
+  const {t: tCommon} = useTranslation('accounts_common')
+  const {t: tProduct} = useTranslation('add_added_edit_prod')
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -147,7 +151,7 @@ const AddProducts = () => {
                 <div className="col-12">
                   <div className="p-6 d-flex justify-content-between align-items-center d-md-none">
                     {/* heading */}
-                    <h3 className="fs-5 mb-0">Account Settings</h3>
+                    <h3 className="fs-5 mb-0">{tCommon("account_settings")}</h3>
                     {/* btn */}
                     <button
                       className="btn btn-outline-gray-400 text-muted d-md-none"
@@ -172,7 +176,7 @@ const AddProducts = () => {
                           to="/MyAccountOrder"
                         >
                           <i className="fas fa-shopping-bag me-2" />
-                          Your Orders
+                          {tCommon('your_orders')}
                         </Link>
                       </li>
                       {/* nav item */}
@@ -182,28 +186,28 @@ const AddProducts = () => {
                           to="/MyAccountSetting"
                         >
                           <i className="fas fa-cog me-2" />
-                          Settings
+                          {tCommon('settings')}
                         </Link>
                       </li>
                       {/* nav item */}
                       <li className="nav-item">
                         <Link className="nav-link" to="/MyAccountAddress">
                           <i className="fas fa-map-marker-alt me-2" />
-                          Address
+                          {tCommon('address')}
                         </Link>
                       </li>
                       {/* nav item */}
                       <li className="nav-item">
                         <Link className="nav-link" to="/MyAcconutPaymentMethod">
                           <i className="fas fa-credit-card me-2" />
-                          Payment Method
+                          {tCommon("payment_method")}
                         </Link>
                       </li>
                       {/* nav item */}
                       <li className="nav-item">
                         <Link className="nav-link" to="/MyAcconutNotification">
                           <i className="fas fa-bell me-2" />
-                          Notification
+                          {tCommon("notification")}
                         </Link>
                       </li>
                       {/* nav item */}
@@ -212,13 +216,13 @@ const AddProducts = () => {
                           <li className="nav-item">
                             <Link className="nav-link active" to="/AddProducts">
                               <i className="bi bi-plus-circle" style={{ marginRight: '8px' }}/>
-                                Add Products
+                                {tCommon("add_products")}
                             </Link>
                           </li>                                                 
                           <li className="nav-item">
                               <Link className="nav-link" to="/AddedProducts">
                                 <i className="bi bi-card-list " style={{ marginRight: '8px' }}/>
-                                Added Products
+                                {tCommon("added_products")}
                               </Link>
                           </li>
                           {/* nav item */}
@@ -226,7 +230,7 @@ const AddProducts = () => {
                         <li className="nav-item">
                           <Link className="nav-link" to="/WholesalerCampaigns">
                         <i className="bi bi-collection-fill" style={{ marginRight: '8px' }}/>
-                          Campaigns
+                          {tCommon("campaigns")}
                         </Link>
                           </li> 
                         </ul>
@@ -235,7 +239,7 @@ const AddProducts = () => {
                       <li className="nav-item">
                           <Link className="nav-link" to="/WholesalerCampaigns">
                         <i className="bi bi-collection-fill" style={{ marginRight: '8px' }}/>
-                          Campaigns
+                        {tCommon("campaigns")}
                         </Link>
                           </li>   
                         )}                                               
@@ -243,7 +247,7 @@ const AddProducts = () => {
                       <li className="nav-item">
                         <Link className="nav-link " to="/Grocery-react/">
                           <i className="fas fa-sign-out-alt me-2" />
-                          Log out
+                          {tCommon("home")}
                         </Link>
                       </li>
                     </ul>
@@ -270,18 +274,18 @@ const AddProducts = () => {
                         <div className="p-6 p-lg-10">
                           <div className="mb-6">
                             {/* heading */}
-                            <h2 className="mb-0">Account Settings</h2>
+                            <h2 className="mb-0">{tProduct('add_your_products')}</h2>
                           </div>
                           <div>
                             {/* heading */}
-                            <h5 className="mb-4">Add Products</h5>
+                            {/* <h5 className="mb-4">Add Products</h5> */}
                             <div className="row">
                               <div className="col-lg-5">
                                 {/* form */}
                                 <form onSubmit={handleSubmit}>
                                   {/* input */}
                                   <div className="mb-3">
-                                    <label className="form-label">Product Name</label>
+                                    <label className="form-label">{tProduct("product_name")}</label>
                                     <input
                                       type="text"
                                       name="product_name"
@@ -289,27 +293,27 @@ const AddProducts = () => {
                                       onChange={handleChange}
                                       required
                                       className="form-control"
-                                      placeholder="Product Name"
+                                      placeholder={tProduct("product_name")}
                                     />
                                   </div>
                                   {/* input */}
                                   <div className="mb-3">
-                                    <label className="form-label">Description</label>
+                                    <label className="form-label">{tProduct('description')}</label>
                                     <textarea
                                       name="description"
                                       value={productData.description}
                                       onChange={handleChange}
                                       className="form-control"
-                                      placeholder="Description"
+                                      placeholder={tProduct('description')}
                                     />
                                   </div>
                                   {/* input */}
                                   <div className="mb-5">
-                                    <label className="form-label">Price(in KD):</label>
+                                    <label className="form-label">{tProduct('price')}</label>
                                     <input
                                       type="text"
                                       className="form-control"
-                                      placeholder="price"
+                                      placeholder={tProduct('price')}
                                       name="actualPrice"
                                       value={productData.actualPrice}
                                       onChange={handleChange}
@@ -317,7 +321,7 @@ const AddProducts = () => {
                                   </div>
                                   {/* input */}
                                   <div className="mb-5">
-                                    <label className="form-label">Campaign Discount Percentage(%):</label>
+                                    <label className="form-label">{tProduct("campaign_discount_percentage")}</label>
                                     <input
                                       type="number"
                                       className="form-control"
@@ -326,37 +330,38 @@ const AddProducts = () => {
                                       onChange={handleChange}
                                       min="0"
                                       max="100"
-                                      placeholder="Enter discount percentage"
+                                      placeholder={tProduct('enter_discount_percentage')}
                                     />
                                   </div>
                                   {/* input */}
                                   <div className="mb-5">
-                                    <label className="form-label">Minimum Order Quantity For Offer:</label>
+                                    <label className="form-label">{tProduct("minimum_order_quantity_for_offer")}</label>
                                     <input
                                       type="number"
                                       className="form-control"
                                       name="minimumOrderQuantityForOffer" // Input field name matches the state key
                                       value={productData.minimumOrderQuantityForOffer}
                                       onChange={handleChange}
-                                      placeholder="Enter minimum quantity for offer"
+                                      placeholder={tProduct('enter_minimum_quantity_for_offer')}
                                       required
                                     />
                                   </div>
                                   {/* input */}
                                   <div className="mb-5">
-                                    <label className="form-label">Stock:</label>
+                                    <label className="form-label">{tProduct("stock")}</label>
                                     <input
                                       type="number"
                                       className="form-control"
                                       name="stock"
                                       value={productData.stock}
+                                      placeholder={tProduct("stock")}
                                       onChange={handleChange}
                                       required
                                     />
                                   </div>
                                   {/* input */}
                                   <div className="mb-5">
-                                    <label className="form-label">Product Category:</label>
+                                    <label className="form-label">{tProduct('product_category')}</label>
                                     <select
                                       id="product_category"
                                       className="form-control"
@@ -365,7 +370,7 @@ const AddProducts = () => {
                                       onChange={handleChange}
                                       required
                                     >
-                                      <option value="">Select a category</option>
+                                      <option value="">{tProduct("select_category")}</option>
                                       {categories.map((category) => (
                                         <option key={category.id} value={category.id}>
                                           {category.name}
@@ -385,9 +390,9 @@ const AddProducts = () => {
                                   >
                                     <input {...getInputProps()} multiple/>
                                     {isDragActive ? (
-                                      <p>Drop the images here...</p>
+                                      <p>{tProduct('drop_images_here')}</p>
                                     ) : (
-                                      <p>Drag & drop images here, or click to select files</p>
+                                      <p>{tProduct('drag_drop_images')}</p>
                                     )}
 
                                     <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
@@ -402,12 +407,12 @@ const AddProducts = () => {
                                     </div>
                                   </div>
                                   {/* button */}
-                                  <div className="mb-3">
+                                  <div className="mb-3 mt-4">
                                   <button type="submit" className="btn btn-primary" disabled={loading}>
                                     {loading ? (
                                       <ClipLoader color="#fff" loading={loading} size={20} />
                                     ) : (
-                                      "Add Product"
+                                      tProduct("add_product")
                                     )}
                                   </button>
                                   </div>
@@ -433,7 +438,7 @@ const AddProducts = () => {
             {/* offcanvas header */}
             <div className="offcanvas-header">
               <h5 className="offcanvas-title" id="offcanvasAccountLabel">
-                My Account
+                {tCommon("my_account")}
               </h5>
               <button
                 type="button"
@@ -453,35 +458,35 @@ const AddProducts = () => {
                     href="/MyAccountOrder"
                   >
                     <i className="fas fa-shopping-bag me-2" />
-                    Your Orders
+                    {tCommon('your_orders')}
                   </a>
                 </li>
                 {/* nav item */}
                 <li className="nav-item">
                   <a className="nav-link " href="/MyAccountSetting">
                     <i className="fas fa-cog me-2" />
-                    Settings
+                    {tCommon('settings')}
                   </a>
                 </li>
                 {/* nav item */}
                 <li className="nav-item">
                   <a className="nav-link" href="/MyAccountAddress">
                     <i className="fas fa-map-marker-alt me-2" />
-                    Address
+                    {tCommon('address')}
                   </a>
                 </li>
                 {/* nav item */}
                 <li className="nav-item">
                   <a className="nav-link" href="/MyAcconutPaymentMethod">
                     <i className="fas fa-credit-card me-2" />
-                    Payment Method
+                    {tCommon('payment_method')}
                   </a>
                 </li>
                 {/* nav item */}
                 <li className="nav-item">
                   <a className="nav-link" href="/MyAcconutNotification">
                     <i className="fas fa-bell me-2" />
-                    Notification
+                    {tCommon('notification')}
                   </a>
                 </li>
               </ul>
@@ -493,7 +498,7 @@ const AddProducts = () => {
                   <li className="nav-item">
                     <a className="nav-link " href="/Grocery-react/">
                       <i className="fas fa-sign-out-alt me-2" />
-                      Log out
+                      {tCommon('home')}
                     </a>
                   </li>
                 </ul>

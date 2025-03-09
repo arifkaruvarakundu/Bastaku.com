@@ -2,8 +2,6 @@
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';    
-
-
 //redux
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -15,6 +13,7 @@ import { BrowserRouter as Router, Route, Routes,Navigate} from "react-router-dom
 // Components
 import Header from './Component/Header';
 import Footer from "./Component/Footer";
+import Language_selector from "./Component/Language_selector";
 // pages
 import Home from "./pages/Home";
 // About pages
@@ -127,7 +126,6 @@ const ProtectedRoute = ({ element: Component, roles, ...rest }) => {
           <Route path="/Contact" element={<Contact />} />
           <Route path="/AboutUs" element={<AboutUs />} />
           <Route path="*" element={<NotFoundPage />} />
-          
         </Routes>
         <Footer/>
       </Router>

@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import ScrollToTop from "../ScrollToTop";
 import { useDispatch} from 'react-redux';
 import { setAuthenticated } from '../../redux/authSlice';
+import { useTranslation } from "react-i18next";
 // import Grocerylogo from '../../images/Grocerylogo.png'
 
 const MyAccountSignIn = () => {
@@ -19,6 +20,8 @@ const MyAccountSignIn = () => {
   const dispatch = useDispatch()
 
   const navigate = useNavigate()
+
+  const { t } = useTranslation("signIn");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -102,10 +105,9 @@ const MyAccountSignIn = () => {
                 {/* col */}
                 <div className="col-12 col-md-6 offset-lg-1 col-lg-4 order-lg-2 order-1">
                   <div className="mb-lg-9 mb-5">
-                    <h1 className="mb-1 h2 fw-bold">Sign in to FreshCart</h1>
+                    <h1 className="mb-1 h2 fw-bold">{t("sign_in_to_freshcart")}</h1>
                     <p>
-                      Welcome back to FreshCart! Enter your email to get
-                      started.
+                    {t("welcome_back_message")}
                     </p>
                   </div>
                   <form onSubmit={handleSubmit}>
@@ -120,7 +122,7 @@ const MyAccountSignIn = () => {
                           name="email"
                           value={formData.email}
                           onChange={handleChange}
-                          placeholder="Email"
+                          placeholder={t("email_placeholder")}
                           required
                         />
                       </div>
@@ -133,7 +135,7 @@ const MyAccountSignIn = () => {
                           name="password"
                           value={formData.password}
                           onChange={handleChange}
-                          placeholder="Password"
+                          placeholder={t("password_placeholder")}
                           required
                         />
                       </div>
@@ -164,13 +166,13 @@ const MyAccountSignIn = () => {
                       <div className="col-12 d-grid">
                         {" "}
                         <button type="submit" className="btn btn-primary">
-                          Sign In
+                        {t("sign_in")}
                         </button>
                       </div>
                       {/* link */}
                       <div>
-                        Don’t have an account?{" "}
-                        <Link to="/MyAccountSignUp"> Sign Up</Link>
+                      {t("dont_have_account")}{" "}
+                        <Link to="/MyAccountSignUp">{t("sign_up")}</Link>
                       </div>
                     </div>
                   </form>

@@ -7,6 +7,7 @@ import { Line } from "react-chartjs-2";
 import styles from "../styles/ProductDetails.module.css";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 // Register ChartJS components
 ChartJS.register(CategoryScale,LinearScale,PointElement,LineElement,BarElement,ArcElement,Title,Tooltip,Legend,Filler);
@@ -32,6 +33,8 @@ const ProductDetails = () => {
   const [images,setImages] = useState([])
 
   const navigate = useNavigate()
+
+  const {t} = useTranslation('product_details')
 
   useEffect(() => {
     const loadingTimer = setTimeout(() => setIsLoading(false), 1500);
@@ -218,7 +221,7 @@ const ProductDetails = () => {
     return (
       <div className={styles.loadingContainer}>
         <DotLottieReact src="lotties/loading-dots.lottie" loop autoplay />
-        <p className={styles.loadingText}>Loading product details...</p>
+        <p className={styles.loadingText}>{t('loadingProductDetails')}</p>
       </div>
     );
   }
@@ -350,7 +353,7 @@ const ProductDetails = () => {
             </div>
           </div>
           {/* Analytics Section */}
-          <div className={styles.analyticsSection}>
+          {/* <div className={styles.analyticsSection}>
             <div className={styles.analyticsCard}>
               <h3>Product Performance</h3>
               <div className={styles.statsGrid}>
@@ -370,7 +373,7 @@ const ProductDetails = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
         {/* Right Column */}
         <div className={styles.rightColumn}>
@@ -378,16 +381,16 @@ const ProductDetails = () => {
             {/* Single Unit Price Section */}
             <div className={styles.priceSection}>
               <div className={styles.priceHeader}>
-                <span className={styles.priceLabel}>Single Unit Price</span>
+                <span className={styles.priceLabel}>{t('singleUnitPrice')}</span>
                 <div className={styles.tooltip}>
                   <Info size={16} strokeWidth={2} />
                   <span className={styles.tooltipText}>
-                    Buy now at regular price without waiting for group deal
+                    {t('buyNowAtRegularPrice')}
                   </span>
                 </div>
               </div>
               <div className={styles.priceContent}>
-                <p className={styles.singlePrice}>{product?.actual_price} KD</p>
+                <p className={styles.singlePrice}>{product?.actual_price} {t('kd')}</p>
                 {/* Quantity Selector */}
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                    <button
@@ -435,25 +438,25 @@ const ProductDetails = () => {
                     onClick={() => handleAddToCart(product)} 
                   >
                     <ShoppingCart size={16} strokeWidth={2} />
-                    Add to Cart
+                    {t('addToCart')}
                   </button>
               </div>
             </div>
             {/* Group Buying Section */}
             <div className={styles.wholesalePriceSection}>
                   <div className={styles.priceHeader}>
-                    <span className={styles.priceLabel}>Campaign Price</span>
+                    <span className={styles.priceLabel}>{t('campaignPrice')}</span>
                     <div className={styles.tooltip}>
                       <Info size={16} strokeWidth={2} />
                       <span className={styles.tooltipText}>
-                        Join the group deal to unlock wholesale prices
+                        {t('joinGroupDeal')}
                       </span>
                     </div>
                   </div>
                   <p className={styles.wholesalePrice}>
-                    {campaignPrice} KD
+                    {campaignPrice} {t("kd")}
                     <span className={styles.savingsBadge}>
-                      Save {product?.campaign_discount_percentage}%
+                      {t('save')} {product?.campaign_discount_percentage}%
                     </span>
                   </p>
                 </div>
@@ -463,12 +466,12 @@ const ProductDetails = () => {
                   <div className={styles.groupInfo}>
                     <Users className={styles.groupIcon} strokeWidth={2} />
                     <div>
-                      <p className={styles.groupText}>Active Group Campaign</p>
+                      <p className={styles.groupText}>{t('activeGroupCampaign')}</p>
                       <p className={styles.groupStats}>
                       <strong>{campaignDetails?.current_participants ?? 0}</strong>{" "}
-                        participants ·
-                        <strong>{campaignDetails.product.minimum_order_quantity_for_offer-campaignDetails.current_quantity}</strong> more to
-                        unlock campaign price
+                        {t('participants')} ·
+                        <strong>{campaignDetails.product.minimum_order_quantity_for_offer-campaignDetails.current_quantity}</strong> 
+                        {t('moreToUnlockCampaignPrice')}
                       </p>
                     </div>
                   </div>
@@ -481,13 +484,13 @@ const ProductDetails = () => {
                       />
                       <div className={styles.progressMarker}>
                         <div className={styles.progressLabel}>
-                          Current: {product?.currentQuantity}
+                          {t('current')}: {product?.currentQuantity}
                         </div>
                       </div>
                       <div className={styles.targetMarker}>
                         <div className={styles.targetTooltip}>
-                          <strong>Target: {product?.minimum_order_quantity_for_offer}</strong>
-                          <p>Minimum quantity needed for wholesale price</p>
+                          <strong>{t('target')}: {product?.minimum_order_quantity_for_offer}</strong>
+                          <p>{t('minimumQuantityNeededForWholesale')}</p>
                           <p className={styles.remaining}>
                             {product?.minimum_order_quantity_for_offer - product?.currentQuantity} more
                             to go!
@@ -503,8 +506,8 @@ const ProductDetails = () => {
               <div className={styles.createGroupBanner}>
                 <UserPlus className={styles.bannerIcon} strokeWidth={2} />
                 <div className={styles.bannerContent}>
-                  <h3>Be the First!</h3>
-                  <p>Create a group and unlock wholesale prices for everyone</p>
+                  <h3>{t('beTheFirst')}!</h3>
+                  <p>{t('createGroupAndUnlockWholesalePrices')}</p>
                   {/* <button className={styles.createGroupButton}>
                     Create Group Now
                   </button> */}
@@ -515,21 +518,21 @@ const ProductDetails = () => {
                 {
                   id: "free",
                   icon: <Shield className={styles.dealIcon} strokeWidth={2} />,
-                  title: "Start Free",
-                  description: "No upfront payment required",
+                  title: t('startFree'),
+                  description: t('noUpfrontPayment'),
                   features: [
-                    "Pay only if group deal succeeds",
-                    "Cancel anytime before deal ends",
+                    t('payIfGroupDealSucceeds'),
+                    t('cancelAnytimeBeforeDealEnds'),
                   ],
                 },
                 {
                   id: "basic",
                   icon: <Percent className={styles.dealIcon} strokeWidth={2} />,
-                  title: "Early Bird - 5% Extra Off",
-                  description: "10% upfront payment",
+                  title: t('earlyBird5Percent'),
+                  description: t('tenPercentUpfrontPayment'),
                   features: [
-                    "Lock in additional 5% discount",
-                    "Priority order processing",
+                    t('lockInAdditional5PercentDiscount'),
+                    t('priorityOrderProcessing'),
                   ],
                 },
                 {
@@ -537,11 +540,11 @@ const ProductDetails = () => {
                   icon: (
                     <Sparkles className={styles.dealIcon} strokeWidth={2} />
                   ),
-                  title: "VIP Deal - 25% Extra Off",
-                  description: "100% upfront payment",
+                  title: t('vipDeal25Percent'),
+                  description: t('hundredPercentUpfrontPayment'),
                   features: [
-                    "Maximum 25% additional savings",
-                    "VIP support & fastest delivery",
+                    t('maximum25PercentAdditionalSavings'),
+                    t('vipSupportAndFastestDelivery'),
                   ],
                 },
               ].map((option) => (
@@ -574,21 +577,21 @@ const ProductDetails = () => {
                 {
                   id: "free",
                   icon: <Shield className={styles.dealIcon} strokeWidth={2} />,
-                  title: "Join Free",
-                  description: "No upfront payment required",
+                  title: t('joinFree'),
+                  description: t('noUpfrontPayment'),
                   features: [
-                    "Pay only if group deal succeeds",
-                    "Cancel anytime before deal ends",
+                    t('payIfGroupDealSucceeds'),
+                    t('cancelAnytimeBeforeDealEnds'),
                   ],
                 },
                 {
                   id: "basic",
                   icon: <Percent className={styles.dealIcon} strokeWidth={2} />,
-                  title: "Early Bird - 5% Extra Off",
-                  description: "10% upfront payment",
+                  title: t('earlyBird5Percent'),
+                  description: t('tenPercentUpfrontPayment'),
                   features: [
-                    "Lock in additional 5% discount",
-                    "Priority order processing",
+                    t('lockInAdditional5PercentDiscount'),
+                    t("priorityOrderProcessing"),
                   ],
                 },
                 {
@@ -596,11 +599,11 @@ const ProductDetails = () => {
                   icon: (
                     <Sparkles className={styles.dealIcon} strokeWidth={2} />
                   ),
-                  title: "VIP Deal - 25% Extra Off",
-                  description: "10% upfront payment",
+                  title: t('vipDeal25Percent'),
+                  description: t('hundredPercentUpfrontPayment'),
                   features: [
-                    "Maximum 25% additional savings",
-                    "VIP support & fastest delivery",
+                    t("maximum25PercentAdditionalSavings"),
+                    t("vipSupportAndFastestDelivery"),
                   ],
                 },
               ].map((option) => (
@@ -628,7 +631,7 @@ const ProductDetails = () => {
             {/* Quantity Selector */}
             <div className={styles.quantitySelector}>
               <span className={styles.quantityLabel}>
-                Group Order Quantity:
+                {t("groupOrderQuantity")}:
               </span>
               <div className={styles.quantityControls}>
                 <button
@@ -676,28 +679,28 @@ const ProductDetails = () => {
               onClick={handleButtonClick}
             >
               {isAlreadyJoined
-                ? "Already Joined"
+                ? t('already_joined')
                 : !product?.is_in_campaign
                 ? selectedPaymentOption === "free"
-                  ? `Start Group Deal (${quantity} units)`
+                  ? t('start_group_deal', { quantity })
                   : selectedPaymentOption === "basic"
-                  ? `Start with 5% Extra Discount (${quantity} units)`
+                  ? t('start_with_5_percent_extra_discount', { quantity })
                   : selectedPaymentOption === "premium"
-                  ? `Start with 25% Extra Discount (${quantity} units)`
-                  : "Select a Payment Option"
+                  ? t('start_with_25_percent_extra_discount', { quantity })
+                  : t('select_payment_option')
                 : selectedPaymentOption === "free"
-                ? `Join Group Deal (${quantity} units)`
+                ? t('join_group_deal', { quantity })
                 : selectedPaymentOption === "basic"
-                ? `Join with 5% Extra Discount (${quantity} units)`
+                ? t('join_with_5_percent_extra_discount', { quantity })
                 : selectedPaymentOption === "premium"
-                ? `Join with 25% Extra Discount (${quantity} units)`
-                : "Select a Payment Option"}
+                ? t('join_with_25_percent_extra_discount', { quantity })
+                : t('select_payment_option')}
             </button>
           </div>
         </div>
       </div>
        ) : (
-        <p>Loading...</p>
+        <p>{t('loading')}</p>
       )}
     </div>
   );

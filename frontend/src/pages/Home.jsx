@@ -1,5 +1,5 @@
 import slider1 from "../images/slide-1.jpg";
-import abouticon from "../images/about-icons-1.svg";
+// import abouticon from "../images/about-icons-1.svg";
 import slider2 from "../images/slider-2.jpg";
 import adbanner1 from "../images/ad-banner-1.jpg";
 import adbanner2 from "../images/ad-banner-2.jpg";
@@ -10,6 +10,8 @@ import map from "../images/map.png";
 import iphone from "../images/iphone-2.png";
 import googleplay from "../images/googleplay-btn.svg";
 import appstore from "../images/appstore-btn.svg";
+import { useTranslation } from "react-i18next";
+import { Trans } from 'react-i18next';
 // import bannerdeal from "../images/banner-deal1.jpg";
 // import product11 from "../images/product-img-11.jpg";
 // import product12 from "../images/product-img-12.jpg";
@@ -40,10 +42,15 @@ import { Slide, Zoom } from "react-awesome-reveal";
 import { useEffect } from "react";
 // import { PulseLoader } from 'react-spinners';
 import { MagnifyingGlass } from "react-loader-spinner";
+import i18n from "../i18n";
 const Home = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
+
+  const { t } = useTranslation();
+
+  console.log("language",i18n.language)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -280,17 +287,16 @@ const Home = () => {
                         >
                           <div className="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center">
                             <span className="badge text-bg-warning">
-                              Opening Sale Discount 50%
+                              <Trans>opening_sale</Trans>
                             </span>
                             <h2 className="text-dark display-5 fw-bold mt-4">
-                              SuperMarket Daily <br /> Fresh Grocery
+                              {t("supermarket")}
                             </h2>
                             <p className="lead">
-                              Introduced a new model for online grocery shopping
-                              and convenient home delivery.
+                              <Trans>grocery_desc</Trans>
                             </p>
                             <Link to="/Shop" className="btn btn-dark mt-3" style={{marginLeft: "140px"}}>
-                              Shop Now{" "}
+                              <Trans>shop_now</Trans>
                               <i className="feather-icon icon-arrow-right ms-1" />
                             </Link>
                           </div>
@@ -307,7 +313,7 @@ const Home = () => {
                         >
                           <div className="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center">
                             <span className="badge text-bg-warning">
-                              Free Shipping - orders over $100
+                              <Trans></Trans>
                             </span>
                             <h2 className="text-dark display-5 fw-bold mt-4">
                               Free Shipping on <br /> orders over{" "}
@@ -353,27 +359,27 @@ const Home = () => {
                 </div>
               </section>
             </>
-            <>
-              <section className="mt-8">
+            {/* <> */}
+              {/* <section className="mt-8"> */}
                 {/* contianer */}
-                <div className="container ">
-                  <div className="row">
+                {/* <div className="container ">
+                  <div className="row"> */}
                     {/* col */}
-                    <Slide direction="down">
-                      <div className="col-12">
+                    {/* <Slide direction="down">
+                      <div className="col-12"> */}
                         {/* cta */}
-                        <div className="bg-light d-lg-flex justify-content-between align-items-center py-6 py-lg-3 px-8 rounded-3 text-center text-lg-start">
+                        {/* <div className="bg-light d-lg-flex justify-content-between align-items-center py-6 py-lg-3 px-8 rounded-3 text-center text-lg-start"> */}
                           {/* img */}
-                          <div className="d-lg-flex align-items-center">
+                          {/* <div className="d-lg-flex align-items-center">
                             <img
                               src={abouticon}
                               alt="about-icon"
                               className="img-fluid"
-                            />
+                            /> */}
                             {/* text */}
-                            <div className="ms-lg-4">
+                            {/* <div className="ms-lg-4">
                               <h1 className="fs-2 mb-1">
-                                Welcome to Bastaku
+                                <Trans>welcome_bastaku</Trans>
                               </h1>
                               <span>
                                 Download the app get free food &amp;{" "}
@@ -382,9 +388,9 @@ const Home = () => {
                               </span>
                             </div>
                           </div>
-                          <div className="mt-3 mt-lg-0">
+                          <div className="mt-3 mt-lg-0"> */}
                             {/* btn */}
-                            <Link to="#" className="btn btn-dark">
+                            {/* <Link to="#" className="btn btn-dark">
                               Download Bastaku App
                             </Link>
                           </div>
@@ -394,7 +400,7 @@ const Home = () => {
                   </div>
                 </div>
               </section>
-            </>
+            </> */}
             <>
               {/* section */}
               <section className="mt-8">
@@ -427,7 +433,8 @@ const Home = () => {
                                 </span>
                               </div>
                               <Link to="/Shop" className="btn btn-dark">
-                                Shop Now
+                              <Trans>shop_now</Trans>
+                                
                               </Link>
                             </div>
                             {/* Banner Content */}
@@ -458,7 +465,7 @@ const Home = () => {
                                 the fruity way
                               </p>
                               <Link to="/Shop" className="btn btn-dark mt-2">
-                                Shop Now
+                              <Trans>shop_now</Trans>
                               </Link>
                             </div>
                           </div>
@@ -488,7 +495,7 @@ const Home = () => {
                                 summer today
                               </p>
                               <Link to="/Shop" className="btn btn-dark">
-                                Shop Now
+                              <Trans>shop_now</Trans>
                               </Link>
                             </div>
                           </div>
@@ -510,7 +517,7 @@ const Home = () => {
                         {/* heading */}
                         <div className="section-head text-center mt-8">
                           <h3 className="h3style" data-title="Shop Popular Categories">
-                            Shop Popular Categories
+                            <Trans>shop_popular_categories</Trans>
                           </h3>
                           <div className="wt-separator bg-primarys"></div>
                           <div className="wt-separator2 bg-primarys"></div>
@@ -573,7 +580,7 @@ const Home = () => {
                                 Off
                               </p>
                               <Link to="/Shop" className="btn btn-dark">
-                                Shop Now
+                              <Trans>shop_now</Trans>
                               </Link>
                             </div>
                           </div>
@@ -600,7 +607,7 @@ const Home = () => {
                                 Off
                               </p>
                               <Link to="/Shop" className="btn btn-dark">
-                                Shop Now
+                                <Trans>shop_now</Trans>
                               </Link>
                             </div>
                           </div>
@@ -617,7 +624,7 @@ const Home = () => {
             <>
               {/* cta section */}
               <section>
-                <div className="coming-soon">Coming soon...</div>
+                <div className="coming-soon"><Trans>coming_soon</Trans></div>
                 <div
                   className="container"
                   style={{
@@ -633,10 +640,9 @@ const Home = () => {
                         <div className="mb-6">
                           <div className="mb-7">
                             {/* heading */}
-                            <h1>Get the Bastaku app</h1>
+                            <h1><Trans>get_app</Trans></h1>
                             <h5 className="mb-0">
-                              We will send you a link, open it on your phone to
-                              download the app.
+                              <Trans>get_app_description</Trans>
                             </h5>
                           </div>
                           <div className="mb-5">

@@ -1,0 +1,21 @@
+{
+    "shop_cart": "سلة التسوق",
+    "per_unit": "/ وحدة",
+    "remove": "إزالة",
+    "continue_shopping": "متابعة التسوق",
+    "cart_empty": "سلة التسوق فارغة.",
+    "summary": "ملخص",
+    "item_subtotal": "المجموع الفرعي للعناصر",
+    "go_to_checkout": "الانتقال إلى الدفع",
+    "checkout": "الدفع",
+    "delivery_address": "عنوان التوصيل",
+    "change_address": "تغيير العنوان",
+    "address": "العنوان",
+    "zip_code": "الرمز البريدي:",
+    "no_address_found": "لم يتم العثور على عنوان. يرجى إضافة عنوان.",
+    "order_details": "تفاصيل الطلب",
+    "total": "المجموع",
+    "currency_kd": "دينار كويتي",
+    "place_order": "إتمام الطلب"
+  }
+  

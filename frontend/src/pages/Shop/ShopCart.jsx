@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MagnifyingGlass } from "react-loader-spinner";
 import ScrollToTop from "../ScrollToTop"; // Assuming you have a ScrollToTop component
+import { useTranslation } from "react-i18next";
 
 const ShopCart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -9,11 +10,12 @@ const ShopCart = () => {
   const [loaderStatus, setLoaderStatus] = useState(true);
 
   const navigate = useNavigate();
+  const {t} = useTranslation("cart_check")
 
   useEffect(() => {
     const fetchCart = () => {
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      console.log("cart",cart)
+      
       setCartItems(cart);
       calculateTotals(cart);
       setLoaderStatus(false);
@@ -76,7 +78,7 @@ const ShopCart = () => {
               <div className="row">
                 <div className="col-12">
                   <div className="card py-1 border-0 mb-8">
-                    <h1 className="fw-bold">Shop Cart</h1>
+                    <h1 className="fw-bold">{t("shop_cart")}</h1>
                     {/* <p className="mb-0">Shopping in 382480</p> */}
                   </div>
                 </div>
@@ -114,7 +116,7 @@ const ShopCart = () => {
                                   <h6 className="mb-0">{item.product.product_name}</h6>
                                   <span>
                                     <small className="text-muted">
-                                    ${Number(item.product.actual_price).toFixed(2)} / unit
+                                    {t("currency_kd")}: {Number(item.product.actual_price).toFixed(2)} {t("per_unit")}
                                     </small>
                                   </span>
                                   <div className="mt-2 small">
@@ -142,7 +144,7 @@ const ShopCart = () => {
                                           <line x1={14} y1={11} x2={14} y2={17} />
                                         </svg>
                                       </span>
-                                      <span className="text-muted">Remove</span>
+                                      <span className="text-muted">{t("remove")}</span>
                                     </Link>
                                   </div>
                                 </div>
@@ -181,7 +183,7 @@ const ShopCart = () => {
                                 </div>
                                 <div className="col-2 text-lg-end text-start text-md-end col-md-2">
                                   <span className="fw-bold">
-                                    ${item.product.actual_price * item.quantity}
+                                    {t("currency_kd")}: {item.product.actual_price * item.quantity}
                                   </span>
                                 </div>
                               </div>
@@ -190,7 +192,7 @@ const ShopCart = () => {
                         </ul>
                         <div className="d-flex justify-content-between mt-4">
                           <Link to="/Shop" className="btn btn-primary">
-                            Continue Shopping
+                            {t("continue_shopping")}
                           </Link>
                           {/* <Link to="#!" className="btn btn-dark">
                             Update Cart
@@ -198,20 +200,20 @@ const ShopCart = () => {
                         </div>
                       </>
                     ) : (
-                      <p>Your cart is empty.</p>
+                      <p>{t("cart_empty")}</p>
                     )}
                   </div>
                 </div>
                 <div className="col-12 col-lg-4 col-md-5">
                   <div className="mb-5 card mt-6">
                     <div className="card-body p-6">
-                      <h2 className="h5 mb-4">Summary</h2>
+                      <h2 className="h5 mb-4">{t("summary")}</h2>
                       <ul className="list-group list-group-flush">
                         <li className="list-group-item d-flex justify-content-between align-items-start">
                           <div className="me-auto">
-                            <div>Item Subtotal</div>
+                            <div>{t("item_subtotal")} </div>
                           </div>
-                          <span>${totalPrice.toFixed(2)}</span>
+                          <span> {t("currency_kd")}: {totalPrice.toFixed(2)}</span>
                         </li>
                       </ul>
                       <div className="d-grid mb-1 mt-4">
@@ -219,15 +221,15 @@ const ShopCart = () => {
                           className="btn btn-primary btn-lg d-flex justify-content-between align-items-center"
                           onClick={handleCheckout}
                         >
-                          Go to Checkout <span className="fw-bold">${totalPrice.toFixed(2)}</span>
+                          {t("go_to_checkout")} <span className="fw-bold">{t("currency_kd")}: {totalPrice.toFixed(2)}</span>
                         </button>
                       </div>
                       <p>
-                        <small>
+                        {/* <small>
                           By placing your order, you agree to the{" "}
                           <Link to="#!">Terms of Service</Link> and{" "}
                           <Link to="#!">Privacy Policy.</Link>
-                        </small>
+                        </small> */}
                       </p>
                     </div>
                   </div>

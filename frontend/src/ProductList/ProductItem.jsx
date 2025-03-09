@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Link} from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
+import {Trans} from "react-i18next";
 
 const ProductItem = () => {
 
@@ -63,7 +64,7 @@ const ProductItem = () => {
             <div className="col-12 mb-6">
               <div className="section-head text-center mt-8">
                 <h3 className="h3style" data-title="Popular Products">
-                  Popular Products
+                  <Trans i18nKey="popular_products" ns="productItem">Popular Products</Trans>
                 </h3>
                 <div className="wt-separator bg-primarys"></div>
                 <div className="wt-separator2 bg-primarys"></div>
@@ -79,7 +80,7 @@ const ProductItem = () => {
                 <div className="text-center position-relative">
                   {product.is_in_campaign && (
                     <div className="position-absolute top-0 start-0">
-                      <span className="badge bg-danger">Campaign</span>
+                      <span className="badge bg-danger"><Trans i18nKey="campaign" ns="productItem">Campaign</Trans></span>
                     </div>
                   )}
                   <a href="#!">
@@ -157,9 +158,10 @@ const ProductItem = () => {
                 </div> */}
                 <div className="d-flex justify-content-between align-items-center mt-3">
                   <div>
-                    <span className="text-dark">KD : {product.actual_price}</span>{" "}
+                    <span className="text-dark">Price: {product.actual_price} KD</span>{" "}
+                    <br/>
                       <span className="text-decoration-line-through text-muted">
-                      KD:{((Number(product.actual_price) + (Number(product.actual_price) * 10) / 100).toFixed(2))}
+                       KD:{((Number(product.actual_price) + (Number(product.actual_price) * 10) / 100).toFixed(2))}
                       </span>
                   </div>
                   <div>
@@ -183,7 +185,7 @@ const ProductItem = () => {
                         <line x1={12} y1={5} x2={12} y2={19} />
                         <line x1={5} y1={12} x2={19} y2={12} />
                       </svg>{" "}
-                      Add
+                      <Trans i18nKey="add" ns="productItem">Add</Trans>
                     </a>
                   </div>
                 </div>

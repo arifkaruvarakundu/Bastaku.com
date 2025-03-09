@@ -1,0 +1,18 @@
+{
+    "get_start_shopping": "ابدأ التسوق",
+    "welcome_message": "مرحبًا بك في فريش كارت! أدخل بريدك الإلكتروني للبدء.",
+    "email_placeholder": "البريد الإلكتروني",
+    "password_placeholder": "كلمة المرور",
+    "confirm_password": "تأكيد كلمة المرور",
+    "sign_in": "تسجيل الدخول",
+    "sign_up": "سجل الآن",
+    "company_name": "اسم الشركة",
+    "registration_number": "رقم التسجيل",
+    "email": "البريد الإلكتروني",
+    "mobile_number": "رقم الهاتف المحمول (رقم الواتساب)",
+    "register": "تسجيل",
+    "already_have_account": "هل لديك حساب بالفعل؟",
+    "first_name": "الاسم الأول",
+    "last_name": "اسم العائلة"
+    
+  }

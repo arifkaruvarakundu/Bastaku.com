@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import ScrollToTop from "../ScrollToTop";
 import Swal from 'sweetalert2';
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const MyAccountSignUp = () => {
 
@@ -21,6 +22,8 @@ const MyAccountSignUp = () => {
 
   const navigate = useNavigate()
   const dispatch = useDispatch();
+
+  const {t} = useTranslation("signup")
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -118,8 +121,8 @@ const MyAccountSignUp = () => {
               {/* col */}
               <div className="col-12 col-md-6 offset-lg-1 col-lg-4 order-lg-2 order-1">
                 <div className="mb-lg-9 mb-5">
-                  <h1 className="mb-1 h2 fw-bold">Get Start Shopping</h1>
-                  <p>Welcome to FreshCart! Enter your email to get started.</p>
+                  <h1 className="mb-1 h2 fw-bold">{t("get_start_shopping")}</h1>
+                  <p>{t("welcome_message")}</p>
                 </div>
                 {/* form */}
                 <form onSubmit={handleSubmit}>
@@ -132,7 +135,7 @@ const MyAccountSignUp = () => {
                           className="form-control"
                           id="first_name"
                           name="first_name"
-                          placeholder="First name"
+                          placeholder={t("first_name")}
                           value={formData.first_name}
                           onChange={handleChange}
                           required
@@ -145,7 +148,7 @@ const MyAccountSignUp = () => {
                         className="form-control"
                         id="last_name"
                         name="last_name"
-                        placeholder="Last name"
+                        placeholder={t("last_name")}
                         value={formData.last_name}
                         onChange={handleChange}
                         aria-label="Last name"
@@ -159,7 +162,7 @@ const MyAccountSignUp = () => {
                         className="form-control"
                         id="email"
                         name="email"
-                        placeholder="Email"
+                        placeholder={t("email_placeholder")}
                         value={formData.email}
                         onChange={handleChange}
                         required
@@ -171,7 +174,7 @@ const MyAccountSignUp = () => {
                         className="form-control"
                         id="password"
                         name="password"
-                        placeholder="Password"
+                        placeholder={t("password_placeholder")}
                         value={formData.password}
                         onChange={handleChange}
                         required
@@ -184,7 +187,7 @@ const MyAccountSignUp = () => {
                         className="form-control"
                         id="confirmPassword"
                         name="confirmPassword"
-                        placeholder="Confirm Password"
+                        placeholder={t("confirm_password")}
                         value={formData.confirmPassword}
                         onChange={handleChange}
                         required
@@ -194,20 +197,20 @@ const MyAccountSignUp = () => {
                     <div className="col-12 d-grid">
                       {" "}
                       <button type="submit" className="btn btn-primary">
-                        Register
+                        {t("register")}
                       </button>
                       <span className="navbar-text">
-                          Already have an account?{" "}
-                          <Link to="/MyAccountSignIn">Sign in</Link>
+                          {t("already_have_account")}{" "}
+                          <Link to="/MyAccountSignIn">{t("sign_in")}</Link>
                         </span>
                     </div>
                     {/* text */}
                     <p>
-                      <small>
+                      {/* <small>
                         By continuing, you agree to our{" "}
                         <Link to="#!"> Terms of Service</Link> &amp;{" "}
                         <Link to="#!">Privacy Policy</Link>
-                      </small>
+                      </small> */}
                     </p>
                   </div>
                 </form>

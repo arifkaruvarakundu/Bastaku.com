@@ -9,6 +9,7 @@ import visa from "../../images/visa.svg";
 import discover from "../../images/discover.svg";
 import ScrollToTop from "../ScrollToTop";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const MyAcconutPaymentMethod = () => {
   // loading
@@ -17,6 +18,10 @@ const MyAcconutPaymentMethod = () => {
    const [message, setMessage] = useState(null);
    const [error, setError] = useState(null);
    const [bankDetails, setBankDetails] = useState(null);
+
+   const{t: tCommon} = useTranslation('accounts_common')
+   const{t: tAccounts} = useTranslation('accounts_others')
+
   // State for form data
   const [bankData, setbankData] = useState({
     beneficiary_name: "",
@@ -99,7 +104,7 @@ const MyAcconutPaymentMethod = () => {
             <div className="col-12">
               <div className="p-6 d-flex justify-content-between align-items-center d-md-none">
                 {/* heading */}
-                <h3 className="fs-5 mb-0">Account Settings</h3>
+                <h3 className="fs-5 mb-0">{tCommon('account_settings')}</h3>
                 {/* button */}
                 <button
                   className="btn btn-outline-gray-400 text-muted d-md-none"
@@ -120,31 +125,31 @@ const MyAcconutPaymentMethod = () => {
                   <li className="nav-item">
                     <Link className="nav-link" to="/MyAccountOrder">
                       <i className="fas fa-shopping-bag me-2" />
-                      Your Orders
+                      {tCommon("your_orders")}
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/MyAccountSetting">
                       <i className="fas fa-cog me-2" />
-                      Settings
+                      {tCommon("settings")}
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/MyAccountAddress">
                       <i className="fas fa-map-marker-alt me-2" />
-                      Address
+                      {tCommon("address")}
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link active" to="/MyAcconutPaymentMethod">
                       <i className="fas fa-credit-card me-2" />
-                      Payment Method
+                      {tCommon("payment_method")}
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/MyAcconutNotification">
                       <i className="fas fa-bell me-2" />
-                      Notification
+                      {tCommon("notification")}
                     </Link>
                   </li>
 
@@ -153,19 +158,19 @@ const MyAcconutPaymentMethod = () => {
                       <li className="nav-item">
                         <Link className="nav-link" to="/AddProducts">
                           <i className="bi bi-plus-circle" style={{ marginRight: "8px" }} />
-                          Add Products
+                          {tCommon("add_products")}
                         </Link>
                       </li>
                       <li className="nav-item">
                         <Link className="nav-link" to="/AddedProducts">
                           <i className="bi bi-card-list" style={{ marginRight: "8px" }} />
-                          Added Products
+                          {tCommon("added_products")}
                         </Link>
                       </li>
                       <li className="nav-item">
                     <Link className="nav-link" to="/WholesalerCampaigns">
                       <i className="bi bi-collection-fill" style={{ marginRight: "8px" }} />
-                      Campaigns
+                      {tCommon("campaigns")}
                     </Link>
                   </li>
                     </ul>
@@ -174,14 +179,14 @@ const MyAcconutPaymentMethod = () => {
                   <li className="nav-item">
                     <Link className="nav-link" to="/MyCampaigns">
                       <i className="bi bi-collection-fill" style={{ marginRight: "8px" }} />
-                      Campaigns
+                      {tCommon("campaigns")}
                     </Link>
                   </li>
                   )}
                   <li className="nav-item">
                     <Link className="nav-link" to="/Grocery-react/">
                       <i className="fas fa-sign-out-alt me-2" />
-                      Home
+                      {tCommon("home")}
                     </Link>
                   </li>
                 </ul>
@@ -208,14 +213,14 @@ const MyAcconutPaymentMethod = () => {
                     {localStorage.getItem("company_name") ? (
                       <>
                         <div className="d-flex justify-content-between mb-6 align-items-center">
-                          <h2 className="mb-0">Bank Details</h2>
+                          <h2 className="mb-0">{tAccounts('bank_details')}</h2>
                           <Link
                             to="#"
                             className="btn btn-outline-primary"
                             data-bs-toggle="modal"
                             data-bs-target="#addAddressModal"
                           >
-                            Add Bank Details
+                            {tAccounts('add_bank_details')}
                           </Link>
                         </div>
                         {
@@ -225,11 +230,11 @@ const MyAcconutPaymentMethod = () => {
                               <li key={index} className="list-group-item py-4 px-0">
                                 <div className="d-flex justify-content-between">
                                   <div>
-                                    <h5 className="mb-1">Bank Name: {bank.bank_name}</h5>
-                                    <p className="mb-0 small">Beneficiary Name: {bank.beneficiary_name}</p>
-                                    <p className="mb-0 small">Account Number: {bank.account_number_iban}</p>
-                                    <p className="mb-0 small">SWIFT Code: {bank.swift_code}</p>
-                                    <p className="mb-0 small">Branch Address: {bank.bank_address}</p>
+                                    <h5 className="mb-1">{tAccounts('bank_name')}: {bank.bank_name}</h5>
+                                    <p className="mb-0 small">{tAccounts('beneficiary_name')}: {bank.beneficiary_name}</p>
+                                    <p className="mb-0 small">{tAccounts('account_number')}: {bank.account_number_iban}</p>
+                                    <p className="mb-0 small">{tAccounts('swift_code')}: {bank.swift_code}</p>
+                                    <p className="mb-0 small">{tAccounts('branch_address')}: {bank.bank_address}</p>
                                     <div>
                                       <br />
                                       {/* <Link
@@ -247,7 +252,7 @@ const MyAcconutPaymentMethod = () => {
                             ))}
                           </ul>
                         ) : (
-                          <p className="text-muted">No bank details found.</p>
+                          <p className="text-muted">{tAccounts('no_bank_details_found')}.</p>
                         )
                       }
                       </>
@@ -344,10 +349,10 @@ const MyAcconutPaymentMethod = () => {
                     <div>
                       {/* heading */}
                       <h5 className="h6 mb-1" id="addAddressModalLabel">
-                        Add Bank Details
+                      {tAccounts('add_bank_details')}
                       </h5>
                       <p className="small mb-0">
-                        Please enter your bank details.
+                      {tAccounts('enter_bank_details')}
                       </p>
                     </div>
                     <div>
@@ -371,7 +376,7 @@ const MyAcconutPaymentMethod = () => {
                         className="form-control"
                         id="beneficiary_name"
                         name="beneficiary_name"
-                        placeholder="Beneficiary Name"
+                        placeholder={tAccounts('beneficiary_name')}
                         aria-label="Beneficiary Name"
                         value={bankData.beneficiary_name}
                         onChange={handleChange}
@@ -385,7 +390,7 @@ const MyAcconutPaymentMethod = () => {
                         className="form-control"
                         id="bank_name"
                         name="bank_name"
-                        placeholder="Bank name"
+                        placeholder={tAccounts('bank_name')}
                         aria-label="Bank name"
                         value={bankData.bank_name}
                         onChange={handleChange}
@@ -400,7 +405,7 @@ const MyAcconutPaymentMethod = () => {
                         className="form-control"
                         id="bank_address"
                         name="bank_address"
-                        placeholder="Bank address"
+                        placeholder={tAccounts('branch_address')}
                         aria-label="Bank address"
                         value={bankData.bank_address}
                         onChange={handleChange}
@@ -430,7 +435,7 @@ const MyAcconutPaymentMethod = () => {
                         id="swift_code"
                         name="swift_code"
                         className="form-control"
-                        placeholder="Swift Code"
+                        placeholder={tAccounts('swift_code')}
                         aria-label="Swift Code"
                         value={bankData.swift_code}
                         onChange={handleChange}
@@ -442,10 +447,10 @@ const MyAcconutPaymentMethod = () => {
                         className="btn btn-outline-primary"
                         data-bs-dismiss="modal"
                       >
-                        Cancel
+                        {tAccounts('cancel')}
                       </button>
                       <button className="btn btn-primary" type="submit">
-                        Save Bank Details
+                      {tAccounts('save_bank_details')}
                       </button>
                     </div>
                   </div>
@@ -525,7 +530,7 @@ const MyAcconutPaymentMethod = () => {
                   <li className="nav-item">
                     <a className="nav-link " href="/Grocery-react/">
                       <i className="fas fa-sign-out-alt me-2" />
-                      Log out
+                      Home
                     </a>
                   </li>
                 </ul>

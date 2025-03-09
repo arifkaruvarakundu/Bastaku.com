@@ -3,6 +3,7 @@ import { Link,useLocation, useNavigate} from "react-router-dom";
 import axios from "axios";
 import { MagnifyingGlass } from "react-loader-spinner";
 import ScrollToTop from "../ScrollToTop";
+import { useTranslation } from "react-i18next";
 
 const ShopCheckOut = () => {
   // loading
@@ -23,7 +24,7 @@ const ShopCheckOut = () => {
     });
 
   const navigate = useNavigate();
-
+  const {t} = useTranslation('cart_check')
 
   // Simulate API call to fetch addresses
   useEffect(() => {
@@ -144,7 +145,7 @@ const ShopCheckOut = () => {
                       <div>
                         <div className="mb-8">
                           {/* text */}
-                          <h1 className="fw-bold mb-0">Checkout</h1>
+                          <h1 className="fw-bold mb-0">{t("checkout")}</h1>
                           {/* <p className="mb-0">
                             Already have an account? Click here to{" "}
                             <Link to="/MyAccountSignIn">Sign in</Link>.
@@ -175,7 +176,7 @@ const ShopCheckOut = () => {
                                 aria-controls="flush-collapseOne"
                               >
                                 <i className="feather-icon icon-map-pin me-2 text-muted" />
-                                Delivery address
+                                {t("delivery_address")}
                               </Link>
                               {/* btn */}
                               <Link
@@ -184,7 +185,7 @@ const ShopCheckOut = () => {
                                 data-bs-toggle="modal"
                                 data-bs-target="#addAddressModal"
                               >
-                                Change address{" "}
+                                {t("change_address")}{" "}
                               </Link>
                               {/* collapse */}
                             </div>
@@ -221,7 +222,7 @@ const ShopCheckOut = () => {
                                                                       {/* Address Card */}
                                                                       <div className="border p-6 rounded-3">
                                                                         {/* Address Title */}
-                                                                        <h5 className="text-dark fw-semi-bold">Address</h5>
+                                                                        <h5 className="text-dark fw-semi-bold">{t("address")}</h5>
                                       
                                                                         {/* Address Details */}
                                                                         {!localStorage.getItem('company_name') && (
@@ -232,7 +233,7 @@ const ShopCheckOut = () => {
                                                                         <p className="mb-6">
                                                                           {userDetails.street_address}
                                                                           <br />
-                                                                          {userDetails.city}<span>, ZIP code:</span> {userDetails.zipcode}
+                                                                          {userDetails.city}<span>, {t("zip_code")}:</span> {userDetails.zipcode}
                                                                           <br />
                                                                           {userDetails.country}
                                                                           <br />
@@ -264,7 +265,7 @@ const ShopCheckOut = () => {
                                                                   ) : (
                                                                     <div className="col-12">
                                                                       {/* Display if no address is found */}
-                                                                      <p>No address found. Please add one.</p>
+                                                                      <p>{t("no_address_found")}</p>
                                                                     </div>
                                                                   )}
                                       
@@ -2285,7 +2286,7 @@ const ShopCheckOut = () => {
                         
                           <div  className="card shadow-sm">
                             <h5 className="px-6 py-4 bg-transparent mb-0">
-                              Order Details
+                              {t("order_details")}
                             </h5>
                             
                             <ul className="list-group list-group-flush">
@@ -2316,15 +2317,15 @@ const ShopCheckOut = () => {
                                     <span>{item.product.actual_price}</span>
                                   </div>
                                   <div className="col-3 text-lg-end text-start text-md-end col-md-3">
-                                    <span className="fw-bold">{(item.quantity * parseFloat(item.product.actual_price)).toFixed(2)} KD</span>
+                                    <span className="fw-bold">{(item.quantity * parseFloat(item.product.actual_price)).toFixed(2)} {t("currency_kd")}</span>
                                   </div>
                                 </div>
                               </li>
                               ))}
                               <li className="list-group-item px-4 py-3">
                                 <div className="d-flex align-items-center justify-content-between fw-bold">
-                                  <div>Total</div>
-                                  <div>{calculateSubtotal()} KD</div>
+                                  <div>{t("total")}</div>
+                                  <div>{calculateSubtotal()} {t("currency_kd")}</div>
                                 </div>
                                 <div>
                                 <button
@@ -2346,7 +2347,7 @@ const ShopCheckOut = () => {
                                     e.target.style.backgroundColor = '#28a745'; // Revert to original green
                                   }}
                                 >
-                                  Place order
+                                  {t("place_order")}
                                 </button>
                               </div>
                               </li>

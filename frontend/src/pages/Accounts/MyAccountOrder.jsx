@@ -4,12 +4,17 @@ import axios from "axios";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { MagnifyingGlass } from "react-loader-spinner";
 import ScrollToTop from "../ScrollToTop";
+import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 
 const MyAccountOrder = () => {
   // loading
   const [loaderStatus, setLoaderStatus] = useState(true);
   const [orders, setOrders] = useState([]);
   const [campaignOrders, setCampaignOrders] = useState([]);
+
+  const {t: tCommon} = useTranslation('accounts_common')
+  const {t: tAccounts} = useTranslation('accounts_others')
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -93,7 +98,7 @@ const MyAccountOrder = () => {
               <div className="col-12">
                 <div className="p-6 d-flex justify-content-between align-items-center d-md-none">
                   {/* heading */}
-                  {/* <h3 className="fs-5 mb-0">Account Settings</h3> */}
+                  <h3 className="fs-5 mb-0">{tCommon('account_settings')}</h3>
                   {/* button */}
                   <button
                     className="btn btn-outline-gray-400 text-muted d-md-none"
@@ -119,35 +124,35 @@ const MyAccountOrder = () => {
                         to="/MyAccountOrder"
                       >
                         <i className="fas fa-shopping-bag me-2" />
-                        Your Orders
+                        {tCommon('your_orders')}
                       </Link>
                     </li>
                     {/* nav item */}
                     <li className="nav-item">
                       <Link className="nav-link" to="/MyAccountSetting">
                         <i className="fas fa-cog me-2" />
-                        Settings
+                        {tCommon('settings')}
                       </Link>
                     </li>
                     {/* nav item */}
                     <li className="nav-item">
                       <Link className="nav-link" to="/MyAccountAddress">
                         <i className="fas fa-map-marker-alt me-2" />
-                        Address
+                        {tCommon('address')}
                       </Link>
                     </li>
                     {/* nav item */}
                     <li className="nav-item">
                       <Link className="nav-link" to="/MyAcconutPaymentMethod">
                         <i className="fas fa-credit-card me-2" />
-                        Payment Method
+                        {tCommon('payment_method')}
                       </Link>
                     </li>
                     {/* nav item */}
                     <li className="nav-item">
                       <Link className="nav-link" to="/MyAcconutNotification">
                         <i className="fas fa-bell me-2" />
-                        Notification
+                        {tCommon('notification')}
                       </Link>
                     </li>
                     {/* nav item */}
@@ -155,7 +160,7 @@ const MyAccountOrder = () => {
                       <li className="nav-item">
                         <Link className="nav-link" to="/AddProducts">
                           <i className="bi bi-plus-circle" style={{ marginRight: '8px' }}/>
-                          Add Products
+                          {tCommon('add_products')}
                         </Link>
                       </li>
                     )}
@@ -164,13 +169,13 @@ const MyAccountOrder = () => {
                       <li className="nav-item">
                       <Link className="nav-link" to="/AddedProducts">
                         <i className="bi bi-card-list " style={{ marginRight: '8px' }}/>
-                          Added Products
+                        {tCommon('added_products')}
                       </Link>
                       </li>
                       <li className="nav-item">
                     <Link className="nav-link" to="/WholesalerCampaigns">
                     <i className="bi bi-collection-fill" style={{ marginRight: '8px' }}/>
-                      Campaigns
+                    {tCommon('campaigns')}
                     </Link>
                     </li> 
                       </>
@@ -180,7 +185,7 @@ const MyAccountOrder = () => {
                     <li className="nav-item">
                     <Link className="nav-link" to="/MyCampaigns">
                     <i className="bi bi-collection-fill" style={{ marginRight: '8px' }}/>
-                      Campaigns
+                    {tCommon('campaigns')}
                     </Link>
                     </li>    
                     )}                 
@@ -188,7 +193,7 @@ const MyAccountOrder = () => {
                     <li className="nav-item">
                       <Link className="nav-link " to="/Grocery-react/">
                         <i className="fas fa-sign-out-alt me-2" />
-                        Home
+                        {tCommon('home')}
                       </Link>
                     </li>
                   </ul>
@@ -216,7 +221,7 @@ const MyAccountOrder = () => {
                     <>
                       <div className="p-6 p-lg-10">
                         {/* heading */}
-                        <h2 className="mb-6">Your Orders</h2>
+                        <h2 className="mb-6">{tCommon('your_orders')}</h2>
                         <div className="table-responsive border-0">
                           {/* Table */}
                           
@@ -225,13 +230,13 @@ const MyAccountOrder = () => {
                             <thead className="table-light">
                               <tr>
                                 <th className="border-0">&nbsp;</th>
-                                <th className="border-0">Product</th>
-                                <th className="border-0">Order</th>
-                                <th className="border-0">Date</th>
-                                <th className="border-0">Quantity</th>
-                                <th className="border-0">Status</th>
-                                <th className="border-0">Amount</th>
-                                <th className="border-0">Action</th>
+                                <th className="border-0">{tAccounts('product')}</th>
+                                <th className="border-0">{tAccounts('order')}</th>
+                                <th className="border-0">{tAccounts('date')}</th>
+                                <th className="border-0">{tAccounts('quantity')}</th>
+                                <th className="border-0">{tAccounts('status')}</th>
+                                <th className="border-0">{tAccounts('amount')}</th>
+                                <th className="border-0">{tAccounts('action')}</th>
                                 <th className="border-0" />
                               </tr>
                             </thead>
@@ -277,11 +282,11 @@ const MyAccountOrder = () => {
                                         className="btn btn-outline-success btn-sm"  // ✅ Green border, white background, black text
                                         onClick={() => handlePayment(order.id)}
                                       >
-                                        Pay
+                                        {tAccounts('pay')}
                                       </button>
                                     ) : (
                                       <button className="btn btn-success btn-sm" disabled>
-                                        Paid
+                                        {tAccounts('paid')}
                                       </button>
                                     )}
                                   </td>
@@ -382,7 +387,7 @@ const MyAccountOrder = () => {
                 <li className="nav-item">
                   <a className="nav-link " href="/Grocery-react/">
                     <i className="fas fa-sign-out-alt me-2" />
-                    Log out
+                    Home
                   </a>
                 </li>
               </ul>
