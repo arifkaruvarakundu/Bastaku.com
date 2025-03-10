@@ -3,24 +3,35 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useDropzone } from 'react-dropzone';
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import UpdateProductButton from "../../Component/update_product_button";
 
 const EditProduct = () => {
+
+  const{t: tCommon, i18n} = useTranslation("accounts_common")
+  const{t: tProduct} = useTranslation("add_added_edit_prod")
+
+
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [image, setImage] = useState(null);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [isCropping,setIsCropping]=useState(false)
-  const [zoom, setZoom] = useState(1);
-  const [croppedImage, setCroppedImage] = useState(null);
+  // const [image, setImage] = useState(null);
+  // const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  // const [crop, setCrop] = useState({ x: 0, y: 0 });
+  // const [isCropping,setIsCropping]=useState(false)
+  // const [zoom, setZoom] = useState(1);
+  // const [croppedImage, setCroppedImage] = useState(null);
   const [files, setFiles] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [currentLang, setCurrentLang] = useState(i18n.language);
 
-  const{t: tCommon} = useTranslation("accounts_common")
-  const{t: tProduct} = useTranslation("add_added_edit_prod")
+
+
+    // Update currentLang when the language is changed
+    useEffect(() => {
+      setCurrentLang(i18n.language);
+    }, [i18n.language]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -28,6 +39,7 @@ const EditProduct = () => {
         const response = await axios.get(
           `http://127.0.0.1:8000/wholesaler/product_detail/${id}/`
         );
+        console.log('product details', response.data)
         setProduct(response.data);
       } catch (err) {
         setError("Failed to load product details");
@@ -89,15 +101,19 @@ const EditProduct = () => {
   };
 
   
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    // e.preventDefault();
     
     try {
       const formData = new FormData();
       formData.append("product_name", product.product_name);
+      formData.append("product_name_en", product.product_name_en);
+      formData.append("product_name_ar", product.product_name_ar);
       formData.append("actual_price", product.actual_price);
       formData.append("campaign_discount_percentage", product.campaign_discount_percentage);
       formData.append("description", product.description);
+      formData.append("description_en", product.description_en);
+      formData.append("description_ar", product.description_ar);
       formData.append("stock", product.stock);
       formData.append("category", product.category);
       formData.append("minimum_order_quantity_for_offer", product.minimum_order_quantity_for_offer);
@@ -181,8 +197,8 @@ const EditProduct = () => {
                 <label className="form-label">{tProduct("product_name")}</label>
                 <input
                   type="text"
-                  name="product_name"
-                  value={product.product_name}
+                  name={currentLang === "en" ? "product_name_en" : "product_name_ar"}
+                  value={currentLang === "en" ? product.product_name_en : product.product_name_ar}
                   onChange={handleInputChange}
                   required
                   className="form-control"
@@ -192,8 +208,8 @@ const EditProduct = () => {
               <div className="mb-3">
                 <label className="form-label">{tProduct('description')}</label>
                 <textarea
-                  name="description"
-                  value={product.description}
+                  name={currentLang === "en" ? "description_en" : "description_ar"}
+                  value={currentLang === "en" ? product.description_en : product.description_ar}
                   onChange={handleInputChange}
                   className="form-control"
                   placeholder={tProduct('description')}
@@ -215,8 +231,8 @@ const EditProduct = () => {
                   <input
                     type="number"
                     className="form-control"
-                    name="campaignDiscountPercentage"
-                    value={product.campaignDiscountPercentage}
+                    name="campaign_discount_percentage"
+                    value={product.campaign_discount_percentage}
                     onChange={handleInputChange}
                     min="0"
                     max="100"
@@ -360,9 +376,10 @@ const EditProduct = () => {
                   ))}
                 </div>
               </div>
-              <button type="submit" className="btn btn-primary">
-              {tProduct("update_product")}
-              </button>
+              <UpdateProductButton
+              productData={product}
+              updateProduct={handleSubmit} 
+              />
             </form>
           </div>
         </div>

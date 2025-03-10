@@ -6,9 +6,11 @@ import ScrollToTop from "../ScrollToTop";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useTranslation } from "react-i18next";
+import AddProductButton from "../../Component/AddProductButton";
 
 const AddProducts = () => {
-
+  const { t: tCommon, i18n } = useTranslation('accounts_common');
+  const { t: tProduct} = useTranslation('add_added_edit_prod');
   // loading
   const [loaderStatus, setLoaderStatus] = useState(true);
   const [image, setImage] = useState(null);
@@ -16,9 +18,14 @@ const AddProducts = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [currentLang, setCurrentLang] = useState(i18n.language);
   const [productData, setProductData] = useState({
     product_name: "",
+    product_name_en:"",
+    product_name_ar:"",
     description: "",
+    description_en: "",
+    description_ar: "",
     actualPrice: "",
     stock: "",
     category: "", // Updated to category (dropdown field)
@@ -28,8 +35,12 @@ const AddProducts = () => {
 
   const [categories, setCategories] = useState([]); // To store product categories
 
-  const {t: tCommon} = useTranslation('accounts_common')
-  const {t: tProduct} = useTranslation('add_added_edit_prod')
+  // Update currentLang when the language is changed
+  useEffect(() => {
+    setCurrentLang(i18n.language);
+  }, [i18n.language]);
+
+ 
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -64,7 +75,7 @@ const AddProducts = () => {
     multiple: true,  // Allow multiple files
   });
 
-
+  // Handle form field changes with validation for price, stock, and minimum order quantity
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -73,18 +84,26 @@ const AddProducts = () => {
       return;
     }
 
-    setProductData((prevData) => ({ ...prevData, [name]: value }));
+    // Update state with the new value
+    setProductData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    // e.preventDefault();
     setLoading(true);
     setError(null);
     setSuccess(false);
   
     const formData = new FormData();
     formData.append("product_name", productData.product_name);
+    formData.append("product_name_en", productData.product_name_en);
+    formData.append("product_name_ar", productData.product_name_ar);
     formData.append("description", productData.description);
+    formData.append("description_en", productData.description_en);
+    formData.append("description_ar", productData.description_ar);
     formData.append("actual_price", productData.actualPrice);
     formData.append("stock", productData.stock);
     formData.append("category", productData.category);
@@ -111,7 +130,11 @@ const AddProducts = () => {
       setSuccess(true);
       setProductData({
         product_name: "",
+        product_name_en: "",
+        product_name_ar: "",
         description: "",
+        description_en: "",
+        description_ar: "",
         actualPrice: "",
         stock: "",
         category: "",
@@ -288,8 +311,8 @@ const AddProducts = () => {
                                     <label className="form-label">{tProduct("product_name")}</label>
                                     <input
                                       type="text"
-                                      name="product_name"
-                                      value={productData.product_name}
+                                      name={currentLang === "en" ? "product_name_en" : "product_name_ar"}
+                                      value={currentLang === "en" ? productData.product_name_en : productData.product_name_ar}
                                       onChange={handleChange}
                                       required
                                       className="form-control"
@@ -300,8 +323,8 @@ const AddProducts = () => {
                                   <div className="mb-3">
                                     <label className="form-label">{tProduct('description')}</label>
                                     <textarea
-                                      name="description"
-                                      value={productData.description}
+                                      name={currentLang === "en" ? "description_en" : "description_ar"}
+                                      value={currentLang === "en" ? productData.description_en : productData.description_ar}
                                       onChange={handleChange}
                                       className="form-control"
                                       placeholder={tProduct('description')}
@@ -408,13 +431,21 @@ const AddProducts = () => {
                                   </div>
                                   {/* button */}
                                   <div className="mb-3 mt-4">
-                                  <button type="submit" className="btn btn-primary" disabled={loading}>
+                                  {/* <button type="submit" className="btn btn-primary" disabled={loading}>
                                     {loading ? (
                                       <ClipLoader color="#fff" loading={loading} size={20} />
                                     ) : (
                                       tProduct("add_product")
                                     )}
-                                  </button>
+                                  </button> */}
+                                  <AddProductButton
+                                    loading={false}
+                                    addProduct={handleSubmit}
+                                    productData={productData}
+                                    handleChange={handleChange}
+                                    setProductData={setProductData}
+                                  />
+
                                   </div>
                                 </form>
                               </div>
