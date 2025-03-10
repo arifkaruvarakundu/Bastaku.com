@@ -120,7 +120,7 @@ class WholesalerManager(BaseUserManager):
 class Wholesaler(AbstractBaseUser):
     company_name = models.CharField(max_length=255, unique=True)
     product_category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE,null=True, blank=True)
-    email = models.EmailField(verbose_name='Email', max_length=255, unique=True)
+    email = models.EmailField(verbose_name='Email', max_length=255, unique=True, null=True, blank=True)
     license_number = models.CharField(max_length=50)
     license_image = models.ImageField(upload_to='wholesaler_licenses/', blank=True, null=True)
     is_active = models.BooleanField(default=True)

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'modeltranslation',
     "cloudinary",
     "cloudinary_storage",
     'corsheaders',
@@ -61,6 +62,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'authentication.middleware.JWTAuthenticationMiddleware',  # Custom middleware
@@ -97,6 +99,21 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
+LANGUAGES = [
+    ('en', 'English'),
+    ('ar', 'Arabic'),
+]
+
+LANGUAGE_CODE = 'en-us'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
+
+MODELTRANSLATION_TRANSLATION_FILES = (
+    'wholesaler.translations',
+)
+
+MODELTRANSLATION_DEBUG = True
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

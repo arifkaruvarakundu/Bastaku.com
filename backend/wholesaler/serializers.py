@@ -31,8 +31,8 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            'id', 'wholesaler', 'category', 'product_name', 'slug', 'description',
-            'actual_price', 'stock', 'is_in_campaign', 'is_available','discounted_price',
+            'id', 'wholesaler', 'category', 'product_name', 'product_name_en', 'product_name_ar', 'slug', 'description',
+            'description_en', 'description_ar', 'actual_price', 'stock', 'is_in_campaign', 'is_available','discounted_price',
             'campaign_discount_percentage', 'minimum_order_quantity_for_offer',
             'created_date', 'modified_date', 'product_images'  # Include 'images'
         ]
@@ -66,7 +66,7 @@ class ProductCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            'product_name', 'description', 'actual_price', 'stock', 'category',
+            'product_name', 'product_name_en', 'product_name_ar', 'description', 'description_en', 'description_ar', 'actual_price', 'stock', 'category',
             'campaign_discount_percentage', 'minimum_order_quantity_for_offer', 
             'wholesaler', 'is_available', 'product_images', 'discounted_price'
         ]

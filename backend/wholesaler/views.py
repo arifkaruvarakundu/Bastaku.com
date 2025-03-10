@@ -109,7 +109,11 @@ class AddProductView(APIView):
             # Create the product
             product = Product.objects.create(
                 product_name=data.get("product_name"),
+                product_name_en=data.get("product_name_en"),
+                product_name_ar=data.get("product_name_ar"),
                 description=data.get("description"),
+                description_en=data.get("description_en"),
+                description_ar=data.get("description_ar"),
                 actual_price=data.get("actual_price"),
                 stock=data.get("stock"),
                 category=category_instance,
@@ -306,5 +310,3 @@ class WholesalerAddBankDetailsView(APIView):
             return Response({"error": serializer.errors}, status=400)
         
 
-
-    

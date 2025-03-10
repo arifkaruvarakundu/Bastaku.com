@@ -19,4 +19,3 @@ class ProductAdmin(admin.ModelAdmin):
 
 # Registering other models
 admin.site.register(WholesalerBankDetails)
-
