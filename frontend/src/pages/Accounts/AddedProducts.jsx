@@ -51,14 +51,14 @@ const ProductsList = () => {
                 <ul className="nav flex-column nav-pills nav-pills-dark">
                   <li className="nav-item">
                     <Link className="nav-link" to="/MyAccountOrder">
-                      <i className="fas fa-shopping-bag me-2" /> {tCommon("your_orders")}
+                      <i className="fas fa-shopping-bag me-2"/> {tCommon("your_orders")}
                     </Link>
                   </li>
-                  <li className="nav-item">
+                  {/* <li className="nav-item">
                     <Link className="nav-link" to="/MyAccountSetting">
                       <i className="fas fa-cog me-2" /> {tCommon("settings")}
                     </Link>
-                  </li>
+                  </li> */}
                   <li className="nav-item">
                     <Link className="nav-link" to="/MyAccountAddress">
                       <i className="fas fa-map-marker-alt me-2" /> {tCommon("address")}

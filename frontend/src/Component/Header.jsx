@@ -1001,9 +1001,9 @@ const Header = ({onSearch}) => {
                           </Trans>
                         </button>
                         <Link className="dropdown-item" to="/MyAccountSetting">
-                        <Trans i18nKey="settings" ns="header">
+                        {/* <Trans i18nKey="settings" ns="header">
                         Settings
-                        </Trans>
+                        </Trans> */}
                         </Link>
                         <Link className="dropdown-item" to="/MyAccountAddress">
                         <Trans i18nKey="address" ns="header">

@@ -1,6 +1,9 @@
-import slider1 from "../images/slide-1.jpg";
+import slider1_en from "../images/slide-1.jpg";
 // import abouticon from "../images/about-icons-1.svg";
-import slider2 from "../images/slider-2.jpg";
+import planBudget from '../images/Plan_Budget_image.jpg'
+import carousel_ar1 from "../images/carousel_ar1.jpg"
+import carousel_ar2 from "../images/carousel_ar2.jpg"
+import slider2_en from "../images/slider-2.jpg";
 import adbanner1 from "../images/ad-banner-1.jpg";
 import adbanner2 from "../images/ad-banner-2.jpg";
 import adbanner3 from "../images/ad-banner-3.jpg";
@@ -20,16 +23,16 @@ import { Trans } from 'react-i18next';
 // import gift from "../images/gift.svg";
 // import package1 from "../images/package.svg";
 // import refresh from "../images/refresh-cw.svg";
-import product1 from "../images/category-baby-care.jpg";
-import product2 from "../images/category-atta-rice-dal.jpg";
-import product3 from "../images/category-bakery-biscuits.jpg";
-import product4 from "../images/category-chicken-meat-fish.jpg";
-import product5 from "../images/category-cleaning-essentials.jpg";
-import product6 from "../images/category-dairy-bread-eggs.jpg";
-import product7 from "../images/category-instant-food.jpg";
-import product8 from "../images/category-pet-care.jpg";
-import product9 from "../images/category-snack-munchies.jpg";
-import product10 from "../images/category-tea-coffee-drinks.jpg";
+// import product1 from "../images/category-baby-care.jpg";
+// import product2 from "../images/category-atta-rice-dal.jpg";
+// import product3 from "../images/category-bakery-biscuits.jpg";
+// import product4 from "../images/category-chicken-meat-fish.jpg";
+// import product5 from "../images/category-cleaning-essentials.jpg";
+// import product6 from "../images/category-dairy-bread-eggs.jpg";
+// import product7 from "../images/category-instant-food.jpg";
+// import product8 from "../images/category-pet-care.jpg";
+// import product9 from "../images/category-snack-munchies.jpg";
+// import product10 from "../images/category-tea-coffee-drinks.jpg";
 import { Link,useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import ProductItem from "../ProductList/ProductItem";
@@ -42,15 +45,25 @@ import { Slide, Zoom } from "react-awesome-reveal";
 import { useEffect } from "react";
 // import { PulseLoader } from 'react-spinners';
 import { MagnifyingGlass } from "react-loader-spinner";
+import { useSelector, useDispatch } from 'react-redux';
 import i18n from "../i18n";
+
+
+
 const Home = () => {
+  const { t, i18n } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [currentLang, setCurrentLang] = useState(i18n.language);
+  const [isButtonsVisible, setIsButtonsVisible] = useState(true);
   const navigate = useNavigate();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const dispatch = useDispatch();
 
-  const { t } = useTranslation();
-
-  console.log("language",i18n.language)
+  // Update currentLang when the language is changed
+      useEffect(() => {
+        setCurrentLang(i18n.language);
+      }, [i18n.language]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,11 +89,10 @@ const Home = () => {
   const companyName = localStorage.getItem("company_name");
 
   const handleCategoryClick = (category) => {
-    // setSelectedCategory(category.name);
-    // setdisplayedCategory(category.name);
+    const categoryName = currentLang === "en" ? category.name_en : category.name_ar;
   
     // Navigate to the shop page with the selected category as a query parameter
-    navigate(`/Shop`, { state: { displayedCategory: category.name } });
+    navigate(`/Shop`, { state: { displayedCategory: categoryName } });
   };
 
   const toggleVisibility = () => {
@@ -104,6 +116,10 @@ const Home = () => {
       window.removeEventListener("scroll", toggleVisibility);
     };
   }, []);
+
+  const handleClick=()=>{
+
+  }
 
   const settings1 = {
     dots: true,
@@ -279,7 +295,7 @@ const Home = () => {
                       <div className="carousel-item active">
                         <div
                           style={{
-                            background: `url(${slider1}) no-repeat`,
+                            background: `url(${currentLang === "en" ? slider1_en : carousel_ar1}) no-repeat`,
                             backgroundSize: "cover",
                             borderRadius: ".5rem",
                             backgroundPosition: "center",
@@ -289,23 +305,22 @@ const Home = () => {
                             <span className="badge text-bg-warning">
                               <Trans>opening_sale</Trans>
                             </span>
-                            <h2 className="text-dark display-5 fw-bold mt-4">
-                              {t("supermarket")}
-                            </h2>
+                            <h2 className="text-dark display-5 fw-bold mt-4">{t("supermarket")}</h2>
                             <p className="lead">
                               <Trans>grocery_desc</Trans>
                             </p>
-                            <Link to="/Shop" className="btn btn-dark mt-3" style={{marginLeft: "140px"}}>
+                            <Link to="/Shop" className="btn btn-dark mt-3" style={{ marginLeft: "140px" }}>
                               <Trans>shop_now</Trans>
                               <i className="feather-icon icon-arrow-right ms-1" />
                             </Link>
                           </div>
                         </div>
                       </div>
+
                       <div className="carousel-item">
                         <div
                           style={{
-                            background: `url(${slider2}) no-repeat`,
+                            background: `url(${currentLang === "en" ? slider2_en : carousel_ar2}) no-repeat`,
                             backgroundSize: "cover",
                             borderRadius: ".5rem",
                             backgroundPosition: "center",
@@ -316,21 +331,19 @@ const Home = () => {
                               <Trans></Trans>
                             </span>
                             <h2 className="text-dark display-5 fw-bold mt-4">
-                              Free Shipping on <br /> orders over{" "}
-                              <span className="text-primary">$100</span>
+                              Free Shipping on <br /> orders over <span className="text-primary">$100</span>
                             </h2>
                             <p className="lead">
-                              Free Shipping to First-Time Customers Only, After
-                              promotions and discounts are applied.
+                              Free Shipping to First-Time Customers Only, After promotions and discounts are applied.
                             </p>
                             <Link to="/Shop" className="btn btn-dark mt-3">
-                              Shop Now{" "}
-                              <i className="feather-icon icon-arrow-right ms-1" />
+                              Shop Now <i className="feather-icon icon-arrow-right ms-1" />
                             </Link>
                           </div>
                         </div>
                       </div>
                     </div>
+
                     <Link
                       className="carousel-control-prev"
                       to="#carouselExampleFade"
@@ -359,40 +372,55 @@ const Home = () => {
                 </div>
               </section>
             </>
-            {/* <> */}
-              {/* <section className="mt-8"> */}
-                {/* contianer */}
-                {/* <div className="container ">
-                  <div className="row"> */}
+            <>
+            {isAuthenticated && (
+              <section className="mt-8">
+                {/* container */}
+                <div className="container">
+                  <div className="row">
                     {/* col */}
-                    {/* <Slide direction="down">
-                      <div className="col-12"> */}
+                    <Slide direction="down">
+                      <div className="col-12">
                         {/* cta */}
-                        {/* <div className="bg-light d-lg-flex justify-content-between align-items-center py-6 py-lg-3 px-8 rounded-3 text-center text-lg-start"> */}
-                          {/* img */}
-                          {/* <div className="d-lg-flex align-items-center">
+                        <div className="bg-light d-lg-flex justify-content-between align-items-center py-6 py-lg-3 px-8 rounded-3 text-center text-lg-start">
+                          {/* img container */}
+                          <div className="d-lg-flex align-items-center position-relative">
                             <img
-                              src={abouticon}
+                              src={planBudget}
                               alt="about-icon"
                               className="img-fluid"
-                            /> */}
-                            {/* text */}
-                            {/* <div className="ms-lg-4">
-                              <h1 className="fs-2 mb-1">
-                                <Trans>welcome_bastaku</Trans>
-                              </h1>
-                              <span>
-                                Download the app get free food &amp;{" "}
-                                <span className="text-primary">$30</span> off on
-                                your first order.
-                              </span>
+                              style={{ width: "100%", borderRadius: "0.5rem" }} // Ensure the image takes up the full container
+                            />
+
+                            {/* Button overlay */}
+                            <div className="position-absolute" style={{ bottom: "30px", right: "20px" }}>
+                              <div className="d-flex flex-column align-items-center">
+                                {/* Plan Your Budget With Us Button */}
+                                <Link to="#" className="btn btn-dark mb-3 rounded-circle" style={{ width: "120px", height: "120px", display: isButtonsVisible ? 'block' : 'none' }}>
+                                  Plan Your Budget With Us
+                                </Link>
+
+                                {/* Budget More than 200 KD */}
+                                <Link
+                                  to="#"
+                                  className="btn btn-dark mb-3 rounded-circle"
+                                  style={{ width: "140px", height: "140px", display: isButtonsVisible ? 'block' : 'none' }}
+                                  onClick={() => handleClick('moreThan200')}
+                                >
+                                  Is your budget is more than 200 KD? Click here
+                                </Link>
+
+                                {/* Budget Less than 200 KD */}
+                                <Link
+                                  to="#"
+                                  className="btn btn-dark rounded-circle"
+                                  style={{ width: "120px", height: "120px", display: isButtonsVisible ? 'block' : 'none' }}
+                                  onClick={() => handleClick('lessThan200')}
+                                >
+                                  Is your Budget is less than 200 KD? Click here
+                                </Link>
+                              </div>
                             </div>
-                          </div>
-                          <div className="mt-3 mt-lg-0"> */}
-                            {/* btn */}
-                            {/* <Link to="#" className="btn btn-dark">
-                              Download Bastaku App
-                            </Link>
                           </div>
                         </div>
                       </div>
@@ -400,7 +428,8 @@ const Home = () => {
                   </div>
                 </div>
               </section>
-            </> */}
+            )}
+          </>
             <>
               {/* section */}
               <section className="mt-8">
@@ -517,7 +546,7 @@ const Home = () => {
                         {/* heading */}
                         <div className="section-head text-center mt-8">
                           <h3 className="h3style" data-title="Shop Popular Categories">
-                            <Trans>shop_popular_categories</Trans>
+                            {t('shop_popular_categories')}
                           </h3>
                           <div className="wt-separator bg-primarys"></div>
                           <div className="wt-separator2 bg-primarys"></div>
@@ -542,7 +571,7 @@ const Home = () => {
                               {/* text */}
                               <h5 className="fs-6 mb-0">
                                 <Link to={`/category/${category.id}`} className="text-inherit">
-                                  {category.name}
+                                {currentLang === "en" ? category.name_en : category.name_ar}
                                 </Link>
                               </h5>
                             </div>
@@ -1345,9 +1374,9 @@ const Home = () => {
                 </div>
               </section> */}
             </>
-            <>
+            {/* <>
               <div className="container">
-                <Slider {...settings2}>
+                <Slider {...settings2}> */}
                   {/* <div className="images swiper-slide p-4">
     <div className="item">
       <Link to="#" className="text-decoration-none text-inherit">
@@ -1460,7 +1489,7 @@ const Home = () => {
      </Link>
     </div>
   </div> */}
-                  <div className="m-1">
+                  {/* <div className="m-1">
                     <div className="partner-list">
                       <img
                         src={product1}
@@ -1592,7 +1621,7 @@ const Home = () => {
                   </div>
                 </Slider>
               </div>
-            </>
+            </> */}
           </>
         )}
         </>

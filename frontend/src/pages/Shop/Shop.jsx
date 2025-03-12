@@ -8,7 +8,8 @@ import ScrollToTop from "../ScrollToTop";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-function Dropdown() {
+function Shop() {
+  const { t,i18n } = useTranslation('shop');
   const [openDropdowns, setOpenDropdowns] = useState([]);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -19,6 +20,7 @@ function Dropdown() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [quantity, setQuantity] = useState(1);
+  const [currentLang, setCurrentLang] = useState(i18n.language);
   const itemsPerPage = 12;
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -28,24 +30,34 @@ function Dropdown() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { t } = useTranslation();
-  
+   // Update currentLang when the language is changed
+      useEffect(() => {
+        setCurrentLang(i18n.language);
+      }, [i18n.language]);
+
   useEffect(() => {
     if (location.state && location.state.displayedCategory) {
-      setSelectedCategory(location.state.displayedCategory);
-      setdisplayedCategory(location.state.displayedCategory);
-
-      // If a specific category is selected from location state, filter the products accordingly
-      if (location.state.displayedCategory !== "All") {
+      const categoryName = currentLang === 'en' 
+        ? location.state.displayedCategory 
+        : location.state.displayedCategory;
+  
+      setSelectedCategory(categoryName);
+      setdisplayedCategory(categoryName);
+  
+      if (categoryName !== "All") {
         setDisplayedProducts(
-          products.filter((product) => product.category === location.state.displayedCategory)
+          products.filter((product) =>
+            currentLang === "en"
+              ? product.category.name_en === categoryName
+              : product.category.name_ar === categoryName
+          )
         );
       } else {
-        setDisplayedProducts(products); // Show all products if "All" is passed in state
+        setDisplayedProducts(products);
       }
     }
-  }, [location, products, setDisplayedProducts]);
-
+  }, [location, products, setDisplayedProducts, currentLang]);
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -67,19 +79,27 @@ function Dropdown() {
     fetchData();
   }, []);
 
-  
-
   const handleCategoryClick = (category) => {
-    setSelectedCategory(category.name);
-    setdisplayedCategory(category.name);
-    if (category.name === "All") {
+    const categoryName = currentLang === "en" ? category.name_en : category.name_ar;
+    console.log("Category Name Selected:", categoryName);
+  
+    setSelectedCategory(categoryName);
+    setdisplayedCategory(categoryName);
+  
+    if (categoryName === "All") {
       setDisplayedProducts(products);
     } else {
       setDisplayedProducts(
-        products.filter((product) => product.category === category.name)
+        products.filter((product) =>
+          currentLang === "en" 
+            ? product.category.name_en === categoryName 
+            : product.category.name_ar === categoryName
+        )
       );
     }
   };
+  
+  
 
   useEffect(() => {
     setCurrentPage(1);
@@ -194,7 +214,7 @@ function Dropdown() {
           <div className="container ">
             <div className="row">
               {/* Vertical Dropdowns Column */}
-              <h5 className="mb-3 mt-8">{t("categories", { ns: "shop" })}</h5>
+              <h5 className="mb-3 mt-8">{t("categories")}</h5>
               <div className="col-md-3">
               {categories && categories.length > 0 ? (
                 categories.map((category, index) => (
@@ -210,7 +230,7 @@ function Dropdown() {
                         aria-controls={`categoryFlush${index + 1}`}
                         onClick={() => handleCategoryClick(category)}
                       >
-                        {category.name} 
+                        {currentLang === 'en' ? category.name_en : category.name_ar} 
                       </Link>
                       <div
                         className={`collapse ${
@@ -240,7 +260,7 @@ function Dropdown() {
                   </ul>
                 ))
               ) : (
-                <p>{t("no_categories_available", { ns: "shop" })}</p>
+                <p>{t("no_categories_available")}</p>
               )}
                 <div>
                   <div className="py-4">
@@ -511,7 +531,7 @@ function Dropdown() {
                   <div>
                     <p className="mb-3 mb-md-0">
                       {" "}
-                      <span className="text-dark"></span> {t("products_found", { ns: "shop" })}{" "}
+                      <span className="text-dark"></span> {t("products_found")}{" "}
                     </p>
                   </div>
                   {/* icon */}
@@ -563,7 +583,7 @@ function Dropdown() {
                           <div className="text-center position-relative">
                             {product.is_in_campaign && (
                             <div className="position-absolute top-0 start-0">
-                              <span className="badge bg-danger">{t("campaign", { ns: "shop" })}</span>
+                              <span className="badge bg-danger">{t("campaign")}</span>
                             </div>
                             )}
                             <Link to="#!">
@@ -601,12 +621,12 @@ function Dropdown() {
                           {/* Product Details */}
                           <div className="text-small mb-1">
                             <Link to="#!" className="text-decoration-none text-muted">
-                              <small>{product.category}</small>
+                              <small>{currentLang === "en" ? product.category.name_en : product.category.name_ar}</small>
                             </Link>
                           </div>
                           <h2 className="fs-6">
                             <Link to="#!" className="text-inherit text-decoration-none">
-                              {product.product_name}
+                            {currentLang === "en" ? product.product_name_en : product.product_name_ar}
                             </Link>
                           </h2>
 
@@ -627,9 +647,9 @@ function Dropdown() {
                           {/* Price */}
                           <div className="d-flex justify-content-between align-items-center mt-3">
                             <div>
-                              <span className="text-dark">{product.actual_price} KD</span>{" "}
+                              <span className="text-dark">{t('price')}: {product.actual_price} {t('kd')}</span>{" "}
                               <span className="text-decoration-line-through text-muted">
-                              KD:{((Number(product.actual_price) + (Number(product.actual_price) * 10) / 100).toFixed(2))}
+                              {t('price')}: {((Number(product.actual_price) + (Number(product.actual_price) * 10) / 100).toFixed(2))} {t('kd')}
                               </span>
                             </div>
                             {/* Add Button */}
@@ -659,7 +679,7 @@ function Dropdown() {
                             </div>
                           </div>
                           <div>
-                            <span style={{ color: 'red' }}>Campaign Price: KD {(product.actual_price * (100 - product.campaign_discount_percentage)) / 100}</span>
+                            <span style={{ color: 'red' }}>{t('campaign_price')}: {(product.actual_price * (100 - product.campaign_discount_percentage)) / 100} {t('kd')}</span>
                           </div>
                         </div>
                       </div>
@@ -715,4 +735,4 @@ function Dropdown() {
 }
 
 
-export default Dropdown;
+export default Shop;

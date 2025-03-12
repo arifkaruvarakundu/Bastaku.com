@@ -2,8 +2,9 @@
     "popular_products": "المنتجات الشائعة",
     "campaign": "حملة",
     "price_label": "السعر: {{price}} دينار كويتي",
-    "original_price_label": "دينار كويتي: {{original_price}}",
+    "kd" :"دينار كويتي",
+    "original_price_label": "السعر",
     "add": "أضف",
-    "campaign_price_label": "سعر الحملة: دينار كويتي {{campaign_price}}"
+    "campaign_price_label": "سعر الحملة"
   }
   

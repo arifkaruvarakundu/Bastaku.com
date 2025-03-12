@@ -152,11 +152,11 @@ const EditProduct = () => {
         <div className="row">
           <div className="col-lg-3 col-md-4 col-12 border-end">
             <ul className="nav flex-column">
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <a className="nav-link active" href="/MyAccountSetting">
                   <i className="fas fa-cog me-2" /> {tCommon("settings")}
                 </a>
-              </li>
+              </li> */}
               <li className="nav-item">
                 <a className="nav-link" href="/MyAccountOrder">
                   <i className="fas fa-shopping-bag me-2" /> {tCommon("your_orders")}

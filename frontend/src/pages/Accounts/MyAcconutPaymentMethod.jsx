@@ -128,12 +128,12 @@ const MyAcconutPaymentMethod = () => {
                       {tCommon("your_orders")}
                     </Link>
                   </li>
-                  <li className="nav-item">
+                  {/* <li className="nav-item">
                     <Link className="nav-link" to="/MyAccountSetting">
                       <i className="fas fa-cog me-2" />
                       {tCommon("settings")}
                     </Link>
-                  </li>
+                  </li> */}
                   <li className="nav-item">
                     <Link className="nav-link" to="/MyAccountAddress">
                       <i className="fas fa-map-marker-alt me-2" />

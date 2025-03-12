@@ -55,6 +55,7 @@ import home_whAR from './locales/ar/Home_wh.json';
 import product_detailsEN from './locales/en/Product_details.json';
 import product_detailsAR from './locales/ar/Product_details.json';
 
+
 i18next
   .use(initReactI18next) // Passing i18n instance to react-i18next
   .init({

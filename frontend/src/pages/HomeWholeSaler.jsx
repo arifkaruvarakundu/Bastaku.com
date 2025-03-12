@@ -1,6 +1,9 @@
 // import slider1 from "../images/slide-1.jpg";
 import carousel1 from "../images/carousel1.jpg";
-import abouticon from "../images/about-icons-1.svg";
+import carousel_ar1 from "../images/carousel_ar1.jpg"
+import carousel_ar2 from "../images/carousel_ar2.jpg"
+import slider2_en from "../images/slider-2.jpg";
+// import abouticon from "../images/about-icons-1.svg";
 import slider2 from "../images/slider-2.jpg";
 // import slider_2 from "../images/slider_2.jpeg";
 // import adbanner1 from "../images/ad-banner-1.jpg";
@@ -13,24 +16,24 @@ import add_bank from "../images/add_bank.jpeg";
 import order2 from "../images/order2.jpeg";
 // import grocerybanner2 from "../images/grocery-banner-2.jpg";
 import campaigns from "../images/campaigns.jpeg";
-import map from "../images/map.png";
-import iphone from "../images/iphone-2.png";
-import googleplay from "../images/googleplay-btn.svg";
-import appstore from "../images/appstore-btn.svg";
-import product1 from "../images/category-baby-care.jpg";
-import product2 from "../images/category-atta-rice-dal.jpg";
-import product3 from "../images/category-bakery-biscuits.jpg";
-import product4 from "../images/category-chicken-meat-fish.jpg";
-import product5 from "../images/category-cleaning-essentials.jpg";
-import product6 from "../images/category-dairy-bread-eggs.jpg";
-import product7 from "../images/category-instant-food.jpg";
-import product8 from "../images/category-pet-care.jpg";
-import product9 from "../images/category-snack-munchies.jpg";
-import product10 from "../images/category-tea-coffee-drinks.jpg";
+// import map from "../images/map.png";
+// import iphone from "../images/iphone-2.png";
+// import googleplay from "../images/googleplay-btn.svg";
+// import appstore from "../images/appstore-btn.svg";
+// import product1 from "../images/category-baby-care.jpg";
+// import product2 from "../images/category-atta-rice-dal.jpg";
+// import product3 from "../images/category-bakery-biscuits.jpg";
+// import product4 from "../images/category-chicken-meat-fish.jpg";
+// import product5 from "../images/category-cleaning-essentials.jpg";
+// import product6 from "../images/category-dairy-bread-eggs.jpg";
+// import product7 from "../images/category-instant-food.jpg";
+// import product8 from "../images/category-pet-care.jpg";
+// import product9 from "../images/category-snack-munchies.jpg";
+// import product10 from "../images/category-tea-coffee-drinks.jpg";
 import { Link,useNavigate } from "react-router-dom";
 import React, { useState } from "react";
-import ProductItem from "../ProductList/ProductItem";
-import Slider from "react-slick";
+// import ProductItem from "../ProductList/ProductItem";
+// import Slider from "react-slick";
 import axios from 'axios'
 import { Slide, Zoom } from "react-awesome-reveal";
 import { useEffect } from "react";
@@ -40,13 +43,20 @@ import { useTranslation } from "react-i18next";
 
 
 const HomeWholesaler = () => {
+  const {t,i18n} = useTranslation('home_wh')
   const [isVisible, setIsVisible] = useState(false);
   const [categories, setCategories] = useState([]);
   const [loaderStatus, setLoaderStatus] = useState(true);
+  const [currentLang, setCurrentLang] = useState(i18n.language);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const {t} = useTranslation('home_wh')
+  
+
+  // Update currentLang when the language is changed
+        useEffect(() => {
+          setCurrentLang(i18n.language);
+        }, [i18n.language]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,13 +79,13 @@ const HomeWholesaler = () => {
     fetchData();
   }, []);
 
-  const handleCategoryClick = (category) => {
-    // setSelectedCategory(category.name);
-    // setdisplayedCategory(category.name);
+  // const handleCategoryClick = (category) => {
+  //   // setSelectedCategory(category.name);
+  //   // setdisplayedCategory(category.name);
   
-    // Navigate to the shop page with the selected category as a query parameter
-    navigate(`/Shop`, { state: { displayedCategory: category.name } });
-  };
+  //   // Navigate to the shop page with the selected category as a query parameter
+  //   navigate(`/Shop`, { state: { displayedCategory: category.name } });
+  // };
 
 
   const toggleVisibility = () => {
@@ -266,61 +276,49 @@ const HomeWholesaler = () => {
                     data-bs-ride="carousel"
                   >
                     <div className="carousel-inner">
-                      <div className="carousel-item active">
-                        <div
-                          style={{
-                            background: `url(${carousel1}) no-repeat`,
-                            backgroundSize: "cover",
-                            borderRadius: ".5rem",
-                            backgroundPosition: "center"
-                          }}
-                        >
-                          <div className="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center">
-                            <span className="badge text-bg-warning">
-                              {/* Opening Sale Discount 50% */}
-                            </span>
-                            <h2 className="text-dark display-5 fw-bold mt-4">
-                            {t('expand_reach')}
-                            </h2>
-                            <p className="lead">
-                            {t('join_platform')}
-                            </p>
-                            {/* <Link to="/Shop" className="btn btn-dark mt-3" style={{marginLeft: "140px"}}>
-                              Shop Now{" "}
-                              <i className="feather-icon icon-arrow-right ms-1" />
-                            </Link> */}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="carousel-item">
-                        <div
-                          style={{
-                            background: `url(${slider2}) no-repeat`,
-                            backgroundSize: "contain",
-                            borderRadius: ".5rem",
-                            backgroundPosition: "center",
-                          }}
-                        >
-                          <div className="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center">
-                            <span className="badge text-bg-warning">
-                              Free Shipping - orders over $100
-                            </span>
-                            <h2 className="text-dark display-5 fw-bold mt-4">
-                              Free Shipping on <br /> orders over{" "}
-                              <span className="text-primary">$100</span>
-                            </h2>
-                            <p className="lead">
-                              Free Shipping to First-Time Customers Only, After
-                              promotions and discounts are applied.
-                            </p>
-                            {/* <Link to="/Shop" className="btn btn-dark mt-3">
-                              Shop Now{" "}
-                              <i className="feather-icon icon-arrow-right ms-1" />
-                            </Link> */}
-                          </div>
-                        </div>
+                  {/* First Carousel Item */}
+                  <div className="carousel-item active">
+                    <div
+                      style={{
+                        background: `url(${currentLang === "en" ? carousel1 : carousel_ar1}) no-repeat`,
+                        backgroundSize: "cover",
+                        borderRadius: ".5rem",
+                        backgroundPosition: "center",
+                      }}
+                    >
+                      <div className="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center">
+                        <span className="badge text-bg-warning">
+                          {/* Opening Sale Discount 50% */}
+                        </span>
+                        <h2 className="text-dark display-5 fw-bold mt-4">{t("expand_reach")}</h2>
+                        <p className="lead">{t("join_platform")}</p>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Second Carousel Item */}
+                  <div className="carousel-item">
+                    <div
+                      style={{
+                        background: `url(${currentLang === "en" ? slider2_en : carousel_ar2}) no-repeat`,
+                        backgroundSize: "contain",
+                        borderRadius: ".5rem",
+                        backgroundPosition: "center",
+                      }}
+                    >
+                      <div className="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center">
+                        <span className="badge text-bg-warning">Free Shipping - orders over $100</span>
+                        <h2 className="text-dark display-5 fw-bold mt-4">
+                          Free Shipping on <br /> orders over <span className="text-primary">$100</span>
+                        </h2>
+                        <p className="lead">
+                          Free Shipping to First-Time Customers Only, After promotions and discounts are applied.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                     <Link
                       className="carousel-control-prev"
                       to="#carouselExampleFade"
@@ -456,15 +454,15 @@ const HomeWholesaler = () => {
               </section>
               {/* section */}
             </>
-            <>
+            {/* <> */}
               {/* section category */}
-              <section className="my-lg-14 my-8">
+              {/* <section className="my-lg-14 my-8">
                 <div className="container">
                   <div className="row">
                     <div className="col-12">
-                      <div className="mb-6">
+                      <div className="mb-6"> */}
                         {/* heading */}
-                        <div className="section-head text-center mt-8">
+                        {/* <div className="section-head text-center mt-8">
                           <h3 className="h3style" data-title="Shop Popular Categories">
                             {t('popular_categories')}
                           </h3>
@@ -478,18 +476,18 @@ const HomeWholesaler = () => {
                     {categories.map((category) => (
                       <div className="col-lg-2 col-md-4 col-6 fade-zoom" key={category.id}>
                         <Zoom>
-                          <div className="text-center mb-10">
+                          <div className="text-center mb-10"> */}
                             {/* img */}
-                            <div onClick={() => handleCategoryClick(category)}>
+                            {/* <div onClick={() => handleCategoryClick(category)}>
                               <img
                                 src={`http://127.0.0.1:8000${category.category_image}`}
                                 alt={category.name}
                                 className="card-image rounded-circle"
                               />
                             </div>
-                            <div className="mt-4">
+                            <div className="mt-4"> */}
                               {/* text */}
-                              <h5 className="fs-6 mb-0">
+                              {/* <h5 className="fs-6 mb-0">
                                 <Link to={`/category/${category.id}`} className="text-inherit">
                                   {category.name}
                                 </Link>
@@ -501,9 +499,9 @@ const HomeWholesaler = () => {
                     ))}
                   </div>
                 </div>
-              </section>
+              </section> */}
               {/* section */}
-            </>
+            {/* </> */}
             <>
               {/* section coming soon */}
               <section>
@@ -569,9 +567,9 @@ const HomeWholesaler = () => {
             <>
               <ProductItemWholesaler />
             </>
-            <>
+            {/* <> */}
               {/* cta section */}
-              <section>
+              {/* <section>
                 <div className="coming-soon">{t('coming_soon')}</div>
                 <div
                   className="container"
@@ -579,23 +577,23 @@ const HomeWholesaler = () => {
                     background: `url(${map})no-repeat`,
                     backgroundSize: "cover",
                   }}
-                >
+                > */}
                   {/* <hr className="my-lg-14 my-8"> */}
                   {/* row */}
-                  <div className="row align-items-center text-center justify-content-center">
+                  {/* <div className="row align-items-center text-center justify-content-center">
                     <div className=" col-lg-6 col-md-6 fade-in-left">
                       <Slide direction="left">
                         <div className="mb-6">
-                          <div className="mb-7">
+                          <div className="mb-7"> */}
                             {/* heading */}
-                            <h1>{t('get_app')}</h1>
+                            {/* <h1>{t('get_app')}</h1>
                             <h5 className="mb-0">
                               {t('send_link_download')}
                             </h5>
                           </div>
-                          <div className="mb-5">
+                          <div className="mb-5"> */}
                             {/* form check */}
-                            <div className="form-check form-check-inline">
+                            {/* <div className="form-check form-check-inline">
                               <input
                                 className="form-check-input"
                                 type="radio"
@@ -608,9 +606,9 @@ const HomeWholesaler = () => {
                               >
                                 Email
                               </label>
-                            </div>
+                            </div> */}
                             {/* form check */}
-                            <div className="form-check form-check-inline">
+                            {/* <div className="form-check form-check-inline">
                               <input
                                 className="form-check-input"
                                 type="radio"
@@ -630,11 +628,11 @@ const HomeWholesaler = () => {
                           <div>
                             
 
-                            <ul className="list-inline mb-0 mt-2 ">
+                            <ul className="list-inline mb-0 mt-2 "> */}
                               {/* list item */}
-                              <li className="list-inline-item">
+                              {/* <li className="list-inline-item"> */}
                                 {/* img */}
-                                <Link to="#!">
+                                {/* <Link to="#!">
                                   {" "}
                                   <img
                                     src={appstore}
@@ -643,9 +641,9 @@ const HomeWholesaler = () => {
                                   />
                                 </Link>
                               </li>
-                              <li className="list-inline-item">
+                              <li className="list-inline-item"> */}
                                 {/* img */}
-                                <Link to="#!">
+                                {/* <Link to="#!">
                                   {" "}
                                   <img
                                     src={googleplay}
@@ -661,9 +659,9 @@ const HomeWholesaler = () => {
                     </div>
                     <div className=" offset-lg-2 col-lg-4 col-md-6 fade-zoom">
                       <Slide direction="right">
-                        <div className="text-lg-start">
+                        <div className="text-lg-start"> */}
                           {/* img */}
-                          <img
+                          {/* <img
                             src={iphone}
                             alt="iphone"
                             className=" img-fluid"
@@ -671,11 +669,11 @@ const HomeWholesaler = () => {
                         </div>
                       </Slide>
                     </div>
-                  </div>
+                  </div> */}
                   {/* <hr className="my-lg-14 my-8"> */}
-                </div>
+                {/* </div>
               </section>
-            </>
+            </> */}
             
             
             {/* <>

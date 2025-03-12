@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import groceryshop from "../images/Grocerylogo.png";
 import amazonpay from "../images/amazonpay.svg";
@@ -12,13 +12,22 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import { Trans } from 'react-i18next';
 
+
 const Footer = () => {
+  const { t, i18n } = useTranslation('footer');
   let date = new Date();
   let year = date.getFullYear();
   const [categories,setCategories] = useState([]);
+  const [currentLang, setCurrentLang] = useState(i18n.language);
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
-  const { t, i18n } = useTranslation();
+
+  const navigate = useNavigate()
+  
+   // Update currentLang when the language is changed
+        useEffect(() => {
+          setCurrentLang(i18n.language);
+        }, [i18n.language]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,6 +49,13 @@ const Footer = () => {
 
     fetchData();
   }, []);
+
+  const handleCategoryClick = (category) => {
+    const categoryName = currentLang === "en" ? category.name_en : category.name_ar;
+  
+    // Navigate to the shop page with the selected category as a query parameter
+    navigate(`/Shop`, { state: { displayedCategory: categoryName } });
+  };
 
   return (
     <div>
@@ -101,19 +117,19 @@ const Footer = () => {
               </div>
               <div className="col-sm-6 col-lg-3 mb-30">
                 <div className="footer-widget mb-0">
-                  <h4>{t("all_category", { ns: "footer" })}</h4>
+                  <h4>{t("all_category")}</h4>
                   <div className="line-footer" />
                   <div className="row">
                     <div className="col">
                       <ul className="footer-link mb-0">
                         {categories.slice(0, 10).map((category) => (
                           <li key={category.id}>
-                            <Link to="#">
+                            <a onClick={() => handleCategoryClick(category)} style={{ cursor: "pointer" }}>
                               <span>
                                 <i className="fa fa-angle-right" />
                               </span>{" "}
-                              {category.name}
-                            </Link>
+                              {currentLang === 'en' ? category.name_en : category.name_ar}
+                            </a>
                           </li>
                         ))}
                       </ul>
@@ -123,7 +139,7 @@ const Footer = () => {
               </div>
               <div className="col-sm-6 col-lg-3 mb-30">
                 <div className="footer-widget mb-0">
-                  <h4>{t("for_consumers", { ns: "footer" })}</h4>
+                  <h4>{t("for_consumers")}</h4>
                   <div className="line-footer" />
                   <div className="row">
                     <div className="col">
@@ -133,7 +149,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            {t("careers", { ns: "footer" })}
+                            {t("careers")}
                           </Link>
                         </li>
                         <li>
@@ -141,31 +157,31 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            {t("promos_coupons", { ns: "footer" })}
+                            {t("promos_coupons")}
                           </Link>
                         </li>
                         <li>
-                          <Link to="/MyAccountOrder">
+                          <Link to="/MyAccountAddress">
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>
-                            {t("shipping", { ns: "footer" })}
+                            {t("shipping")}
                           </Link>
                         </li>
-                        <li>
+                        {/* <li>
                           <Link to="/MyAccountOrder">
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            {t("product_returns", { ns: "footer" })}
+                            {t("product_returns")}
                           </Link>
-                        </li>
+                        </li> */}
                         <li>
                           <Link to="/MyAcconutPaymentMethod">
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            {t("payments", { ns: "footer" })}
+                            {t("payments")}
                           </Link>
                         </li>
                         <li>
@@ -173,7 +189,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            {t("faq", { ns: "footer" })}
+                            {t("faq")}
                           </Link>
                         </li>
                         {!isAuthenticated && (
@@ -188,20 +204,20 @@ const Footer = () => {
                                           aria-haspopup="true"
                                           aria-expanded="false"
                                         >
-                                          {t("are_you_wholesaler", { ns: "footer" })}
+                                          {t("are_you_wholesaler")}
                                         </Link>
                                         <div
                                           className="dropdown-menu sm-menu"
                                           aria-labelledby="navbarDropdown"
                                         >
                                           <Link className="dropdown-item" to="/WholesalerAccountSignIn">
-                                          {t("sign_in", { ns: "footer" })}
+                                          {t("sign_in")}
                                           </Link>
                                           {/* <Link className="dropdown-item" to="pages/store-grid.html">
                                             Store Grid
                                           </Link> */}
                                           <Link className="dropdown-item" to="/WholesalerAccountSignUp">
-                                          {t("signup", { ns: "footer" })}
+                                          {t("signup")}
                                           </Link>
                                         </div>
                                       </li>
@@ -213,7 +229,7 @@ const Footer = () => {
               </div>
               <div className="col-sm-6 col-lg-3 mb-30">
                 <div className="footer-widget mb-0">
-                  <h4>{t("get_to_know_us", { ns: "footer" })}</h4>
+                  <h4>{t("get_to_know_us")}</h4>
                   <div className="line-footer" />
                   <div className="row">
                     <div className="col">
@@ -223,7 +239,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            {t("company", { ns: "footer" })}
+                            {t("company")}
                           </Link>
                         </li>
                         <li>
@@ -231,7 +247,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            {t("about", { ns: "footer" })}
+                            {t("about")}
                           </Link>
                         </li>
                         <li>
@@ -239,7 +255,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            {t("blog", { ns: "footer" })}
+                            {t("blog")}
                           </Link>
                         </li>
                         <li>
@@ -247,7 +263,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />{" "}
                             </span>{" "}
-                            {t("help_center", { ns: "footer" })}
+                            {t("help_center")}
                           </Link>
                         </li>
                         <li>
@@ -255,7 +271,7 @@ const Footer = () => {
                             <span>
                               <i className="fa fa-angle-right" />
                             </span>{" "}
-                            {t("our_value", { ns: "footer" })}
+                            {t("our_value")}
                           </Link>
                         </li>
                       </ul>
@@ -308,7 +324,7 @@ const Footer = () => {
             <div className="container text-center">
               <div className="footer-copy">
                 <div className="copyright">
-                {t("all_rights_reserved", { ns: "footer" })}
+                {t("all_rights_reserved")}
                   {/* <Link to="https://github.com/Mohamed0400" target="_blank">
                     @Mohamed Megahed
                   </Link> */}

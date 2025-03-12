@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 ChartJS.register(CategoryScale,LinearScale,PointElement,LineElement,BarElement,ArcElement,Title,Tooltip,Legend,Filler);
 
 const ProductDetails = () => {
+  const {t, i18n} = useTranslation('product_details')
   const [product, setProduct] = useState(null);
   const [selectedPaymentOption, setSelectedPaymentOption] = useState(null);
   const [progress, setProgress] = useState(0);
@@ -23,6 +24,7 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [cartQuantity, setCartQuantity] = useState(1);
   const [showCartControls, setShowCartControls] = useState(false);
+  const [currentLang, setCurrentLang] = useState(i18n.language);
   const { id } = useParams()
   // New state for analytics
   const [activeChart, setActiveChart] = useState("demand");
@@ -34,8 +36,12 @@ const ProductDetails = () => {
 
   const navigate = useNavigate()
 
-  const {t} = useTranslation('product_details')
+  // Update currentLang when the language is changed
+    useEffect(() => {
+      setCurrentLang(i18n.language);
+    }, [i18n.language]);
 
+    
   useEffect(() => {
     const loadingTimer = setTimeout(() => setIsLoading(false), 1500);
     const progressInterval = setInterval(() => {
@@ -345,10 +351,12 @@ const ProductDetails = () => {
           </div>
           {/* Product Title and Description */}
           <div className={styles.productInfo}>
-            <h1 className={styles.productTitle}>{product?.product_name}</h1>
+            <h1 className={styles.productTitle}>{currentLang === "en" ? product?.product_name_en : product?.product_name_ar}</h1>
             <div className={styles.productDescription}>
-              {product?.description.split("\n").map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
+            {(currentLang === "en" ? product?.description_en : product?.description_ar)
+                ?.split("\n")
+                .map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
               ))}
             </div>
           </div>

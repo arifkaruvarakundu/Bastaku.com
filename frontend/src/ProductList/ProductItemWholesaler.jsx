@@ -4,13 +4,20 @@ import axios from "axios";
 import { useTranslation } from "react-i18next";
 
 const ProductItem = () => {
+  const{t, i18n} = useTranslation('home_wh')
   const [products, setProducts] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentLang, setCurrentLang] = useState(i18n.language);
 
   const navigate = useNavigate();
 
-  const{t} = useTranslation('home_wh')
+  // Update currentLang when the language is changed
+  useEffect(() => {
+    setCurrentLang(i18n.language);
+  }, [i18n.language]);
+  
+
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -83,7 +90,7 @@ const ProductItem = () => {
                     </div>
                     <h2 className="fs-6">
                       <a href="#!" className="text-inherit text-decoration-none">
-                        {product.product_name}
+                      {currentLang === "en" ? product.product_name_en : product.product_name_ar}
                       </a>
                     </h2>
 

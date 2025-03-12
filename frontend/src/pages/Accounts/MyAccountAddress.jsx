@@ -278,12 +278,12 @@ const MyAccountAddress = () => {
                         </Link>
                       </li>
                       {/* nav item */}
-                      <li className="nav-item">
+                      {/* <li className="nav-item">
                         <Link className="nav-link " to="/MyAccountSetting">
                           <i className="fas fa-cog me-2" />
                           {tCommon('settings')}
                         </Link>
-                      </li>
+                      </li> */}
                       {/* nav item */}
                       <li className="nav-item">
                         <Link
@@ -414,7 +414,7 @@ const MyAccountAddress = () => {
                                       <br />
                                       {tAccounts("mob_3")}: {userDetails.mobile_number3}
                                       <br />
-                                      {tAccounts('"license_no"')}.{userDetails.license_number}
+                                      {tAccounts("license_no")}:{userDetails.license_number}
                                       <br />
                                       {userDetails.license_image && (
                                         <img

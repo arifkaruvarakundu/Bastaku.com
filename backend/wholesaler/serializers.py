@@ -37,22 +37,40 @@ class ProductSerializer(serializers.ModelSerializer):
             'created_date', 'modified_date', 'product_images'  # Include 'images'
         ]
 
+    def get_category(self, obj):
+        """
+        Custom method to return the category's names in both English and Arabic based on request method.
+        """
+        # Check if category exists
+        if obj.category:
+            request = self.context.get('request')
+            
+            if request and request.method == 'GET':
+                # If GET request, return category names in both languages
+                return {
+                    'name_en': obj.category.name_en,
+                    'name_ar': obj.category.name_ar
+                }
+            # If not a GET request, return just the ID
+            return obj.category.id
+        return None
+    
     def get_discounted_price(self, obj):
         """Ensure discounted_price is safely converted to float"""
         if obj.get_campaign_discounted_price():
             return float(obj.get_campaign_discounted_price())
         return None
 
-    def get_category(self, obj):
-        # Check if it's a GET request (via context)
-        if not obj.category:
-            return None 
-        request = self.context.get('request')
-        if request and request.method == 'GET':
-            # Return the category name
-            return obj.category.name
-        # Return the ID for other methods (e.g., POST)
-        return obj.category.id
+    # def get_category(self, obj):
+    #     # Check if it's a GET request (via context)
+    #     if not obj.category:
+    #         return None 
+    #     request = self.context.get('request')
+    #     if request and request.method == 'GET':
+    #         # Return the category name
+    #         return obj.category.name
+    #     # Return the ID for other methods (e.g., POST)
+    #     return obj.category.id
 
 
 class ProductCreateSerializer(serializers.ModelSerializer):
