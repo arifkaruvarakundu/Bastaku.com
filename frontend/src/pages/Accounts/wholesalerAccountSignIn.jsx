@@ -8,12 +8,15 @@ import ScrollToTop from "../ScrollToTop";
 import { useDispatch } from "react-redux";
 import { setAuthenticated } from "../../redux/authSlice";
 import { useTranslation } from "react-i18next";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const WholesalerAccountSignIn = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -104,7 +107,7 @@ const WholesalerAccountSignIn = () => {
                   {/* Password */}
                   <div className="col-12">
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       className="form-control"
                       id="inputPassword"
                       name="password"
@@ -113,6 +116,13 @@ const WholesalerAccountSignIn = () => {
                       placeholder={t("password_placeholder")}
                       required
                     />
+                    <span
+                                          className="position-absolute end-0 top-50 translate-middle-y me-3"
+                                          style={{ cursor: "pointer" }}
+                                          onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                          {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                        </span>
                   </div>
                   <div className="d-flex justify-content-between">
                     {/* Forgot password link */}

@@ -18,5 +18,7 @@
     "loading": "جار التحميل...",
     "edit_product": "تعديل المنتج",
     "existing_images": "الصور الحالية",
-    "update_product": "تحديث المنتج"
+    "update_product": "تحديث المنتج",
+    "unit": "وحدة",
+    "unitDescription": "أدخل الوحدة مثل: 5 كجم، 10 كجم، 1 عبوة، 1 قطعة"
   }

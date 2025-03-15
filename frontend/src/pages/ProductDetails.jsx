@@ -450,6 +450,9 @@ const ProductDetails = () => {
                   </button>
               </div>
             </div>
+            <div style={{marginBottom:25}}>
+              <span> {t("unit")}: {product?.unit}</span>
+            </div>
             {/* Group Buying Section */}
             <div className={styles.wholesalePriceSection}>
                   <div className={styles.priceHeader}>

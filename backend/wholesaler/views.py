@@ -116,6 +116,7 @@ class AddProductView(APIView):
                 description_ar=data.get("description_ar"),
                 actual_price=data.get("actual_price"),
                 stock=data.get("stock"),
+                unit =data.get("unit"),
                 category=category_instance,
                 campaign_discount_percentage=data.get("campaign_discount_percentage"),
                 minimum_order_quantity_for_offer=data.get("minimum_order_quantity_for_offer"),

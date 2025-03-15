@@ -396,33 +396,67 @@ const Home = () => {
                             <div className="position-absolute" style={{ bottom: "30px", right: "20px" }}>
                               <div className="d-flex flex-column align-items-center">
                                 {/* Plan Your Budget With Us Button */}
-                                <Link to="#" className="btn btn-dark mb-3 rounded-circle" style={{ width: "120px", height: "120px", display: isButtonsVisible ? 'block' : 'none' }}>
-                                  Plan Your Budget With Us
+                                <Link
+                                  to="/ExpenseCalculationPage"
+                                  className="btn btn-dark mb-3 rounded-circle d-flex justify-content-center align-items-center text-center"
+                                  style={{
+                                    width: "140px",
+                                    height: "120px",
+                                    textAlign: "center",
+                                    whiteSpace: "normal",
+                                    wordWrap: "break-word",
+                                    padding: "10px",
+                                  }}
+                                >
+                                  Plan Your Monthly Expense With us !
                                 </Link>
 
                                 {/* Budget More than 200 KD */}
+                                {/* <div
+                                  className="position-absolute"
+                                  style={{ bottom: "30px", right: "1000px" }}
+                                >
+                                  <div className="d-flex flex-column align-items-center">
                                 <Link
                                   to="#"
-                                  className="btn btn-dark mb-3 rounded-circle"
-                                  style={{ width: "140px", height: "140px", display: isButtonsVisible ? 'block' : 'none' }}
+                                  className="btn btn-dark mb-3 rounded-circle d-flex justify-content-center align-items-center text-center"
+                                  style={{
+                                    width: "140px",
+                                    height: "140px",
+                                    textAlign: "center",
+                                    whiteSpace: "normal",
+                                    wordWrap: "break-word",
+                                    padding: "10px",
+                                  }}
                                   onClick={() => handleClick('moreThan200')}
                                 >
-                                  Is your budget is more than 200 KD? Click here
-                                </Link>
+                                  Is your budget is more than 200 KD? <br/> 
+                                  Click This Button
+                                </Link> */}
 
                                 {/* Budget Less than 200 KD */}
-                                <Link
+                                {/* <Link
                                   to="#"
-                                  className="btn btn-dark rounded-circle"
-                                  style={{ width: "120px", height: "120px", display: isButtonsVisible ? 'block' : 'none' }}
+                                  className="btn btn-dark mb-3 rounded-circle d-flex justify-content-center align-items-center text-center"
+                                  style={{
+                                    width: "140px",
+                                    height: "140px",
+                                    textAlign: "center",
+                                    whiteSpace: "normal",
+                                    wordWrap: "break-word",
+                                    padding: "10px",
+                                  }}
                                   onClick={() => handleClick('lessThan200')}
                                 >
-                                  Is your Budget is less than 200 KD? Click here
+                                  Is your Budget is less than 200 KD? <br/>
+                                  Click here
                                 </Link>
                               </div>
-                            </div>
+                            </div> */}
                           </div>
                         </div>
+                      </div>
+                      </div>
                       </div>
                     </Slide>
                   </div>

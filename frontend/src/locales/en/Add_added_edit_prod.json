@@ -19,6 +19,8 @@
     "loading": "Loading...",
     "edit_product": "Edit Product",
     "existing_images": "Existing Images",
-    "update_product": "Update Product"
+    "update_product": "Update Product",
+    "unit":"Unit",
+    "unitDescription": "Enter the unit like: 5 kg, 10 kg, 1 pack, 1 piece"
   }
   

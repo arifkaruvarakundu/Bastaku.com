@@ -9,6 +9,7 @@ import ScrollToTop from "../ScrollToTop";
 import Swal from 'sweetalert2';
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const MyAccountSignUp = () => {
 
@@ -19,6 +20,10 @@ const MyAccountSignUp = () => {
     password: '',
     confirmPassword: '',
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 
   const navigate = useNavigate()
   const dispatch = useDispatch();
@@ -170,7 +175,7 @@ const MyAccountSignUp = () => {
                     </div>
                     <div className="col-12">
                       <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         className="form-control"
                         id="password"
                         name="password"
@@ -179,11 +184,18 @@ const MyAccountSignUp = () => {
                         onChange={handleChange}
                         required
                       />
+                      <span
+                                            className="position-absolute end-0 top-50 translate-middle-y me-3"
+                                            style={{ cursor: "pointer" }}
+                                            onClick={() => setShowPassword(!showPassword)}
+                                          >
+                                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                          </span>
                     </div>
                     <div className="col-12">
                       {/* input */}
                       <input
-                        type="password"
+                        type={showConfirmPassword ? "text" : "password"}
                         className="form-control"
                         id="confirmPassword"
                         name="confirmPassword"
@@ -192,6 +204,13 @@ const MyAccountSignUp = () => {
                         onChange={handleChange}
                         required
                       />
+                      <span
+                                            className="position-absolute end-0 top-50 translate-middle-y me-3"
+                                            style={{ cursor: "pointer" }}
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                          >
+                                            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                                          </span>
                     </div>
                     {/* btn */}
                     <div className="col-12 d-grid">

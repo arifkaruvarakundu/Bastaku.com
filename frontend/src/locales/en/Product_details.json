@@ -35,10 +35,12 @@
     "free": "free",
     "start_group_deal": "Start Group Deal",
     "units": "units",
+    "unit": "Unit",
     "start_with_5_percent_extra_discount": "Start with 5% Extra Discount",
     "start_with_25_percent_extra_discount": "Start with 25% Extra Discount",
     "select_payment_option": "Select a Payment Option",
     "join_group_deal": "Join Group Deal",
     "join_with_5_percent_extra_discount": "Join with 5% Extra Discount",
     "join_with_25_percent_extra_discount": "Join with 25% Extra Discount"
+    
   }

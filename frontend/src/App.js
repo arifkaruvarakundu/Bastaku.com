@@ -54,6 +54,7 @@ import StartCampaignPage from "./pages/store/StartCampaign";
 import Campaigns from "./pages/store/Campaigns";
 import MyAccountCampaigns from "./pages/Accounts/UserCampaignsList";
 import WholesalerCampaigns from "./pages/Accounts/WholesalerCampaignsList";
+import ExpenseCal from "./pages/Expense_cal";
 
 const App = () => {
 
@@ -120,6 +121,7 @@ const ProtectedRoute = ({ element: Component, roles, ...rest }) => {
           <Route path="/MyCampaigns" element={<MyAccountCampaigns />}/>
           <Route path="/EditProduct/:id" element={<EditProduct />}/>
           <Route path="/WholesalerCampaigns" element={<WholesalerCampaigns />} />
+          <Route path="/ExpenseCalculationPage" element={<ExpenseCal />} />
           {/* About pages */}
           <Route path="/Blog" element={<Blog />} />
           <Route path="/BlogCategory" element={<BlogCategory />} />

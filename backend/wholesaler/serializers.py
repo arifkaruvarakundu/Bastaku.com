@@ -32,7 +32,7 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = [
             'id', 'wholesaler', 'category', 'product_name', 'product_name_en', 'product_name_ar', 'slug', 'description',
-            'description_en', 'description_ar', 'actual_price', 'stock', 'is_in_campaign', 'is_available','discounted_price',
+            'description_en', 'description_ar', 'actual_price', 'stock', 'is_in_campaign', 'is_available','discounted_price','unit',
             'campaign_discount_percentage', 'minimum_order_quantity_for_offer',
             'created_date', 'modified_date', 'product_images'  # Include 'images'
         ]

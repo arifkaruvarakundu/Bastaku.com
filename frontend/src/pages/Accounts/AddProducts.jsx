@@ -31,6 +31,7 @@ const AddProducts = () => {
     category: "", // Updated to category (dropdown field)
     campaignDiscountPercentage: "",
     minimumOrderQuantityForOffer: "", // New field added here
+    unit: ""
   });
 
   const [categories, setCategories] = useState([]); // To store product categories
@@ -109,6 +110,8 @@ const AddProducts = () => {
     formData.append("category", productData.category);
     formData.append("campaign_discount_percentage", productData.campaignDiscountPercentage);
     formData.append("minimum_order_quantity_for_offer", productData.minimumOrderQuantityForOffer);
+    formData.append("unit", productData.unit);
+
   
     const wholesalerEmail = localStorage.getItem("email");
     if (wholesalerEmail) {
@@ -140,6 +143,7 @@ const AddProducts = () => {
         category: "",
         campaignDiscountPercentage: "",
         minimumOrderQuantityForOffer: "",
+        unit: ""
       });
       setImage(null);
       
@@ -381,6 +385,21 @@ const AddProducts = () => {
                                       onChange={handleChange}
                                       required
                                     />
+                                  </div>
+                                  <div className="mb-5">
+                                    <label className="form-label">{tProduct("unit")}</label>
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                      name="unit"
+                                      value={productData.unit}
+                                      placeholder={tProduct("unit")}
+                                      onChange={handleChange}
+                                      required
+                                    />
+                                    <small className="text-muted">
+                                      {tProduct("unitDescription")}
+                                    </small>
                                   </div>
                                   {/* input */}
                                   <div className="mb-5">
