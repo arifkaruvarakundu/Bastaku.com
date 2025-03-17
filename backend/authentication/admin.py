@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from authentication.models import User
 from .models import *
-from wholesaler.models import Product
+from wholesaler.models import ProductVariant, ProductVariantImage
 class UserModelAdmin(BaseUserAdmin):
 
     # The fields to be used in displaying the User model.
@@ -35,18 +35,27 @@ class UserModelAdmin(BaseUserAdmin):
 
 
 # Inline for displaying related products
-class ProductInline(admin.TabularInline):  # Use TabularInline for a compact table view
-    model = Product
+class ProductVariantInline(admin.TabularInline):
+    model = ProductVariant
     extra = 0  # No extra empty forms
-    show_change_link = True  # Allows clicking on the product to edit
-    fields = ('product_name', 'actual_price', 'is_available', 'is_in_campaign')  # Fields to display
-    readonly_fields = ('product_name', 'actual_price', 'is_available', 'is_in_campaign')  # Optional if you want read-only
+    show_change_link = True  # Allows clicking on the product variant to edit
+    fields = ('brand', 'weight', 'liter', 'price', 'stock', 'campaign_discount_percentage', 'minimum_order_quantity_for_offer')  # Fields to display
+    readonly_fields = ('brand', 'weight', 'liter', 'price', 'stock', 'campaign_discount_percentage', 'minimum_order_quantity_for_offer')  # Optional if you want read-only
+    verbose_name = 'Product Variant'
+    verbose_name_plural = 'Product Variants'
+
+class ProductVariantImageInline(admin.TabularInline):
+    model = ProductVariantImage
+    extra = 1
+    fields = ('variant', 'image', 'wholesaler')  # Display variant and wholesaler
+    readonly_fields = ('variant', 'wholesaler')  # Optional: Make wholesaler readonly
+
 
 # Wholesaler Admin
 class WholesalerAdmin(admin.ModelAdmin):
     list_display = ('company_name', 'email', 'mobile_number1', 'mobile_number2', 'mobile_number3', 'is_active')  # Display in wholesaler list view
     search_fields = ('company_name', 'email')  # Enable search
-    inlines = [ProductInline]  # Add inline products under each wholesaler
+    inlines = [ProductVariantInline]  # Add inline products under each wholesaler
 
 # Register the models
 admin.site.register(Wholesaler, WholesalerAdmin)

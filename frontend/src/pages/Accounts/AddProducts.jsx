@@ -1,12 +1,13 @@
-import React, { useEffect, useState,useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Link} from "react-router-dom";
 import { MagnifyingGlass } from "react-loader-spinner";
-import { useDropzone } from 'react-dropzone';
+// import { useDropzone } from 'react-dropzone';
 import ScrollToTop from "../ScrollToTop";
 import axios from "axios";
-import ClipLoader from "react-spinners/ClipLoader";
+// import ClipLoader from "react-spinners/ClipLoader";
 import { useTranslation } from "react-i18next";
 import AddProductButton from "../../Component/AddProductButton";
+import VariantList from "../../Component/variant_form";
 
 const AddProducts = () => {
   const { t: tCommon, i18n } = useTranslation('accounts_common');
@@ -26,16 +27,69 @@ const AddProducts = () => {
     description: "",
     description_en: "",
     description_ar: "",
-    actualPrice: "",
-    stock: "",
     category: "", // Updated to category (dropdown field)
-    campaignDiscountPercentage: "",
-    minimumOrderQuantityForOffer: "", // New field added here
-    unit: ""
   });
 
   const [categories, setCategories] = useState([]); // To store product categories
+  const [variants, setVariants] = useState([
+    {
+      brand: "",
+      weight: "",
+      liter: "",
+      price: "",
+      stock: "",
+      campaign_discount_percentage: "",
+      minimum_order_quantity_for_offer:"",
+      images: []
+    },
+  ]);
 
+  // Handle change in variant fields
+  const handleVariantChange = (index, e) => {
+    const { name, value } = e.target;
+    const newVariants = [...variants];
+    newVariants[index][name] = value;
+    setVariants(newVariants);
+  };
+
+  const onDrop = (index, acceptedFiles) => {
+    const newVariants = [...variants];
+    const existingImages = newVariants[index].images || [];
+    
+    // ✅ Append new images instead of replacing them
+    newVariants[index].images = [
+      ...existingImages,
+      ...acceptedFiles.map((file) => Object.assign(file, { preview: URL.createObjectURL(file) })),
+    ];
+    
+    setVariants(newVariants);
+  };
+  
+  // Add a new variant field
+  const addVariant = () => {
+    setVariants([
+      ...variants,
+      {
+        brand: "",
+        weight: "",
+        liter: "",
+        price: "",
+        stock: "",
+        campaign_discount_percentage: "",
+        minimum_order_quantity_for_offer:"",
+        images: []
+      },
+    ]);
+  };
+
+ // Remove a variant
+//  const removeVariant = (index) => {
+//   const updatedVariants = variants.filter((_, i) => i !== index);
+//   setVariants(updatedVariants);
+// };
+
+
+  
   // Update currentLang when the language is changed
   useEffect(() => {
     setCurrentLang(i18n.language);
@@ -58,30 +112,57 @@ const AddProducts = () => {
   }, []);
 
   
-  const onDrop = useCallback((acceptedFiles) => {
-    setFiles((prevFiles) => [
-      ...prevFiles,  // Keep the existing files
-      ...acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      ),
-    ]);
-  }, []);
+  // const onDrop = useCallback((acceptedFiles) => {
+  //   setFiles((prevFiles) => [
+  //     ...prevFiles,  // Keep the existing files
+  //     ...acceptedFiles.map((file) =>
+  //       Object.assign(file, {
+  //         preview: URL.createObjectURL(file),
+  //       })
+  //     ),
+  //   ]);
+  // }, []);
   
+  // Handle Image Upload
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: 'image/*',
-    multiple: true,  // Allow multiple files
-  });
+  // const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  //   accept: "image/*",
+  //   multiple: true,
+  //   onDrop: (acceptedFiles) => onDrop(index, acceptedFiles),
+  // });
+
+// const onDrop = (index, acceptedFiles) => {
+//   const updatedVariants = [...variants];
+//   const newImages = acceptedFiles.map((file) =>
+//     Object.assign(file, { preview: URL.createObjectURL(file) })
+//   );
+//   updatedVariants[index].images = newImages; // Store images within the specific variant
+//   setVariants(updatedVariants);
+// };
+
+// Handle Image Removal
+const removeImage = (variantIndex, imgIndex) => {
+  const newVariants = [...variants];
+  newVariants[variantIndex].images.splice(imgIndex, 1);
+  setVariants(newVariants);
+};
+
+const removeVariant = (index) => {
+  setVariants(variants.filter((_, i) => i !== index));
+};
+
+  // const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  //   onDrop,
+  //   accept: 'image/*',
+  //   multiple: true,  // Allow multiple files
+  // });
 
   // Handle form field changes with validation for price, stock, and minimum order quantity
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     // Prevent negative values for price, stock, and minimum order quantity
-    if ((name === "actualPrice" || name === "stock" || name === "minimumOrderQuantityForOffer") && Number(value) < 0) {
+    if ((name === "actualPrice" || name === "stock" || name === "minimum_order_quantity_for_offer") && Number(value) < 0) {
       return;
     }
 
@@ -105,22 +186,23 @@ const AddProducts = () => {
     formData.append("description", productData.description);
     formData.append("description_en", productData.description_en);
     formData.append("description_ar", productData.description_ar);
-    formData.append("actual_price", productData.actualPrice);
-    formData.append("stock", productData.stock);
     formData.append("category", productData.category);
-    formData.append("campaign_discount_percentage", productData.campaignDiscountPercentage);
-    formData.append("minimum_order_quantity_for_offer", productData.minimumOrderQuantityForOffer);
-    formData.append("unit", productData.unit);
-
   
     const wholesalerEmail = localStorage.getItem("email");
     if (wholesalerEmail) {
       formData.append("wholesaler", wholesalerEmail);
     }
   
-    files.forEach((file, index) => {
-      formData.append(`product_images[${index}]`, file);
+   // Add variant data to formData
+   variants.forEach((variant, index) => {
+    variant.images.forEach((file, fileIndex) => {
+      formData.append(`variant_images_${index}_${fileIndex}`, file);
     });
+    formData.append("variants", JSON.stringify(variants))
+  });
+
+    // // Append variants as JSON
+    // formData.append("variants", JSON.stringify(variants));
   
     try {
       const response = await axios.post("http://127.0.0.1:8000/add_product/", formData, {
@@ -131,6 +213,13 @@ const AddProducts = () => {
   
       alert("Product Added Successfully!");
       setSuccess(true);
+      setVariants([{ 
+        variant_type: "", 
+        variant_value: "", 
+        price: "", stock: "", 
+        campaign_discount_percentage: "", 
+        minimum_order_quantity_for_offer:"" 
+      }]);
       setProductData({
         product_name: "",
         product_name_en: "",
@@ -138,12 +227,7 @@ const AddProducts = () => {
         description: "",
         description_en: "",
         description_ar: "",
-        actualPrice: "",
-        stock: "",
         category: "",
-        campaignDiscountPercentage: "",
-        minimumOrderQuantityForOffer: "",
-        unit: ""
       });
       setImage(null);
       
@@ -323,6 +407,18 @@ const AddProducts = () => {
                                       placeholder={tProduct("product_name")}
                                     />
                                   </div>
+                                  <div className="mb-5">
+                                    {/* <h5>Product Variants</h5> */}
+                                    <VariantList
+                                      variants={variants}
+                                      handleVariantChange={handleVariantChange}
+                                      onDrop={onDrop}
+                                      removeImage={removeImage}
+                                      removeVariant={removeVariant}
+                                      addVariant={addVariant}
+                                      tProduct={(text) => text} // Replace with actual translation function if needed
+                                    />
+                                  </div>
                                   {/* input */}
                                   <div className="mb-3">
                                     <label className="form-label">{tProduct('description')}</label>
@@ -333,73 +429,6 @@ const AddProducts = () => {
                                       className="form-control"
                                       placeholder={tProduct('description')}
                                     />
-                                  </div>
-                                  {/* input */}
-                                  <div className="mb-5">
-                                    <label className="form-label">{tProduct('price')}</label>
-                                    <input
-                                      type="text"
-                                      className="form-control"
-                                      placeholder={tProduct('price')}
-                                      name="actualPrice"
-                                      value={productData.actualPrice}
-                                      onChange={handleChange}
-                                    />
-                                  </div>
-                                  {/* input */}
-                                  <div className="mb-5">
-                                    <label className="form-label">{tProduct("campaign_discount_percentage")}</label>
-                                    <input
-                                      type="number"
-                                      className="form-control"
-                                      name="campaignDiscountPercentage"
-                                      value={productData.campaignDiscountPercentage}
-                                      onChange={handleChange}
-                                      min="0"
-                                      max="100"
-                                      placeholder={tProduct('enter_discount_percentage')}
-                                    />
-                                  </div>
-                                  {/* input */}
-                                  <div className="mb-5">
-                                    <label className="form-label">{tProduct("minimum_order_quantity_for_offer")}</label>
-                                    <input
-                                      type="number"
-                                      className="form-control"
-                                      name="minimumOrderQuantityForOffer" // Input field name matches the state key
-                                      value={productData.minimumOrderQuantityForOffer}
-                                      onChange={handleChange}
-                                      placeholder={tProduct('enter_minimum_quantity_for_offer')}
-                                      required
-                                    />
-                                  </div>
-                                  {/* input */}
-                                  <div className="mb-5">
-                                    <label className="form-label">{tProduct("stock")}</label>
-                                    <input
-                                      type="number"
-                                      className="form-control"
-                                      name="stock"
-                                      value={productData.stock}
-                                      placeholder={tProduct("stock")}
-                                      onChange={handleChange}
-                                      required
-                                    />
-                                  </div>
-                                  <div className="mb-5">
-                                    <label className="form-label">{tProduct("unit")}</label>
-                                    <input
-                                      type="text"
-                                      className="form-control"
-                                      name="unit"
-                                      value={productData.unit}
-                                      placeholder={tProduct("unit")}
-                                      onChange={handleChange}
-                                      required
-                                    />
-                                    <small className="text-muted">
-                                      {tProduct("unitDescription")}
-                                    </small>
                                   </div>
                                   {/* input */}
                                   <div className="mb-5">
@@ -421,33 +450,7 @@ const AddProducts = () => {
                                     </select>
                                   </div>
                                   {/* input */}
-                                  <div
-                                    {...getRootProps()}
-                                    style={{
-                                      border: '2px dashed #aaa',
-                                      padding: '20px',
-                                      textAlign: 'center',
-                                      cursor: 'pointer',
-                                    }}
-                                  >
-                                    <input {...getInputProps()} multiple/>
-                                    {isDragActive ? (
-                                      <p>{tProduct('drop_images_here')}</p>
-                                    ) : (
-                                      <p>{tProduct('drag_drop_images')}</p>
-                                    )}
-
-                                    <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
-                                      {files.map((file) => (
-                                        <img
-                                          key={file.name}
-                                          src={file.preview}
-                                          alt={file.name}
-                                          style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px' }}
-                                        />
-                                      ))}
-                                    </div>
-                                  </div>
+                                  
                                   {/* button */}
                                   <div className="mb-3 mt-4">
                                   {/* <button type="submit" className="btn btn-primary" disabled={loading}>

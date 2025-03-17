@@ -121,6 +121,11 @@ class UserPasswordResetSerializer(serializers.Serializer):
 
 from .models import Wholesaler
 
+# class WholesalerSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Wholesaler
+#         fields = '__all__'
+
 class WholesalerRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
 

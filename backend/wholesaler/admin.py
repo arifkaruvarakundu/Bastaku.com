@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import Product, ProductImage, WholesalerBankDetails
+from .models import Product, ProductVariantImage, WholesalerBankDetails, ProductVariant
 
 # Inline for ProductImages
 class ProductImageInline(admin.TabularInline):
-    model = ProductImage
+    model = ProductVariantImage
     extra = 1
 
 # Admin class for Product
@@ -19,3 +19,5 @@ class ProductAdmin(admin.ModelAdmin):
 
 # Registering other models
 admin.site.register(WholesalerBankDetails)
+admin.site.register(ProductVariant)
+admin.site.register(ProductVariantImage)

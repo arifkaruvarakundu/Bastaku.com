@@ -26,6 +26,7 @@ const ProductItem = () => {
         const response = await axios.get("http://127.0.0.1:8000/wholesaler/products/", {
           params: { email: wholesalerEmail },
         });
+        console.log("wholesaler products", response.data)
         setProducts(response.data);
         setDisplayedProducts(response.data.slice(0, 12));
       } catch (err) {
@@ -76,8 +77,12 @@ const ProductItem = () => {
                         </div>
                       )}
                       <a href="#!">
-                        <img
-                          src={product.product_images?.length > 0 ? product.product_images[0].image_url : "https://via.placeholder.com/150"}
+                      <img
+                          src={
+                            product.first_variant_image_url
+                              ? product.first_variant_image_url
+                              : "https://via.placeholder.com/150"
+                          }
                           alt={product.product_name}
                           style={{ width: "120px", height: "120px", margin: "5px" }}
                         />
@@ -96,9 +101,9 @@ const ProductItem = () => {
 
                     <div className="d-flex justify-content-between align-items-center mt-3">
                       <div>
-                        <span className="text-dark">{t('price')} : {product.actual_price} {t('kd')}</span>{" "}
+                        <span className="text-dark">{t('price')} : {product.first_variant.price} {t('kd')}</span>{" "}
                         <span className="text-decoration-line-through text-muted">
-                          {t('price')}: {((Number(product.actual_price) + (Number(product.actual_price) * 10) / 100).toFixed(2))} {t('kd')}
+                          {t('price')}: {((Number(product.first_variant.price) + (Number(product.first_variant.price) * 10) / 100).toFixed(2))} {t('kd')}
                         </span>
                       </div>
                       <div>
@@ -117,7 +122,7 @@ const ProductItem = () => {
                     </div>
                     <div>
                       <span style={{ color: "red" }}>
-                        {t('campaignPrice')}: {(product.actual_price * (100 - product.campaign_discount_percentage)) / 100} {t('kd')}
+                        {t('campaignPrice')}: {(product.first_variant.price * (100 - product.first_variant.campaign_discount_percentage)) / 100} {t('kd')}
                       </span>
                     </div>
                   </div>

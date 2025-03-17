@@ -73,19 +73,43 @@ class UpdateUserProfileUpdationView(APIView):
 
         return Response({'error': serializer.errors}, status=400)
     
+# class AllProductsView(APIView):
+#     """
+#     View to retrieve all products in the system, regardless of wholesaler.
+#     """
+#     permission_classes = [AllowAny]
+#     def get(self, request, *args, **kwargs):
+#         try:
+#             # Fetch all products
+#             products = Product.objects.all()
+#             # Serialize the data
+#             serializer = ProductSerializer(products, many=True, context={'request': request})
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+        
+#         except Exception as e:
+#             print(f"Error retrieving products: {str(e)}")
+#             return Response(
+#                 {"detail": "An error occurred while retrieving products."},
+#                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
+#             )
+
 class AllProductsView(APIView):
     """
-    View to retrieve all products in the system, regardless of wholesaler.
+    View to retrieve all products along with their details, first variant, and first variant image.
     """
     permission_classes = [AllowAny]
+
     def get(self, request, *args, **kwargs):
         try:
-            # Fetch all products
+            # Retrieve all products
             products = Product.objects.all()
-            # Serialize the data
+
+            # Serialize the products with their first variant and image
             serializer = ProductSerializer(products, many=True, context={'request': request})
+
+            # Return the serialized data
             return Response(serializer.data, status=status.HTTP_200_OK)
-        
+
         except Exception as e:
             print(f"Error retrieving products: {str(e)}")
             return Response(

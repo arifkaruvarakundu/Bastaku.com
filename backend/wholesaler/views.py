@@ -3,11 +3,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .serializers import WholesalerBankDetailsSerializer, WholesalerProfileSerializer, ProductSerializer,ProductCreateSerializer
+from .serializers import WholesalerBankDetailsSerializer, WholesalerProfileSerializer, ProductSerializer
 from authentication.models import Wholesaler,ProductCategory
 from rest_framework.parsers import MultiPartParser, FormParser
-from .models import Product,WholesalerBankDetails,ProductImage
-
+from .models import Product,WholesalerBankDetails,ProductVariantImage,ProductVariant
 
 # Create your views here.
 class WholesalerDetailView(APIView):
@@ -80,10 +79,13 @@ class WholesalerProfileUpdationView(APIView):
         
         return Response(serializer.errors, status=400)
 
-
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
-import traceback 
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+import decimal
+import json
+import traceback
+from .models import Product, ProductVariant, ProductVariantImage, ProductCategory, Wholesaler
 import cloudinary.uploader
 
 class AddProductView(APIView):
@@ -94,16 +96,12 @@ class AddProductView(APIView):
             data = request.data
             print("Received Data:", data)
 
-            # Get all image files correctly
-            files = [file for key, file in request.FILES.items() if "product_images" in key]
-            
-
             # Fetch category instance
             category_id = data.get("category")
             category_instance = ProductCategory.objects.get(id=category_id)
 
             # Fetch wholesaler instance
-            wholesaler_email = request.data.get("wholesaler")
+            wholesaler_email = data.get("wholesaler")
             wholesaler_instance = Wholesaler.objects.get(email=wholesaler_email)
 
             # Create the product
@@ -114,34 +112,68 @@ class AddProductView(APIView):
                 description=data.get("description"),
                 description_en=data.get("description_en"),
                 description_ar=data.get("description_ar"),
-                actual_price=data.get("actual_price"),
-                stock=data.get("stock"),
-                unit =data.get("unit"),
                 category=category_instance,
-                campaign_discount_percentage=data.get("campaign_discount_percentage"),
-                minimum_order_quantity_for_offer=data.get("minimum_order_quantity_for_offer"),
                 wholesaler=wholesaler_instance,
             )
-            
 
-            # Upload images to Cloudinary
-            for file in files:
-                print("Uploading file to Cloudinary:", file.name)
+            # Handle variants
+            variants = json.loads(data.get("variants", "[]"))
+            print("!!!!!!!!!@@@@@@@@@@@@@@@@@@@@@", variants)
 
-                upload_result = cloudinary.uploader.upload(file)
-                image_url = upload_result["secure_url"]  # Get Cloudinary image URL
-                public_id = upload_result["public_id"]  # Get Cloudinary public ID
+            # Extract images from request.FILES (now we correctly map variant_images)
+            variant_images_files = [file for key, file in request.FILES.items() if key.startswith("variant_images")]
 
-                
+            print(variant_images_files)
 
-                # Save the image URL & public ID in ProductImage model
-                ProductImage.objects.create(
+            # Iterate over each variant and handle its data and image (if provided)
+            for index, variant_data in enumerate(variants):
+                print("###################", variant_data)
+
+                # Convert price and discount values to Decimal
+                weight = decimal.Decimal(variant_data.get("weight") or 0)
+                liter = decimal.Decimal(variant_data.get("liter") or 0)  # Avoid empty string
+                price = decimal.Decimal(variant_data.get("price") or 0)
+                campaign_discount_percentage = decimal.Decimal(variant_data.get("campaign_discount_percentage") or 0)
+                minimum_order_quantity_for_offer = decimal.Decimal(variant_data.get("minimum_order_quantity_for_offer") or 0)
+
+                # Create the variant
+                variant = ProductVariant.objects.create(
                     product=product,
-                    image_url=image_url,  # Cloudinary URL
-                    public_id=public_id  # Cloudinary Public ID
+                    brand=variant_data.get("brand"),
+                    weight=weight,
+                    liter=liter,
+                    price=price,
+                    stock=variant_data.get("stock"),
+                    campaign_discount_percentage=campaign_discount_percentage,
+                    minimum_order_quantity_for_offer=minimum_order_quantity_for_offer
                 )
 
-            return Response({"message": "Product added successfully!"}, status=status.HTTP_201_CREATED)
+                # Handle variant-specific images (if exists)
+                images = variant_data.get("images", [])
+                for image_index, image_data in enumerate(images):
+                    print(f"Processing image {image_index} for variant {index}")
+                    try:
+                        image_file = variant_images_files.pop(0)  # Get the image file for this index
+
+                        # Upload image to Cloudinary
+                        upload_result = cloudinary.uploader.upload(image_file)
+                        image_url = upload_result["secure_url"]  # Cloudinary image URL
+                        public_id = upload_result["public_id"]  # Cloudinary public ID
+
+                        # Create ProductVariantImage instance for this variant
+                        ProductVariantImage.objects.create(
+                            variant=variant,
+                            image_url=image_url,
+                            public_id=public_id,
+                            product=product
+                        )
+                    except Exception as e:
+                        print(f"Error uploading image for variant {index}, image {image_index}: {e}")
+                        return Response({"error": f"Image upload failed for variant {index}, image {image_index}: {str(e)}"},
+                                        status=status.HTTP_400_BAD_REQUEST)
+
+            # Return success response
+            return Response({"message": "Product and variants added successfully!"}, status=status.HTTP_201_CREATED)
 
         except ProductCategory.DoesNotExist:
             return Response({"error": "Invalid category ID"}, status=status.HTTP_400_BAD_REQUEST)
@@ -150,9 +182,27 @@ class AddProductView(APIView):
             return Response({"error": "Wholesaler not found with this email"}, status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
-            traceback.print_exc() 
+            traceback.print_exc()
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+# class WholesalerProductsView(APIView):
+#     permission_classes = [AllowAny]  
+
+#     def get(self, request, *args, **kwargs):
+#         # Retrieve the email from query parameters
+#         email = request.query_params.get('email')
+#         if not email:
+#             return Response({"error": "Email is required"}, status=400)
+
+#         # Get the wholesaler object
+#         wholesaler = Wholesaler.objects.get(email=email)
+
+#         # Filter products by the wholesaler
+#         products = Product.objects.filter(wholesaler=wholesaler)
+
+#         # Serialize the product data
+#         serializer = ProductSerializer(products, many=True)
+#         return Response(serializer.data)
 
 class WholesalerProductsView(APIView):
     permission_classes = [AllowAny]  
@@ -161,17 +211,59 @@ class WholesalerProductsView(APIView):
         # Retrieve the email from query parameters
         email = request.query_params.get('email')
         if not email:
-            return Response({"error": "Email is required"}, status=400)
+            return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Get the wholesaler object
-        wholesaler = Wholesaler.objects.get(email=email)
+        try:
+            # Get the wholesaler object
+            wholesaler = Wholesaler.objects.get(email=email)
 
-        # Filter products by the wholesaler
-        products = Product.objects.filter(wholesaler=wholesaler)
+            # Filter products by the wholesaler
+            products = Product.objects.filter(wholesaler=wholesaler)
 
-        # Serialize the product data
-        serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data)
+            # Build response with first variant and first image
+            product_list = []
+            for product in products:
+                first_variant = product.variants.first()  # Get the first variant
+                first_variant_image = None
+                
+                if first_variant:
+                    first_variant_image = first_variant.variant_images.first()  # Get the first image
+
+                product_data = {
+                    "id": product.id,
+                    "product_name": product.product_name,
+                    "description": product.description,
+                    "is_in_campaign": product.is_in_campaign,
+                    "is_available": product.is_available,
+                    "category": product.category.id if product.category else None,
+                    "wholesaler": product.wholesaler.id if product.wholesaler else None,
+                    "created_date": product.created_date,
+                    "modified_date": product.modified_date,
+                    "slug": product.slug,
+                    "first_variant": {
+                        "id": first_variant.id if first_variant else None,
+                        "brand": first_variant.brand if first_variant else None,
+                        "weight": str(first_variant.weight) if first_variant and first_variant.weight else None,
+                        "liter": str(first_variant.liter) if first_variant and first_variant.liter else None,
+                        "price": str(first_variant.price) if first_variant else None,
+                        "stock": first_variant.stock if first_variant else None,
+                        "campaign_discount_percentage": str(first_variant.campaign_discount_percentage) if first_variant else None,
+                    } if first_variant else None,
+                    "first_variant_image_url": first_variant_image.image_url if first_variant_image else None,
+                }
+
+                product_list.append(product_data)
+
+            return Response(product_list, status=status.HTTP_200_OK)
+
+        except Wholesaler.DoesNotExist:
+            return Response({"error": "Wholesaler not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print(f"Error retrieving wholesaler products: {str(e)}")
+            return Response(
+                {"detail": "An error occurred while retrieving wholesaler products."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
 class ProductDetailView(APIView):
     permission_classes = [AllowAny]
@@ -240,7 +332,7 @@ class EditProductView(APIView):
                 public_id = uploaded_image["public_id"]
 
                 # Save image URL & public_id in the database
-                product_image = ProductImage.objects.create(
+                product_image = ProductVariantImage.objects.create(
                     product=product, image_url=image_url, public_id=public_id
                 )
 
@@ -248,8 +340,6 @@ class EditProductView(APIView):
         product.save()  # Save updated product details
 
         return Response({"detail": "Product updated successfully!"}, status=status.HTTP_200_OK)
-
-
 
 class WholesalerBankDetailsView(APIView):
     permission_classes = [AllowAny]  # No authentication required
@@ -310,4 +400,3 @@ class WholesalerAddBankDetailsView(APIView):
             print("Serializer Errors:", serializer.errors)  # Debugging
             return Response({"error": serializer.errors}, status=400)
         
-

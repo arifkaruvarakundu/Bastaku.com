@@ -170,7 +170,7 @@ class CalculateExpenseView(APIView):
                 user = User.objects.filter(email=email).first()
 
                 if not user:
-                    return Response({"error": "User with email 'hari@gmail.com' not found."}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({"error": "User with email you entered is not found."}, status=status.HTTP_400_BAD_REQUEST)
 
                 # Save the data with the fetched user
                 serializer.save(user=user, total_monthly_expense=ai_response["total_monthly_expense"])

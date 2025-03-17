@@ -94,8 +94,8 @@ const ProductItem = () => {
                   <a href="#!">
                   <img
                     src={
-                      product.product_images?.length > 0
-                        ? product.product_images[0].image_url // Directly use the image_url field
+                      product.first_variant_image_url
+                        ? product.first_variant_image_url // Use first_variant_image_url
                         : "https://via.placeholder.com/150"
                     }
                     alt={product.product_name}
@@ -117,24 +117,6 @@ const ProductItem = () => {
                         onClick={() => navigate(`/productDetails/${product.id}`)}
                       />
                     </a>
-                    {/* <a
-                      href="#!"
-                      className="btn-action"
-                      data-bs-toggle="tooltip"
-                      data-bs-html="true"
-                      title="Wishlist"
-                    >
-                      <i className="bi bi-heart" />
-                    </a>
-                    <a
-                      href="#!"
-                      className="btn-action"
-                      data-bs-toggle="tooltip"
-                      data-bs-html="true"
-                      title="Compare"
-                    >
-                      <i className="bi bi-arrow-left-right" />
-                    </a> */}
                   </div>
                 </div>
                 <div className="text-small mb-1">
@@ -153,23 +135,12 @@ const ProductItem = () => {
                     {currentLang === "en" ? product.product_name_en : product.product_name_ar}
                   </a>
                 </h2>
-                {/* <div>
-                  <small className="text-warning">
-                    {" "}
-                    <i className="bi bi-star-fill" />
-                    <i className="bi bi-star-fill" />
-                    <i className="bi bi-star-fill" />
-                    <i className="bi bi-star-fill" />
-                    <i className="bi bi-star-half" />
-                  </small>{" "}
-                  <span className="text-muted small">4.5(149)</span>
-                </div> */}
                 <div className="d-flex justify-content-between align-items-center mt-3">
                   <div>
-                    <span className="text-dark">{t('original_price_label')}: {product.actual_price} {t('kd')}</span>{" "}
+                    <span className="text-dark">{t('original_price_label')}: {product.first_variant.price} {t('kd')}</span>{" "}
                     <br/>
                       <span className="text-decoration-line-through text-muted">
-                      {t('original_price_label')}:{((Number(product.actual_price) + (Number(product.actual_price) * 10) / 100).toFixed(2))} {t('kd')}
+                      {t('original_price_label')}:{((Number(product.first_variant.price) + (Number(product.first_variant.price) * 10) / 100).toFixed(2))} {t('kd')}
                       </span>
                   </div>
                   <div>
@@ -198,7 +169,7 @@ const ProductItem = () => {
                   </div>
                 </div>
                 <div>
-                  <span style={{ color: 'red' }}>{t('campaign_price_label')}: {(product.actual_price * (100 - product.campaign_discount_percentage)) / 100} {t('kd')}</span>
+                  <span style={{ color: 'red' }}>{t('campaign_price_label')}: {(product.first_variant.price * (100 - product.first_variant.campaign_discount_percentage)) / 100} {t('kd')}</span>
                 </div>
               </div>
             </div>

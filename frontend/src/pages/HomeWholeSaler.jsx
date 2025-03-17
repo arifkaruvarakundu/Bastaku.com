@@ -288,7 +288,7 @@ const HomeWholesaler = () => {
                     >
                       <div className="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-xs-center">
                         <span className="badge text-bg-warning">
-                          {/* Opening Sale Discount 50% */}
+                          B to B
                         </span>
                         <h2 className="text-dark display-5 fw-bold mt-4">{t("expand_reach")}</h2>
                         <p className="lead">{t("join_platform")}</p>
