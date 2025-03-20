@@ -102,6 +102,7 @@ const ProductItem = () => {
                     <div className="d-flex justify-content-between align-items-center mt-3">
                       <div>
                         <span className="text-dark">{t('price')} : {product.first_variant.price} {t('kd')}</span>{" "}
+                        <br/>
                         <span className="text-decoration-line-through text-muted">
                           {t('price')}: {((Number(product.first_variant.price) + (Number(product.first_variant.price) * 10) / 100).toFixed(2))} {t('kd')}
                         </span>

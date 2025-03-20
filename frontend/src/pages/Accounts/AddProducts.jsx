@@ -565,3 +565,6 @@ const removeVariant = (index) => {
 };
 
 export default AddProducts;
+
+
+  

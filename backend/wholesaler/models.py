@@ -112,7 +112,7 @@ class ProductVariantImage(models.Model):
     image_url = models.URLField(default="")   # Store the image in Cloudinary
     public_id = models.CharField(max_length=255, default="")  # Store the public_id for Cloudinary images
     wholesaler = models.ForeignKey(Wholesaler, on_delete=models.SET_NULL, null=True, blank=True)  # Associate Wholesaler with ProductVariantImage
-    product = models.ForeignKey(Product, related_name="product_images", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name="product_images", on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"Image for {self.variant.product.product_name} - Variant: {self.variant}"

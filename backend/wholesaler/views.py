@@ -232,6 +232,8 @@ class WholesalerProductsView(APIView):
                 product_data = {
                     "id": product.id,
                     "product_name": product.product_name,
+                    "product_name_en": product.product_name_en,
+                    "product_name_ar": product.product_name_ar,
                     "description": product.description,
                     "is_in_campaign": product.is_in_campaign,
                     "is_available": product.is_available,
@@ -265,20 +267,38 @@ class WholesalerProductsView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     
+# class ProductDetailView(APIView):
+#     permission_classes = [AllowAny]
+
+#     def get(self, request, pk, *args, **kwargs):
+#         try:
+#             product = Product.objects.get(pk=pk)
+#             serializer = ProductSerializer(product)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         except Product.DoesNotExist:
+#             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+
 class ProductDetailView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, pk, *args, **kwargs):
         try:
-            product = Product.objects.get(pk=pk)
+            product = Product.objects.prefetch_related("variants__variant_images").get(pk=pk)  
             serializer = ProductSerializer(product)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Product.DoesNotExist:
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
     
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
-from cloudinary.uploader import destroy, upload  #  Import Cloudinary functions
 from rest_framework.exceptions import ValidationError
+from .models import Product, ProductCategory, ProductVariant, ProductVariantImage
+from .utils import upload, destroy  # Cloudinary utility functions
+import json
+from decimal import Decimal, InvalidOperation
+
 
 class EditProductView(APIView):
     permission_classes = [AllowAny]
@@ -286,58 +306,95 @@ class EditProductView(APIView):
 
     def put(self, request, pk, *args, **kwargs):
         try:
-            print(request.data)  # Debugging print
             product = Product.objects.get(pk=pk)
         except Product.DoesNotExist:
             return Response({"detail": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Update product details (excluding images)
-        product.product_name = request.data.get("product_name", product.product_name)
-        product.actual_price = request.data.get("actual_price", product.actual_price)
-        product.campaign_discount_percentage = request.data.get(
-            "campaign_discount_percentage", product.campaign_discount_percentage
-        )
-        product.description = request.data.get("description", product.description)
-        product.stock = request.data.get("stock", product.stock)
+        # Update product details
+        product.product_name_en = request.data.get("product_name_en", product.product_name_en)
+        product.product_name_ar = request.data.get("product_name_ar", product.product_name_ar)
+        product.description_en = request.data.get("description_en", product.description_en)
+        product.description_ar = request.data.get("description_ar", product.description_ar)
 
-        # Fetch the category object based on the category ID provided in the request
+        # Update category
         category_id = request.data.get("category")
         if category_id:
             try:
                 category = ProductCategory.objects.get(id=category_id)
-                product.category = category  # Assign the ProductCategory instance
+                product.category = category
             except ProductCategory.DoesNotExist:
-                raise ValidationError({"category": "Invalid category ID."})
-        else:
-            # If no category is provided, retain the current category
-            product.category = product.category
+                return Response({"detail": "Invalid category ID."}, status=status.HTTP_400_BAD_REQUEST)
 
-        product.minimum_order_quantity_for_offer = request.data.get(
-            "minimum_order_quantity_for_offer", product.minimum_order_quantity_for_offer
-        )
+        # Process variants
+        variants_data = request.data.get("variants", [])
 
-        # 2. Delete old Cloudinary images before updating
-        old_images = product.product_images.all()  # Assuming a related model
-        
-        for img in old_images:
-            destroy(img.public_id)  # Deletes from Cloudinary
-            img.delete()  # Deletes from the database
+        if isinstance(variants_data, str):
+            try:
+                variants_data = json.loads(variants_data)
+            except json.JSONDecodeError:
+                return Response({"detail": "Invalid variants data format."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 3. Upload new images to Cloudinary (Handle multiple files)
-        if "product_images" in request.FILES:
-            # Loop through all the uploaded files under "product_images"
-            for image_file in request.FILES.getlist("product_images"):
-                uploaded_image = upload(image_file)  # Upload to Cloudinary
-                image_url = uploaded_image["secure_url"]
-                public_id = uploaded_image["public_id"]
+        # Track existing variant IDs
+        existing_variant_ids = {variant.id for variant in product.variants.all()}
 
-                # Save image URL & public_id in the database
-                product_image = ProductVariantImage.objects.create(
-                    product=product, image_url=image_url, public_id=public_id
-                )
+        def parse_decimal(value):
+            try:
+                return Decimal(value) if value not in [None, "", "null"] else None
+            except InvalidOperation:
+                return None
 
-        # Save updated product details after images are uploaded
-        product.save()  # Save updated product details
+        # Process each variant sent from the frontend
+        for variant_index, variant_data in enumerate(variants_data):
+            variant_id = variant_data.get("id")  # Check if variant has an ID
+
+            if variant_id and int(variant_id) in existing_variant_ids:
+                # Update existing variant
+                variant = ProductVariant.objects.get(id=int(variant_id))
+                existing_variant_ids.remove(int(variant_id))  # Mark as updated
+            else:
+                # Create new variant
+                variant = ProductVariant.objects.create(product=product)
+
+            # Handle images marked for deletion
+            images_to_delete = variant_data.get("imagesToDelete", [])
+            for image_id in images_to_delete:
+                try:
+                    image = ProductVariantImage.objects.get(id=image_id)
+                    destroy(image.public_id)  # Delete from Cloudinary
+                    image.delete()  # Remove from database
+                except ProductVariantImage.DoesNotExist:
+                    pass  # Ignore if the image doesn't exist
+
+            # Update variant fields
+            variant.brand = variant_data.get("brand", variant.brand)
+            variant.weight = parse_decimal(variant_data.get("weight"))
+            variant.liter = parse_decimal(variant_data.get("liter"))
+            variant.price = parse_decimal(variant_data.get("price"))
+            variant.stock = parse_decimal(variant_data.get("stock"))
+            variant.campaign_discount_percentage = parse_decimal(variant_data.get("campaign_discount_percentage"))
+            variant.minimum_order_quantity_for_offer = parse_decimal(variant_data.get("minimum_order_quantity_for_offer"))
+            variant.save()
+
+            # Handle new images
+            variant_files_key = f"new_images_{variant_index}_"
+            for key, image_file in request.FILES.items():
+                if key.startswith(variant_files_key):
+                    uploaded_image = upload(image_file)
+                    ProductVariantImage.objects.create(
+                        variant=variant,
+                        image_url=uploaded_image["secure_url"],
+                        public_id=uploaded_image["public_id"],
+                    )
+
+        # Delete variants that were not included in the request
+        for old_variant in product.variants.filter(id__in=existing_variant_ids):
+            for image in old_variant.variant_images.all():
+                destroy(image.public_id)  # Delete from Cloudinary
+                image.delete()
+            old_variant.delete()
+
+        # Save product
+        product.save()
 
         return Response({"detail": "Product updated successfully!"}, status=status.HTTP_200_OK)
 

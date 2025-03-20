@@ -13,7 +13,7 @@ const ProductItem = () => {
   const [displayedProducts, setDisplayedProducts] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [currentLang, setCurrentLang] = useState(i18n.language);
-
+  const [variants, setVariants] = useState([])
   const navigate = useNavigate()
 
   // Update currentLang when the language is changed
@@ -27,6 +27,7 @@ const ProductItem = () => {
         const productsResponse = await axios.get("http://127.0.0.1:8000/products/");
         console.log('products',productsResponse.data)
         setProducts(productsResponse.data);
+        setVariants(productsResponse.data.variants)
         setDisplayedProducts(productsResponse.data.slice(0, 12));
         // console.log("products",productsResponse.data)
         
@@ -86,7 +87,7 @@ const ProductItem = () => {
             <div className="card card-product">
               <div className="card-body">
                 <div className="text-center position-relative">
-                  {product.is_in_campaign && (
+                  {product?.is_in_campaign && (
                     <div className="position-absolute top-0 start-0">
                       <span className="badge bg-danger">{t('campaign')}</span>
                     </div>
@@ -94,11 +95,10 @@ const ProductItem = () => {
                   <a href="#!">
                   <img
                     src={
-                      product.first_variant_image_url
-                        ? product.first_variant_image_url // Use first_variant_image_url
-                        : "https://via.placeholder.com/150"
+                      product?.variants?.[0]?.variant_images?.[0]?.image_url || 
+                      "https://via.placeholder.com/150"
                     }
-                    alt={product.product_name}
+                    alt={product?.product_name}
                     style={{ width: "120px", height: "120px", margin: "5px" }}
                   />
                   </a>
@@ -114,7 +114,7 @@ const ProductItem = () => {
                         data-bs-toggle="tooltip"
                         data-bs-html="true"
                         title="Quick View"
-                        onClick={() => navigate(`/productDetails/${product.id}`)}
+                        onClick={() => navigate(`/productDetails/${product?.id}`)}
                       />
                     </a>
                   </div>
@@ -124,7 +124,7 @@ const ProductItem = () => {
                     href="#!"
                     className="text-decoration-none text-muted"
                   >
-                    <small>{currentLang === "en" ? product.category.name_en : product.category.name_ar}</small>
+                    <small>{currentLang === "en" ? product?.category.name_en : product?.category.name_ar}</small>
                   </a>
                 </div>
                 <h2 className="fs-6">
@@ -132,15 +132,15 @@ const ProductItem = () => {
                     href="#!"
                     className="text-inherit text-decoration-none"
                   >
-                    {currentLang === "en" ? product.product_name_en : product.product_name_ar}
+                    {currentLang === "en" ? product?.product_name_en : product?.product_name_ar}
                   </a>
                 </h2>
                 <div className="d-flex justify-content-between align-items-center mt-3">
                   <div>
-                    <span className="text-dark">{t('original_price_label')}: {product.first_variant.price} {t('kd')}</span>{" "}
+                    <span className="text-dark">{t('original_price_label')}: {product?.variants[0].price} {t('kd')}</span>{" "}
                     <br/>
                       <span className="text-decoration-line-through text-muted">
-                      {t('original_price_label')}:{((Number(product.first_variant.price) + (Number(product.first_variant.price) * 10) / 100).toFixed(2))} {t('kd')}
+                      {t('original_price_label')}:{((Number(product?.variants?.[0].price) + (Number(product?.variants?.[0].price) * 10) / 100).toFixed(2))} {t('kd')}
                       </span>
                   </div>
                   <div>
@@ -169,7 +169,7 @@ const ProductItem = () => {
                   </div>
                 </div>
                 <div>
-                  <span style={{ color: 'red' }}>{t('campaign_price_label')}: {(product.first_variant.price * (100 - product.first_variant.campaign_discount_percentage)) / 100} {t('kd')}</span>
+                  <span style={{ color: 'red' }}>{t('campaign_price_label')}: {(product?.variants?.[0].price * (100 - product?.variants?.[0].campaign_discount_percentage)) / 100} {t('kd')}</span>
                 </div>
               </div>
             </div>

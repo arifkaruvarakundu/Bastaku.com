@@ -10,7 +10,7 @@ import axios from "axios";
 import { useTranslation } from "react-i18next";
 
 // Register ChartJS components
-ChartJS.register(CategoryScale,LinearScale,PointElement,LineElement,BarElement,ArcElement,Title,Tooltip,Legend,Filler);
+// ChartJS.register(CategoryScale,LinearScale,PointElement,LineElement,BarElement,ArcElement,Title,Tooltip,Legend,Filler);
 
 const ProductDetails = () => {
   const {t, i18n} = useTranslation('product_details')
@@ -25,7 +25,7 @@ const ProductDetails = () => {
   const [cartQuantity, setCartQuantity] = useState(1);
   const [showCartControls, setShowCartControls] = useState(false);
   const [currentLang, setCurrentLang] = useState(i18n.language);
-  const { id } = useParams()
+
   // New state for analytics
   const [activeChart, setActiveChart] = useState("demand");
   const [selectedImage, setSelectedImage] = useState(null);
@@ -33,6 +33,13 @@ const ProductDetails = () => {
   const [error, setError] = useState(null);
   const [campaignDetails, setCampaignDetails] = useState(null);
   const [images,setImages] = useState([])
+  const [variants,setVariants] = useState([])
+  const [campaignPrice, setCampaignPrice] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState(null);
+  
+
+  const { id } = useParams()
+  
 
   const navigate = useNavigate()
 
@@ -42,93 +49,131 @@ const ProductDetails = () => {
     }, [i18n.language]);
 
     
-  useEffect(() => {
-    const loadingTimer = setTimeout(() => setIsLoading(false), 1500);
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => Math.min(prev + 1, 70));
-    }, 50);
-    const timerInterval = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
+    useEffect(() => {
+      const loadingTimer = setTimeout(() => setIsLoading(false), 1500);
+      const progressInterval = setInterval(() => {
+        setProgress((prev) => Math.min(prev + 1, 70));
+      }, 50);
+      const timerInterval = setInterval(() => {
+        setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+      }, 1000);
 
-    return () => {
-      clearTimeout(loadingTimer);
-      clearInterval(progressInterval);
-      clearInterval(timerInterval);
-    };
-  }, []);
+      return () => {
+        clearTimeout(loadingTimer);
+        clearInterval(progressInterval);
+        clearInterval(timerInterval);
+      };
+    }, []);
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await axios.get(`http://127.0.0.1:8000/product_details/${id}/`);
-        const fetchedProduct = response.data;
-        setProduct(fetchedProduct);
-        console.log("Fetched Product:", fetchedProduct);
+
+        useEffect(() => {
+          const fetchProduct = async () => {
+            try {
+              const response = await axios.get(`http://127.0.0.1:8000/product_details/${id}/`);
+              const fetchedProduct = response.data;
+              setProduct(fetchedProduct);
+              setVariants(fetchedProduct.variants)
+              console.log("Fetched Product:", fetchedProduct);
+              
+              localStorage.setItem("productDetails", JSON.stringify(fetchedProduct));
+              const storedQuantity = parseInt(localStorage.getItem("productQuantity"), 10) || 1;
+              setQuantity(storedQuantity);
         
-        localStorage.setItem("productDetails", JSON.stringify(fetchedProduct));
-        const storedQuantity = parseInt(localStorage.getItem("productQuantity"), 10) || 1;
-        setQuantity(storedQuantity);
-  
-        if (fetchedProduct.product_images && fetchedProduct.product_images.length > 0) {
-          setSelectedImage(fetchedProduct.product_images[0]);
-          setImages(fetchedProduct.product_images);
+              if (fetchedProduct.product_images && fetchedProduct.product_images.length > 0) {
+                setSelectedImage(fetchedProduct.product_images[0]);
+                setImages(fetchedProduct.product_images);
+              }
+        
+              if (fetchedProduct.is_in_campaign) {
+                const campaignResponse = await axios.get(`http://127.0.0.1:8000/campaigns/`);
+                console.log("Campaigns:", campaignResponse.data);
+        
+                // Log fetchedProduct.id and campaign.product
+                console.log("Fetched Product ID:", fetchedProduct.id);
+                campaignResponse.data.forEach(campaign => {
+                  console.log("Campaign Product ID:", campaign.product);
+                });
+        
+                // Ensure both are integers before comparing
+                const relatedCampaign = campaignResponse.data.find(
+                  (campaign) => parseInt(campaign.product) === fetchedProduct.id
+                );
+                console.log("Related Campaign:", relatedCampaign);
+        
+                if (relatedCampaign) {
+                  setCampaignDetails(relatedCampaign);
+                  const numberOfParticipants = relatedCampaign?.current_participants ?? 0;
+                  const currentQuantity = relatedCampaign?.current_quantity ?? 0;
+                  const minOrderQuantity = fetchedProduct?.minimum_order_quantity_for_offer ?? 1;
+                  setProgress((currentQuantity / minOrderQuantity) * 100);
+                } else {
+                  console.log("No related campaign found for this product.");
+                }
+              }
+            } catch (err) {
+              setError("Failed to load product details");
+              console.error(err);
+            } finally {
+              setLoading(false);
+            }
+          };
+        
+          fetchProduct();
+        }, [id]);
+        // Extract images for the selected variant
+        const selectedVariantData = product?.variants.find(variant => variant.id === selectedVariant);
+        const variantImages = selectedVariantData ? selectedVariantData.variant_images : [];
+
+
+       // Function to calculate campaign price based on discount percentage
+      const calculateCampaignPrice = (variant) => {
+        if (variant && variant.campaign_discount_percentage) {
+          return (
+            (variant.price * (100 - variant.campaign_discount_percentage)) / 100
+          ).toFixed(2); // Return the price formatted with two decimals
         }
-  
-        if (fetchedProduct.is_in_campaign) {
-          const campaignResponse = await axios.get(`http://127.0.0.1:8000/campaigns/`);
-          console.log("Campaigns:", campaignResponse.data);
-  
-          // Log fetchedProduct.id and campaign.product
-          console.log("Fetched Product ID:", fetchedProduct.id);
-          campaignResponse.data.forEach(campaign => {
-            console.log("Campaign Product ID:", campaign.product);
-          });
-  
-          // Ensure both are integers before comparing
-          const relatedCampaign = campaignResponse.data.find(
-            (campaign) => parseInt(campaign.product) === fetchedProduct.id
-          );
-          console.log("Related Campaign:", relatedCampaign);
-  
-          if (relatedCampaign) {
-            setCampaignDetails(relatedCampaign);
-            const numberOfParticipants = relatedCampaign?.current_participants ?? 0;
-            const currentQuantity = relatedCampaign?.current_quantity ?? 0;
-            const minOrderQuantity = fetchedProduct?.minimum_order_quantity_for_offer ?? 1;
-            setProgress((currentQuantity / minOrderQuantity) * 100);
-          } else {
-            console.log("No related campaign found for this product.");
-          }
-        }
-      } catch (err) {
-        setError("Failed to load product details");
-        console.error(err);
-      } finally {
-        setLoading(false);
+        return variant.price; // Return the original price if no campaign discount
+      };
+
+    useEffect(() => {
+      if (product && product.variants && product.variants.length > 0) {
+        setSelectedVariant(product.variants[0].id);
       }
+    }, [product]);
+  
+    const handleVariantChange = (e) => {
+      const selectedVariantId = e.target.value;
+      setSelectedVariant(selectedVariantId);
+    
+      // Find the selected variant from the list of variants
+      const selectedVariant = product?.variants.find((v) => v.id === selectedVariantId);
+    
+      // Reset the quantity to 1 when the variant changes
+      setCartQuantity(1);
+    
+      // Calculate the campaign price for the selected variant
+      const calculatedPrice = calculateCampaignPrice(selectedVariant);
+    
+      // Update the state with the calculated price
+      setCampaignPrice(calculatedPrice);
     };
-  
-    fetchProduct();
-  }, [id]);
-  
 
-  const formatTime = (seconds) => {
-    const days = Math.floor(seconds / 86400);
-    const hours = Math.floor((seconds % 86400) / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-    return `${days}d ${hours}h ${minutes}m ${remainingSeconds}s`;
-  };
+    const formatTime = (seconds) => {
+      const days = Math.floor(seconds / 86400);
+      const hours = Math.floor((seconds % 86400) / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const remainingSeconds = seconds % 60;
+      return `${days}d ${hours}h ${minutes}m ${remainingSeconds}s`;
+    };
 
-  const calculateCampaignPrice = () => {
-    if (product && product.campaign_discount_percentage) {
-      return (
-        (product.actual_price * (100 - product.campaign_discount_percentage)) / 100
-      ).toFixed(2);
-    }
-    return null;
-  };
+  // const calculateCampaignPrice = () => {
+  //   if (product && product.campaign_discount_percentage) {
+  //     return (
+  //       (product?.variants?.[0].price * (100 - product?.variants?.[0].campaign_discount_percentage)) / 100
+  //     ).toFixed(2);
+  //   }
+  //   return null;
+  // };
 
   const handleQuantityChange = (action) => {
     if (action === "increment") {
@@ -179,15 +224,24 @@ const ProductDetails = () => {
         navigate("/ShopCart");
       };
 
-  const handleImageNavigation = (direction) => {
-    if (direction === "next") {
-      setCurrentImageIndex((prev) => (prev + 1) % images.length);
-    } else {
-      setCurrentImageIndex(
-        (prev) => (prev - 1 + images.length) % images.length
-      );
-    }
-  };
+      const handleImageNavigation = (direction) => {
+        if (variantImages.length === 0) return;
+      
+        setCurrentImageIndex((prev) =>
+          direction === "next"
+            ? (prev + 1) % variantImages.length
+            : (prev - 1 + variantImages.length) % variantImages.length
+        );
+      };
+      
+
+      useEffect(() => {
+        if (variantImages.length > 0) {
+          setCurrentImageIndex(0);
+        }
+      }, [variantImages]);
+
+  // console.log("hi")
 
   const handleButtonClick = async () => {
     if (!selectedPaymentOption) {
@@ -232,7 +286,9 @@ const ProductDetails = () => {
     );
   }
 
-  const campaignPrice = calculateCampaignPrice();
+
+  // console.log(variantImages)
+
 
   const userEmail = localStorage.getItem("email");
   const isAlreadyJoined = campaignDetails?.participants?.some(
@@ -247,23 +303,26 @@ const ProductDetails = () => {
         <div className={styles.leftColumn}>
           {/* Image Carousel */}
           <div className={styles.imageSection}>
-   <div className={styles.carouselContainer}>
-     <button
-       className={styles.carouselButton}
-       onClick={() => handleImageNavigation("prev")}
-       aria-label="Previous image"
-     >
-       <ChevronLeft strokeWidth={2} />
-     </button>
+            <div className={styles.carouselContainer}>
+              <button
+                className={styles.carouselButton}
+                onClick={() => handleImageNavigation("prev")}
+                aria-label="Previous image"
+              >
+                <ChevronLeft strokeWidth={2} />
+              </button>
      
-     <div className={styles.imageContainer}>
-       {images.length > 0 && (
-         <img
-           src={images[currentImageIndex].image_url}
-           alt={`${product?.product_name} - View ${currentImageIndex + 1}`}
-           className={styles.productImage}
-         />
-       )}
+          <div className={styles.imageContainer}>
+          {variantImages.length > 0 ? (
+            <img
+              key={variantImages[currentImageIndex]?.id}
+              src={variantImages[currentImageIndex]?.image_url || ""}
+              alt={`${product?.product_name || "Product"} - View ${currentImageIndex + 1}`}
+              className={styles.productImage}
+            />
+          ) : (
+            <p>No images available for this variant.</p>
+          )}
         {product?.is_in_campaign && (
                   <div className={styles.timerOverlay}>
                     <div className={styles.timerContent}>
@@ -398,7 +457,7 @@ const ProductDetails = () => {
                 </div>
               </div>
               <div className={styles.priceContent}>
-                <p className={styles.singlePrice}>{product?.actual_price} {t('kd')}</p>
+                <p className={styles.singlePrice}>{product?.variants?.[0].price} {t('kd')}</p>
                 {/* Quantity Selector */}
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                    <button
@@ -450,9 +509,9 @@ const ProductDetails = () => {
                   </button>
               </div>
             </div>
-            <div style={{marginBottom:25}}>
+            {/* <div style={{marginBottom:25}}>
               <span> {t("unit")}: {product?.unit}</span>
-            </div>
+            </div> */}
             {/* Group Buying Section */}
             <div className={styles.wholesalePriceSection}>
                   <div className={styles.priceHeader}>
@@ -467,10 +526,32 @@ const ProductDetails = () => {
                   <p className={styles.wholesalePrice}>
                     {campaignPrice} {t("kd")}
                     <span className={styles.savingsBadge}>
-                      {t('save')} {product?.campaign_discount_percentage}%
+                      {t('save')} {product?.variants?.[0].campaign_discount_percentage}%
                     </span>
                   </p>
                 </div>
+                <div className={styles.variantSelectors}>
+                  {/* Brand Selection */}
+                  <label htmlFor="brand">{t('selectBrand')}:</label>
+                  <select id="brand" onChange={handleVariantChange}>
+                    {product.variants.map((variant) => (
+                      <option key={variant.id} value={variant.id}>
+                        {variant.brand}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Weight Selection */}
+                  <label htmlFor="weight">{t('selectWeight')}:</label>
+                  <select id="weight" onChange={handleVariantChange}>
+                    {product.variants.map((variant) => (
+                      <option key={variant.id} value={variant.id}>
+                        {variant.weight}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
             {product?.is_in_campaign ? (
               <>
                 <div className={styles.groupProgressSection}>

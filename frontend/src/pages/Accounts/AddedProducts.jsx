@@ -5,12 +5,19 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useTranslation } from "react-i18next";
 
 const ProductsList = () => {
+  const{t, i18n} = useTranslation('add_added_edit_prod')
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentLang, setCurrentLang] = useState(i18n.language);
 
   const { t: tCommon } = useTranslation('accounts_common');
   const { t: tProduct } = useTranslation('add_added_edit_prod');
+
+    // Update currentLang when the language is changed
+    useEffect(() => {
+      setCurrentLang(i18n.language);
+    }, [i18n.language]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -19,6 +26,7 @@ const ProductsList = () => {
         const response = await axios.get("http://127.0.0.1:8000/wholesaler/products/", {
           params: { email: wholesalerEmail },
         });
+        console.log("products 33333333:",response.data)
         setProducts(response.data);
       } catch (err) {
         setError("Failed to load products");
@@ -118,16 +126,12 @@ const ProductsList = () => {
                           <div className="text-center position-relative">
                             <Link to={`/edit-product/${product.id}`}>
                             <img
-                    src={
-                      product.product_images?.length > 0
-                        ? `${product.product_images[0].image_url}`
-                        : "https://via.placeholder.com/150"
-                    }
-                    alt={product.product_name}
-                    style={{ width: "120px", height: "120px", margin: "5px" }}
-                  />
+                              src={product.first_variant_image_url || "https://via.placeholder.com/150"}
+                              alt={product.product_name}
+                              style={{ width: "120px", height: "120px", margin: "5px" }}
+                            />
                             </Link>
-                            <div className="card-product-action">
+                            {/* <div className="card-product-action">
                               <Link
                                 to={`/product/${product.id}`}
                                 className="btn-action"
@@ -152,7 +156,7 @@ const ProductsList = () => {
                               >
                                 <i className="bi bi-arrow-left-right" />
                               </Link>
-                            </div>
+                            </div> */}
                           </div>
                           <div className="text-small mb-1">
                             <Link to="#" className="text-decoration-none text-muted">
@@ -164,10 +168,10 @@ const ProductsList = () => {
                               to={`/edit-product/${product.id}`}
                               className="text-inherit text-decoration-none"
                             >
-                              {product.product_name}
+                              {currentLang === "en" ? product.product_name_en : product.product_name_ar}
                             </Link>
                           </h2>
-                          <div className="text-warning">
+                          {/* <div className="text-warning">
                             <small>
                               <i className="bi bi-star-fill" />
                               <i className="bi bi-star-fill" />
@@ -176,10 +180,10 @@ const ProductsList = () => {
                               <i className="bi bi-star-half" />
                             </small>
                             <span className="text-muted small"> 4.5 (39)</span>
-                          </div>
+                          </div> */}
                           <div className="d-flex justify-content-between mt-4">
                             <div>
-                              <span className="text-dark">{product.actual_price} {tCommon("currency_kd")}</span>
+                              <span className="text-dark">{product.first_variant.price} {tCommon("currency_kd")}</span>
                             </div>
                             <div>
                               <Link to={`/EditProduct/${product.id}`} className="btn btn-primary btn-sm">

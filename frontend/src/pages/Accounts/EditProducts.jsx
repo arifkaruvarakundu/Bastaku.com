@@ -1,389 +1,523 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useDropzone } from 'react-dropzone';
+import React, { useEffect, useState } from "react";
+import { useParams,Link } from "react-router-dom";
+import { MagnifyingGlass } from "react-loader-spinner";
+// import { useDropzone } from 'react-dropzone';
+import ScrollToTop from "../ScrollToTop";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import VariantItem from "../../Component/variant_edit_form";
 import UpdateProductButton from "../../Component/update_product_button";
 
 const EditProduct = () => {
-
-  const{t: tCommon, i18n} = useTranslation("accounts_common")
-  const{t: tProduct} = useTranslation("add_added_edit_prod")
-
-
+  const { t: tCommon, i18n } = useTranslation("accounts_common");
+  const { t: tProduct } = useTranslation("add_added_edit_prod");
   const { id } = useParams();
-  const navigate = useNavigate();
-  const [product, setProduct] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-  // const [image, setImage] = useState(null);
-  // const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-  // const [crop, setCrop] = useState({ x: 0, y: 0 });
-  // const [isCropping,setIsCropping]=useState(false)
-  // const [zoom, setZoom] = useState(1);
-  // const [croppedImage, setCroppedImage] = useState(null);
-  const [files, setFiles] = useState([]);
+  
+  const [productData, setProductData] = useState({});  // ✅ Prevents undefined errors
+
+  // const [productData, setProductData] = useState({
+  //   product_name: "",
+  //   product_name_en: "",
+  //   product_name_ar: "",
+  //   description: "",
+  //   description_en: "",
+  //   description_ar: "",
+  //   category: "",
+  // });
+
   const [categories, setCategories] = useState([]);
+  const [variants, setVariants] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [currentLang, setCurrentLang] = useState(i18n.language);
-
-
-
-    // Update currentLang when the language is changed
-    useEffect(() => {
-      setCurrentLang(i18n.language);
-    }, [i18n.language]);
+  const [loaderStatus, setLoaderStatus] = useState(true);
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/wholesaler/product_detail/${id}/`
-        );
-        console.log('product details', response.data)
-        setProduct(response.data);
-      } catch (err) {
-        setError("Failed to load product details");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    setCurrentLang(i18n.language);
+  }, [i18n.language]);
 
-    fetchProduct();
-  }, [id]);
-
-  const onDrop = useCallback((acceptedFiles) => {
-    setFiles((prevFiles) => [
-      ...prevFiles,  
-      ...acceptedFiles.map((file) =>
-        Object.assign(file, {
-          preview: URL.createObjectURL(file),
-        })
-      ),
-    ]);
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-      onDrop,
-      accept: 'image/*',
-      multiple: true,  // Allow multiple files
-    });
-
+  useEffect(() => {
     
-  useEffect(() => {
+    const fetchProductDetails = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/product_details/${id}/`);
+        
+        setProductData(response.data || {});
+        setVariants(response.data.variants);
+        
+      } catch (err) {
+        console.error("Error fetching product details", err);
+        setError("Failed to load product data");
+      }
+      finally {
+      setLoading(false);
+      }
+     };
+
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/productcategories/');
-        setCategories(response.data); // Assuming the response data is an array of categories
+        const response = await axios.get("http://127.0.0.1:8000/productcategories/");
+        setCategories(response.data);
       } catch (err) {
         console.error("Error fetching categories", err);
-        setError("Failed to load categories");
       }
     };
 
+    fetchProductDetails();
     fetchCategories();
-  }, []);
+  }, [id]);
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    if (
-      ["actual_price", "stock", "minimum_order_quantity_for_offer"].includes(
-        name
-      ) &&
-      value < 0
-    ) {
-      setError(`${name.replace("_", " ")} cannot be negative.`);
-      return;
-    } else {
-      setError(null);
-    }
-    setProduct((prev) => ({ ...prev, [name]: value }));
+    setProductData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  
-  const handleSubmit = async () => {
-    // e.preventDefault();
+  const handleVariantChange = (index, event) => {
+    const { name, value } = event.target;
     
-    try {
-      const formData = new FormData();
-      formData.append("product_name", product.product_name);
-      formData.append("product_name_en", product.product_name_en);
-      formData.append("product_name_ar", product.product_name_ar);
-      formData.append("actual_price", product.actual_price);
-      formData.append("campaign_discount_percentage", product.campaign_discount_percentage);
-      formData.append("description", product.description);
-      formData.append("description_en", product.description_en);
-      formData.append("description_ar", product.description_ar);
-      formData.append("stock", product.stock);
-      formData.append("category", product.category);
-      formData.append("minimum_order_quantity_for_offer", product.minimum_order_quantity_for_offer);
+    setVariants((prevVariants) => 
+      prevVariants.map((variant, i) =>
+        i === index
+          ? {
+              ...variant,
+              [name]: value,
+              existingImages: [...(variant.existingImages || [])], // Ensure existing images are kept
+              newImages: [...(variant.newImages || [])], // Preserve new images
+            }
+          : variant
+      )
+    );
+  };
+
+  const addVariant = () => {
+    setVariants((prevVariants) => {
+      console.log("Previous Variants:", JSON.stringify(prevVariants, null, 2)); // Log before updating
   
-      files.forEach((file) => {
-        formData.append("product_images", file);  
-      });
+      const updatedVariants = [
+        ...prevVariants.map((variant) => ({
+          ...variant,
+          existingImages: variant.existingImages || [], 
+          newImages: variant.newImages || [], 
+        })),
+        {
+          brand: "",
+          weight: "",
+          liter: "",
+          price: "",
+          stock: "",
+          campaign_discount_percentage: "",
+          minimum_order_quantity_for_offer: "",
+          existingImages: [],  
+          newImages: [],  
+        },
+      ];
   
-      console.log("Updating product with ID:", id);
-      for (let [key, value] of formData.entries()) {
-        console.log(key, value);
+      console.log("Updated Variants:", JSON.stringify(updatedVariants, null, 2)); // Log after updating
+  
+      return updatedVariants;
+    });
+  };
+  
+  // const removeVariant = (index) => {
+  //   setVariants(variants.filter((_, i) => i !== index));
+  // };
+
+  // const removeVariantImage = (variantIndex, imageIndex) => {
+  //   const updatedVariants = [...variants];
+  //   updatedVariants[variantIndex].variant_images.splice(imageIndex, 1);
+  //   setVariants(updatedVariants);
+  // };
+
+  // const removeVariantImage = (variantIndex, imgIndex, type) => {
+  //   setVariants((prevVariants) => {
+  //     const updatedVariants = [...prevVariants];
+  //     const variant = updatedVariants[variantIndex];
+  
+  //     if (!variant) return updatedVariants;
+  
+  //     // Ensure arrays are initialized
+  //     if (!Array.isArray(variant.existingImages)) variant.existingImages = [];
+  //     if (!Array.isArray(variant.newImages)) variant.newImages = [];
+  //     if (!Array.isArray(variant.imagesToDelete)) variant.imagesToDelete = [];
+  
+  //     // Handling image removal from `existingImages`
+  //     if (type === "existing" && variant.existingImages[imgIndex]) {
+  //       const imageToDelete = variant.existingImages[imgIndex];
+  //       if (imageToDelete.id) {
+  //         variant.imagesToDelete.push(imageToDelete.id);
+  //         console.log(`Image marked for deletion (existing): ${imageToDelete.id}`);
+  //       }
+  //       variant.existingImages.splice(imgIndex, 1); // Remove the image
+  //       console.log(`Removed existing image. Current images:`, variant.existingImages);
+  //     }
+  
+  //     // Handling image removal from `newImages`
+  //     if (type === "new" && variant.newImages[imgIndex]) {
+  //       const imageToDelete = variant.newImages[imgIndex];
+  //       if (imageToDelete.id) {
+  //         variant.imagesToDelete.push(imageToDelete.id);
+  //         console.log(`Image marked for deletion (new): ${imageToDelete.id}`);
+  //       }
+  //       variant.newImages.splice(imgIndex, 1); // Remove the image
+  //       console.log(`Removed new image. Current images:`, variant.newImages);
+  //     }
+  
+  //     return updatedVariants;
+  //   });
+  // };
+
+  const removeVariantImage = (variantIndex, imageIndex, type) => {
+    setVariants((prevVariants) => {
+      const updatedVariants = [...prevVariants];
+      const variantToUpdate = updatedVariants[variantIndex];
+  
+      // Assuming each image has a unique 'id' field. If not, adjust accordingly
+      const imageToDelete = variantToUpdate.variant_images[imageIndex];
+  
+      // If type is 'existing', we handle it accordingly
+      if (type === 'existing') {
+        // Remove the image from variant_images
+        const updatedImages = variantToUpdate.variant_images.filter((_, index) => index !== imageIndex);
+        variantToUpdate.variant_images = updatedImages;
+  
+        // Add the image id to imagesToDelete if it exists
+        if (imageToDelete && imageToDelete.id) {
+          if (!variantToUpdate.imagesToDelete) {
+            variantToUpdate.imagesToDelete = [];
+          }
+          variantToUpdate.imagesToDelete.push(imageToDelete.id);
+        }
       }
   
-      await axios.put(  
-        `http://127.0.0.1:8000/wholesaler/product_edit/${id}/`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      alert("Product updated successfully");
-      navigate("/AddedProducts");
+      return updatedVariants;
+    });
+  };
+  
+  
+  const removeImage = (variantIndex, imgIndex, type) => {
+    setVariants((prevVariants) => {
+      const updatedVariants = [...prevVariants];
+  
+      if (type === "existing") {
+        updatedVariants[variantIndex].existingImages.splice(imgIndex, 1);
+      } else {
+        updatedVariants[variantIndex].newImages.splice(imgIndex, 1);
+      }
+  
+      return updatedVariants;
+    });
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError(null);
+  
+    const formData = new FormData();
+  
+    // Append basic product data
+    Object.keys(productData).forEach((key) => {
+      formData.append(key, productData[key]);
+    });
+  
+    const safeVariants = Array.isArray(variants) ? variants : [];
+  
+    safeVariants.forEach((variant, index) => {
+      // Include existing images
+      if (Array.isArray(variant.variant_images)) {
+        variant.variant_images.forEach((image, imgIndex) => {
+          formData.append(`existing_images_${index}_${imgIndex}`, image);
+        });
+      }
+  
+      // Include new images
+      if (Array.isArray(variant.newImages)) {
+        variant.newImages.forEach((file, fileIndex) => {
+          formData.append(`new_images_${index}_${fileIndex}`, file);
+        });
+      }
+  
+      // Include images to delete
+      if (Array.isArray(variant.imagesToDelete)) {
+        variant.imagesToDelete.forEach((imageId, imgIndex) => {
+          formData.append(`images_to_delete_${index}_${imgIndex}`, imageId);
+          console.log(`Image ID marked for deletion: ${imageId}`);
+        });
+      }
+    });
+  
+    const formattedVariants = safeVariants.map((variant) => ({
+      ...variant,
+      imagesToDelete: variant.imagesToDelete || [],
+    }));
+  
+    formData.append("variants", JSON.stringify(formattedVariants));
+  
+    try {
+      const response = await axios.put(`http://127.0.0.1:8000/wholesaler/product_edit/${id}/`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      alert("Product Updated Successfully!");
     } catch (err) {
+      console.error("Error updating product:", err);
       setError("Failed to update product");
-      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
   
+  // const handleSubmit = async () => {
+  //   setLoading(true);
+  //   setError(null);
+  
+  //   const formData = new FormData();
+  //   Object.keys(productData).forEach((key) => {
+  //     formData.append(key, productData[key]);
+  //   });
+  
+  //   const safeVariants = Array.isArray(variants) ? variants : [];
+  
+  //   safeVariants.forEach((variant, index) => {
+  //     // Include old images (only the ones that are still present)
+  //     if (Array.isArray(variant.existingImages)) {
+  //       variant.existingImages.forEach((image, imgIndex) => {
+  //         formData.append(`existing_images_${index}_${imgIndex}`, image);
+  //       });
+  //     }
+  
+  //     // Include new images
+  //     if (Array.isArray(variant.newImages)) {
+  //       variant.newImages.forEach((file, fileIndex) => {
+  //         formData.append(`new_images_${index}_${fileIndex}`, file);
+  //       });
+  //     }
+  //   });
+  
+  //   formData.append("variants", JSON.stringify(safeVariants));
+  
+  //   try {
+  //     await axios.put(`http://127.0.0.1:8000/wholesaler/product_edit/${id}/`, formData, {
+  //       headers: { "Content-Type": "multipart/form-data" },
+  //     });
+  //     alert("Product Updated Successfully!");
+  //   } catch (err) {
+  //     setError("Failed to update product");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  
+  const onDrop = (index, acceptedFiles) => {
+  setVariants((prevVariants) =>
+    prevVariants.map((variant, i) =>
+      i === index
+        ? {
+            ...variant,
+            newImages: [...(variant.newImages || []), ...acceptedFiles.map((file) => Object.assign(file, { preview: URL.createObjectURL(file) }))],
+          }
+        : variant
+    )
+  );
+};
 
-  if (loading) return <div>{tProduct("loading")}</div>;
-  if (error) return <div>{error}</div>;
+
+  useEffect(() => {
+      setTimeout(() => {
+        setLoaderStatus(false);
+      }, 1500);
+    }, []);
+
+    if (loading) return <p>Loading...</p>;  
 
   return (
     <div>
-      <div className="container mt-5">
+      <ScrollToTop />
+      <div className="container">
         <div className="row">
-          <div className="col-lg-3 col-md-4 col-12 border-end">
-            <ul className="nav flex-column">
-              {/* <li className="nav-item">
-                <a className="nav-link active" href="/MyAccountSetting">
-                  <i className="fas fa-cog me-2" /> {tCommon("settings")}
-                </a>
-              </li> */}
-              <li className="nav-item">
-                <a className="nav-link" href="/MyAccountOrder">
-                  <i className="fas fa-shopping-bag me-2" /> {tCommon("your_orders")}
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/MyAccountAddress">
-                  <i className="fas fa-map-marker-alt me-2" /> {tCommon("address")}
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/MyAcconutPaymentMethod">
-                  <i className="fas fa-credit-card me-2" /> {tCommon("payment_method")}
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/MyAcconutNotification">
-                  <i className="fas fa-bell me-2" /> {tCommon("notification")}
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/AddedProducts">
-                  <i className="bi bi-card-list me-2" /> {tCommon("added_products")}
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/Grocery-react/">
-                  <i className="fas fa-sign-out-alt me-2" /> {tCommon("home")}
-                </a>
-              </li>
-            </ul>
+          <div className="col-12">
+            <div className="p-6 d-flex justify-content-between align-items-center d-md-none">
+              <h3 className="fs-5 mb-0">{tCommon("account_settings")}</h3>
+              <button
+                className="btn btn-outline-gray-400 text-muted d-md-none"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasAccount"
+                aria-controls="offcanvasAccount"
+              >
+                <i className="fas fa-bars"></i>
+              </button>
+            </div>
           </div>
-
+  
+          {/* Sidebar Navigation */}
+          <div className="col-lg-3 col-md-4 col-12 border-end d-none d-md-block">
+            <div className="pt-10 pe-lg-10">
+              <ul className="nav flex-column nav-pills nav-pills-dark">
+                <li className="nav-item">
+                  <Link className="nav-link" to="/MyAccountOrder">
+                    <i className="fas fa-shopping-bag me-2" />
+                    {tCommon("your_orders")}
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/MyAccountAddress">
+                    <i className="fas fa-map-marker-alt me-2" />
+                    {tCommon("address")}
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/MyAccountPaymentMethod">
+                    <i className="fas fa-credit-card me-2" />
+                    {tCommon("payment_method")}
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/MyAccountNotification">
+                    <i className="fas fa-bell me-2" />
+                    {tCommon("notification")}
+                  </Link>
+                </li>
+  
+                {localStorage.getItem("company_name") && (
+                  <ul className="nav flex-column nav-pills nav-pills-dark">
+                    <li className="nav-item">
+                      <Link className="nav-link active" to="/AddProducts">
+                        <i className="bi bi-plus-circle me-2" />
+                        {tCommon("add_products")}
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/AddedProducts">
+                        <i className="bi bi-card-list me-2" />
+                        {tCommon("added_products")}
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/WholesalerCampaigns">
+                        <i className="bi bi-collection-fill me-2" />
+                        {tCommon("campaigns")}
+                      </Link>
+                    </li>
+                  </ul>
+                )}
+  
+                {localStorage.getItem("user_name") && (
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/WholesalerCampaigns">
+                      <i className="bi bi-collection-fill me-2" />
+                      {tCommon("campaigns")}
+                    </Link>
+                  </li>
+                )}
+  
+                <li className="nav-item">
+                  <Link className="nav-link" to="/Grocery-react/">
+                    <i className="fas fa-sign-out-alt me-2" />
+                    {tCommon("home")}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+  
+          {/* Main Content */}
           <div className="col-lg-9 col-md-8 col-12">
-            <h2 className="mb-4">{tProduct("edit_product")}</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
+            {loaderStatus ? (
+              <div className="loader-container">
+                <MagnifyingGlass
+                  visible={true}
+                  height="100"
+                  width="100"
+                  ariaLabel="magnifying-glass-loading"
+                  color="#0aad0a"
+                />
+              </div>
+            ) : (
+              <div>
+                <h2>{tProduct("edit_your_product")}</h2>
+                <form onSubmit={handleSubmit}>
+                <div className="mb-3">
                 <label className="form-label">{tProduct("product_name")}</label>
-                <input
-                  type="text"
-                  name={currentLang === "en" ? "product_name_en" : "product_name_ar"}
-                  value={currentLang === "en" ? product.product_name_en : product.product_name_ar}
-                  onChange={handleInputChange}
-                  required
-                  className="form-control"
-                  placeholder={tProduct("product_name")}
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">{tProduct('description')}</label>
-                <textarea
-                  name={currentLang === "en" ? "description_en" : "description_ar"}
-                  value={currentLang === "en" ? product.description_en : product.description_ar}
-                  onChange={handleInputChange}
-                  className="form-control"
-                  placeholder={tProduct('description')}
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">{tProduct('price')}</label>
-                <input
-                  type="number"
-                  name="actual_price"
-                  value={product.actual_price}
-                  onChange={handleInputChange}
-                  className="form-control"
-                  placeholder={tProduct('price')}
-                />
-              </div>
-              <div className="mb-5">
-                <label className="form-label">{tProduct("campaign_discount_percentage")}</label>
                   <input
-                    type="number"
+                    type="text"
+                    name={currentLang === "en" ? "product_name_en" : "product_name_ar"}
+                    value={
+                      currentLang === "en"
+                        ? productData?.product_name_en || ""
+                        : productData?.product_name_ar || ""
+                    }
+                    onChange={handleChange}
                     className="form-control"
-                    name="campaign_discount_percentage"
-                    value={product.campaign_discount_percentage}
-                    onChange={handleInputChange}
-                    min="0"
-                    max="100"
-                    placeholder={tProduct('enter_discount_percentage')}
+                    required
                   />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">{tProduct("stock")}</label>
-                <input
-                  type="number"
-                  name="stock"
-                  value={product.stock}
-                  onChange={handleInputChange}
-                  className="form-control"
-                  placeholder={tProduct("stock")}
-                />
-              </div>
-              <div className="mb-5">
-                <label className="form-label">{tProduct('product_category')}</label>
-                <select
-                  id="product_category"
-                  className="form-control"
-                  name="category"
-                  value={product.category}
-                  onChange={handleInputChange}
-                  required
-                >
-                <option value="">{tProduct("select_category")}</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                  {category.name}
-                  </option>
-                    ))}
-                </select>
-              </div>
-              <div className="mb-3">
-                <label className="form-label">
-                {tProduct("minimum_order_quantity_for_offer")}
-                </label>
-                <input
-                  type="number"
-                  name="minimum_order_quantity_for_offer"
-                  value={product.minimum_order_quantity_for_offer}
-                  onChange={handleInputChange}
-                  className="form-control"
-                  placeholder={tProduct('enter_minimum_quantity_for_offer')}
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">{tProduct("existing_images")}</label>
-                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                  {product.product_images && product.product_images.map((img, index) => (
-                    <img
+                  </div>
+                  {variants.map((variant, index) => (
+                    <VariantItem
                       key={index}
-                      src={img.image_url}
-                      alt={img.alt_text || `Thumbnail ${index}`}
-                      style={{
-                        width: '100px',
-                        height: '100px',
-                        objectFit: 'cover',
-                        borderRadius: '8px',
-                      }}
+                      index={index}
+                      variant={variant}
+                      handleVariantChange={handleVariantChange}
+                      onDrop={onDrop}
+                      removeImage={removeImage}
+                      // removeVariant={removeVariant}
+                      removeVariantImage={removeVariantImage}
+                      tProduct={tProduct}
                     />
                   ))}
-                </div>
-              </div>
 
-              {/* Image upload */}
-              <div
-                {...getRootProps()}
-                style={{
-                  border: "2px dashed #aaa",
-                  padding: "20px",
-                  textAlign: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <input {...getInputProps()} multiple />
-                {isDragActive ? (
-                  <p>{tProduct('drop_images_here')}</p>
-                ) : (
-                  <p>{tProduct('drag_drop_images')}</p>
-                )}
+                   {/* Add Variant Button */}
+                   <button type="button" onClick={addVariant} className="btn btn-secondary mt-2">
+                    {tProduct("add_variant")}
+                  </button>
 
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "10px",
-                    marginTop: "10px",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {files.map((file, index) => (
-                    <div
-                      key={file.name}
-                      style={{
-                        position: "relative",
-                        display: "inline-block",
-                      }}
+                   {/* Description Field */}
+                   <div className="mb-3">
+                    <label className="form-label">{tProduct('description')}</label>
+                    <textarea
+                      name={currentLang === "en" ? "description_en" : "description_ar"}
+                      value={currentLang === "en" ? productData.description_en : productData.description_ar}
+                      onChange={handleChange}
+                      className="form-control"
+                      placeholder={tProduct('description')}
+                    />
+                  </div>
+
+                  {/* Category Field */}
+                  <div className="mb-5">
+                    <label className="form-label">{tProduct('product_category')}</label>
+                    <select
+                      id="product_category"
+                      className="form-control"
+                      name="category"
+                      value={productData.category}
+                      onChange={handleChange}
+                      required
                     >
-                      <img
-                        src={file.preview}
-                        alt={file.name}
-                        style={{
-                          width: "100px",
-                          height: "100px",
-                          objectFit: "cover",
-                          borderRadius: "8px",
-                          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                        }}
-                      />
-                      
-                      {/* X Button for removing the image */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();  // Prevents the click from opening file dialog
-                          const updatedFiles = files.filter((_, i) => i !== index);
-                          setFiles(updatedFiles);  // Update state to remove the image
-                        }}
-                        style={{
-                          position: "absolute",
-                          top: "5px",
-                          right: "5px",
-                          backgroundColor: "rgba(0,0,0,0.6)",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "50%",
-                          width: "24px",
-                          height: "24px",
-                          cursor: "pointer",
-                          fontSize: "16px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          padding: "0",
-                        }}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                      <option value="">{tProduct("select_category")}</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <UpdateProductButton
+                    loading={loading}
+                    updateProduct={handleSubmit}
+                    productData={productData || {}}
+                    handleChange={handleChange}
+                  />
+                </form>
               </div>
-              <UpdateProductButton
-              productData={product}
-              updateProduct={handleSubmit} 
-              />
-            </form>
+            )}
           </div>
         </div>
       </div>
+  
+      
     </div>
   );
 };

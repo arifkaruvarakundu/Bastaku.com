@@ -24,7 +24,7 @@ const UpdateProductButton = ({ loading, updateProduct, productData, handleChange
       }
 
       // Submit updated product data to backend
-      await updateProduct(productData);
+      await updateProduct();  // Call `updateProduct` which is now `handleSubmit` without an event
     } catch (error) {
       console.error("Error updating product:", error);
     } finally {
@@ -49,17 +49,17 @@ const UpdateProductButton = ({ loading, updateProduct, productData, handleChange
     <div>
       {/* Button to Update Product */}
       <button
-        type="button"
-        className="btn btn-success"
-        disabled={loading || isSubmitting || !isButtonEnabled}
-        onClick={handleUpdateProduct}
-      >
-        {loading || isSubmitting ? (
-          <ClipLoader color="#fff" loading size={20} />
-        ) : (
-          t("update_product")
-        )}
-      </button>
+          type="button"
+          className="btn btn-success"
+          disabled={loading || isSubmitting || !isButtonEnabled}
+          onClick={handleUpdateProduct} // Now it directly calls the function
+        >
+          {loading || isSubmitting ? (
+            <ClipLoader color="#fff" loading size={20} />
+          ) : (
+            t("update_product")
+          )}
+        </button>
 
       {/* Language toggle button */}
       <button
@@ -74,3 +74,5 @@ const UpdateProductButton = ({ loading, updateProduct, productData, handleChange
 };
 
 export default UpdateProductButton;
+
+

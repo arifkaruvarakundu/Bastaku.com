@@ -150,42 +150,37 @@ class WholesalerProfileSerializer(serializers.ModelSerializer):
 #         return None
 
 class ProductVariantImageSerializer(serializers.ModelSerializer):
+    """Serializer for images related to a product variant."""
+    
     class Meta:
         model = ProductVariantImage
-        fields = ['id', 'image_url']
+        fields = ["id", "image_url", "public_id"] 
 
 class ProductVariantSerializer(serializers.ModelSerializer):
+    """Serializer for product variants including related images."""
+    
+    variant_images = ProductVariantImageSerializer(many=True, read_only=True)  # Fetch all related images
+
     class Meta:
         model = ProductVariant
-        fields = ['id', 'brand', 'weight', 'liter', 'price', 'stock', 'campaign_discount_percentage']
+        fields = [
+            "id", "brand", "weight", "liter", "price", "stock",
+            "campaign_discount_percentage", "minimum_order_quantity_for_offer", 
+            "wholesaler", "variant_images"
+        ]
 
 class ProductSerializer(serializers.ModelSerializer):
-    first_variant = serializers.SerializerMethodField()
-    first_variant_image_url = serializers.SerializerMethodField()
+    """Serializer for product details including all variants and their images."""
+    
+    variants = ProductVariantSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
         fields = [
-            "id","product_name","product_name_en", "product_name_ar", "description", "description_en", "description_ar", "is_in_campaign", "is_available", "category", "wholesaler",
-            "created_date", "modified_date", "slug", "first_variant", "first_variant_image_url"
+            "id", "product_name", "product_name_en", "product_name_ar", "description", 
+            "description_en", "description_ar", "is_in_campaign", "is_available", "category", 
+            "wholesaler", "created_date", "modified_date", "slug", "variants"
         ]
-
-    def get_first_variant(self, obj):
-        """Returns the first variant details if available."""
-        first_variant = obj.variants.first()
-        if first_variant:
-            return ProductVariantSerializer(first_variant).data
-        return None
-
-    def get_first_variant_image_url(self, obj):
-        """Returns the first image of the first variant if available."""
-        first_variant = obj.variants.first()
-        if first_variant:
-            first_image = first_variant.variant_images.first()  # Get first image of the first variant
-            if first_image:
-                return first_image.image_url  # Return image URL
-        return None 
-
     
 from .models import WholesalerBankDetails
 class WholesalerBankDetailsSerializer(serializers.ModelSerializer):
