@@ -36,6 +36,7 @@ const MyAccountOrder = () => {
         const headers = {
           "Content-Type": "application/json",
           email: email,
+          'Authorization': `Bearer ${token}`
         };
   
         let response;
@@ -53,7 +54,7 @@ const MyAccountOrder = () => {
           response = await axios.get("http://127.0.0.1:8000/user_orders/", {
             headers: {
               ...headers,
-              Authorization: `Bearer ${token}`,
+              // Authorization: `Bearer ${token}`,
             },
           });
         }

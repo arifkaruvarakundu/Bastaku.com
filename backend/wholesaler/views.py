@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .serializers import WholesalerBankDetailsSerializer, WholesalerProfileSerializer, ProductSerializer
-from authentication.models import Wholesaler,ProductCategory
+from authentication.models import User, ProductCategory
 from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Product,WholesalerBankDetails,ProductVariantImage,ProductVariant, ProductVariantImage
 from rest_framework.exceptions import ValidationError
@@ -16,9 +16,12 @@ import decimal
 import traceback
 import cloudinary.uploader
 
+
+
+
 # Create your views here.
 class WholesalerDetailView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request, *args, **kwargs):
         email = request.headers.get('email')  # Get the email from the custom header
@@ -28,8 +31,8 @@ class WholesalerDetailView(APIView):
 
         try:
             # Fetch the user based on the email
-            user = Wholesaler.objects.get(email=email)
-        except Wholesaler.DoesNotExist:
+            user = User.objects.get(email=email, user_type="wholesaler")
+        except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         
         # Prepare the response data
@@ -49,15 +52,15 @@ class WholesalerDetailView(APIView):
         return Response(user_data, status=status.HTTP_200_OK)
 
 class WholesalerProfileUpdationView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
 
     def patch(self, request, *args, **kwargs):
         
         email = request.headers.get('email')
         try:
-            user_profile = Wholesaler.objects.get(email=email)
-        except Wholesaler.DoesNotExist:
+            user_profile = User.objects.get(email=email, user_type="wholesaler")
+        except User.DoesNotExist:
             return Response({"error": "Wholesaler not found"}, status=404)
 
         # Handle license_image: only save if a new file is provided
@@ -82,7 +85,7 @@ class WholesalerProfileUpdationView(APIView):
         return Response(serializer.errors, status=400)
 
 class AddProductView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         try:
@@ -95,7 +98,7 @@ class AddProductView(APIView):
 
             # Fetch wholesaler instance
             wholesaler_email = data.get("wholesaler")
-            wholesaler_instance = Wholesaler.objects.get(email=wholesaler_email)
+            wholesaler_instance = User.objects.get(email=wholesaler_email, user_type="wholesaler")
 
             # Create the product
             product = Product.objects.create(
@@ -119,12 +122,10 @@ class AddProductView(APIView):
 
             # Iterate over each variant and handle its data and image (if provided)
             for index, variant_data in enumerate(variants):
-                
-
                 # Convert price and discount values to Decimal
-                weight = decimal.Decimal(variant_data.get("weight"))
-                liter = decimal.Decimal(variant_data.get("liter"))  # Avoid empty string
-                price = decimal.Decimal(variant_data.get("price"))
+                weight = decimal.Decimal(variant_data.get("weight")) if variant_data.get("weight") not in [None, '', '0.00'] else None
+                liter = decimal.Decimal(variant_data.get("liter")) if variant_data.get("liter") not in [None, '', '0.00'] else None
+                price = decimal.Decimal(variant_data.get("price")) if variant_data.get("price") not in [None, '', '0.00'] else None
                 campaign_discount_percentage = decimal.Decimal(variant_data.get("campaign_discount_percentage") or 0)
                 minimum_order_quantity_for_offer = decimal.Decimal(variant_data.get("minimum_order_quantity_for_offer") or 0)
 
@@ -170,7 +171,7 @@ class AddProductView(APIView):
         except ProductCategory.DoesNotExist:
             return Response({"error": "Invalid category ID"}, status=status.HTTP_400_BAD_REQUEST)
 
-        except Wholesaler.DoesNotExist:
+        except User.DoesNotExist:
             return Response({"error": "Wholesaler not found with this email"}, status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
@@ -197,7 +198,7 @@ class AddProductView(APIView):
 #         return Response(serializer.data)
 
 class WholesalerProductsView(APIView):
-    permission_classes = [AllowAny]  
+    permission_classes = [IsAuthenticated]  
 
     def get(self, request, *args, **kwargs):
         # Retrieve the email from query parameters
@@ -207,7 +208,7 @@ class WholesalerProductsView(APIView):
 
         try:
             # Get the wholesaler object
-            wholesaler = Wholesaler.objects.get(email=email)
+            wholesaler = User.objects.get(email=email, user_type = "wholesaler")
 
             # Filter products by the wholesaler
             products = Product.objects.filter(wholesaler=wholesaler)
@@ -250,7 +251,7 @@ class WholesalerProductsView(APIView):
 
             return Response(product_list, status=status.HTTP_200_OK)
 
-        except Wholesaler.DoesNotExist:
+        except User.DoesNotExist:
             return Response({"error": "Wholesaler not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             print(f"Error retrieving wholesaler products: {str(e)}")
@@ -284,7 +285,7 @@ class ProductDetailView(APIView):
 
 
 class EditProductView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]  # Allow file uploads
 
     def put(self, request, pk, *args, **kwargs):
@@ -391,7 +392,7 @@ class EditProductView(APIView):
         return Response({"detail": "Product updated successfully!"}, status=status.HTTP_200_OK)
 
 class WholesalerBankDetailsView(APIView):
-    permission_classes = [AllowAny]  # No authentication required
+    permission_classes = [IsAuthenticated]  # No authentication required
 
     def get(self, request, *args, **kwargs):
         try:
@@ -399,7 +400,7 @@ class WholesalerBankDetailsView(APIView):
             if not email:
                 return Response({"error": "Email parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-            wholesaler = Wholesaler.objects.filter(email=email).first()
+            wholesaler = User.objects.filter(email=email, user_type = "wholesaler").first()
             if not wholesaler:
                 return Response({"error": "Wholesaler not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -419,7 +420,7 @@ class WholesalerAddBankDetailsView(APIView):
     """
     API endpoint for Wholesaler to add banking details.
     """
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         wholesaler_email = request.headers.get('Email')  # Use .get() to access data safely
@@ -427,9 +428,9 @@ class WholesalerAddBankDetailsView(APIView):
         if wholesaler_email:
             try:
                 # Fetch the wholesaler using email
-                wholesaler = Wholesaler.objects.get(email=wholesaler_email)
+                wholesaler = User.objects.get(email=wholesaler_email, user_type = "wholesaler")
                 print(wholesaler)
-            except Wholesaler.DoesNotExist:
+            except User.DoesNotExist:
                 return Response({"detail": "Wholesaler not found."}, status=404)
         else:
             return Response({"detail": "Wholesaler email is required."}, status=400)

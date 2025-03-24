@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from .models import Order, CampaignOrder, Payment, Notification
 from .serializers import OrderSerializer, CampaignOrderSerializer, NotificationSerializer
-from authentication.models import Wholesaler
+from authentication.models import User
 from authentication.renderers import UserRenderer
 from rest_framework.exceptions import PermissionDenied
 from django.utils.crypto import get_random_string
@@ -13,7 +13,7 @@ from rest_framework import status
 # Create your views here.
 
 class UserOrdersView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     renderer_classes = [UserRenderer]
 
     def get(self, request):
@@ -32,7 +32,7 @@ class UserOrdersView(APIView):
     
 
 class WholesalerOrdersView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     renderer_classes = [UserRenderer]
 
     def get(self, request):
@@ -42,8 +42,8 @@ class WholesalerOrdersView(APIView):
             if not email:
                 raise PermissionDenied("Email header is required.")
 
-            wholesaler = Wholesaler.objects.get(email=email)
-        except Wholesaler.DoesNotExist:
+            wholesaler = User.objects.get(email=email, user_type="wholesaler")
+        except User.DoesNotExist:
             raise PermissionDenied("You are not a wholesaler.")
         
         # Get all orders for the products supplied by this wholesaler

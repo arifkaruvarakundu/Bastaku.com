@@ -22,9 +22,13 @@ const ProductItem = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        const token = localStorage.getItem("access_token");
         const wholesalerEmail = localStorage.getItem("email");
         const response = await axios.get("http://127.0.0.1:8000/wholesaler/products/", {
           params: { email: wholesalerEmail },
+          headers:{
+            'Authorization': `Bearer ${token}`
+          }
         });
         console.log("wholesaler products", response.data)
         setProducts(response.data);

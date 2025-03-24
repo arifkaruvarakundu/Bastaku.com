@@ -32,7 +32,8 @@ const WholesalerCampaigns = () => {
         const response = await axios.get("http://127.0.0.1:8000/wholesaler/campaigns/", {
           headers: {
             "Content-Type": "application/json",
-            email: email,
+             email: email,
+            'Authorization': `Bearer ${token}`
            
           },
         });

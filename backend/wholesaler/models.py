@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from cloudinary.models import CloudinaryField
-from authentication.models import ProductCategory, Wholesaler
+from authentication.models import ProductCategory, User
 # Create your models here.
 
 # class Product(models.Model):
@@ -40,6 +40,7 @@ from authentication.models import ProductCategory, Wholesaler
 #     def __str__(self):
 #         return self.product_name
 
+
 class Product(models.Model):
     product_name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
@@ -55,7 +56,14 @@ class Product(models.Model):
     # minimum_order_quantity_for_offer = models.PositiveIntegerField(default=1)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
-    wholesaler = models.ForeignKey(Wholesaler, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
+    wholesaler = models.ForeignKey(
+        User,  # Direct reference to the User model
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='products',
+        limit_choices_to={'user_type': 'wholesaler'}
+    )
 
     def get_url(self):
         return reverse('product_detail', args=[self.category.name, self.slug])
@@ -73,20 +81,23 @@ class Product(models.Model):
 
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product, related_name="variants", on_delete=models.CASCADE)
-
-    # Variant fields (can be None)
     brand = models.CharField(max_length=100, null=True, blank=True, help_text="Enter brand name")
     weight = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, help_text="Weight in kg")
     liter = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, help_text="Volume in liters")
-
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField(null=True, blank=True)
     campaign_discount_percentage = models.DecimalField(
         max_digits=5, decimal_places=2, default=0.0, help_text="Enter discount as a percentage (e.g., 20 for 20%)"
     )
     minimum_order_quantity_for_offer = models.PositiveIntegerField(default=1)
-
-    wholesaler = models.ForeignKey(Wholesaler, on_delete=models.SET_NULL, null=True, blank=True)  # Associate Wholesaler with ProductVariant
+    wholesaler = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='product_variants',  # Unique related_name
+        limit_choices_to={'user_type': 'wholesaler'}
+    )
 
 
     def get_discounted_price(self):
@@ -111,7 +122,14 @@ class ProductVariantImage(models.Model):
     variant = models.ForeignKey(ProductVariant, related_name="variant_images", on_delete=models.CASCADE)
     image_url = models.URLField(default="")   # Store the image in Cloudinary
     public_id = models.CharField(max_length=255, default="")  # Store the public_id for Cloudinary images
-    wholesaler = models.ForeignKey(Wholesaler, on_delete=models.SET_NULL, null=True, blank=True)  # Associate Wholesaler with ProductVariantImage
+    wholesaler = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='product_variant_images',  # Unique related_name
+        limit_choices_to={'user_type': 'wholesaler'}
+    )
     product = models.ForeignKey(Product, related_name="product_images", on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
@@ -121,7 +139,11 @@ class ProductVariantImage(models.Model):
 from django.utils import timezone
 
 class WholesalerBankDetails(models.Model):
-    wholesaler = models.OneToOneField(Wholesaler, on_delete=models.CASCADE, related_name='bank_details')
+    wholesaler = models.ForeignKey(
+        'authentication.User',  # Assuming 'authentication' is the app name
+        on_delete=models.CASCADE,
+        related_name='bank_details'  # related_name for reverse lookup
+    )
     beneficiary_name = models.CharField(max_length=255)
     bank_name = models.CharField(max_length=255)
     bank_address = models.TextField()

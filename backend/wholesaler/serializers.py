@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from authentication.models import Wholesaler,ProductCategory
+from authentication.models import User,ProductCategory
 from .models import Product,ProductVariantImage,ProductVariant
 from django.conf import settings
 from authentication.serializers import ProductCategorySerializer
@@ -13,7 +13,7 @@ class WholesalerProfileSerializer(serializers.ModelSerializer):
         return None
     
     class Meta:
-        model = Wholesaler
+        model = User
         fields = ['license_image', 'street_address', 'zipcode', 'country', 'mobile_number1', 'mobile_number2', 'mobile_number3','company_name', 'email','license_number']
 
 # class ProductImageSerializer(serializers.ModelSerializer):

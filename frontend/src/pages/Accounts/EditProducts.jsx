@@ -13,7 +13,7 @@ const EditProduct = () => {
   const { t: tProduct } = useTranslation("add_added_edit_prod");
   const { id } = useParams();
   
-  const [productData, setProductData] = useState({});  // ✅ Prevents undefined errors
+  const [productData, setProductData] = useState({});
 
   // const [productData, setProductData] = useState({
   //   product_name: "",
@@ -269,8 +269,12 @@ const EditProduct = () => {
     formData.append("variants", JSON.stringify(formattedVariants));
   
     try {
+      const token = localStorage.getItem("access_token")
       const response = await axios.put(`http://127.0.0.1:8000/wholesaler/product_edit/${id}/`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { "Content-Type": "multipart/form-data",
+                    "Authorization": `Bearer ${token}`
+
+        },
       });
       alert("Product Updated Successfully!");
     } catch (err) {

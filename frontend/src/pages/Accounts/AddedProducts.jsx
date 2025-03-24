@@ -19,25 +19,32 @@ const ProductsList = () => {
       setCurrentLang(i18n.language);
     }, [i18n.language]);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const wholesalerEmail = localStorage.getItem("email");
-        const response = await axios.get("http://127.0.0.1:8000/wholesaler/products/", {
-          params: { email: wholesalerEmail },
-        });
-        console.log("products 33333333:",response.data)
-        setProducts(response.data);
-      } catch (err) {
-        setError("Failed to load products");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+    useEffect(() => {
+      console.log("Fetching products...");
+      const fetchProducts = async () => {
+        try {
+          const wholesalerEmail = localStorage.getItem("email");
+          const token = localStorage.getItem("access_token");
+          const response = await axios.get("http://127.0.0.1:8000/wholesaler/products/", {
+            params: { email: wholesalerEmail },
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+    
+          console.log("Response:", response.data);  // Check the response
+          setProducts(response.data);
+        } catch (err) {
+          setError("Failed to load products");
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+    
+      fetchProducts();
+    }, []);
+    
 
   if (loading) {
     return <div>Loading...</div>;

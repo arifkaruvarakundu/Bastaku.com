@@ -20,7 +20,7 @@ load_dotenv(dotenv_path=dotenv_path)
 MISTRAL_API_KEY = os.getenv('MISTRAL_API_KEY')
 MISTRAL_API_URL = "https://api.mistral.ai/v1/chat/completions"  # Check Mistral's official docs for this URL
 
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -153,7 +153,7 @@ def call_mistral_api(prompt):
 from authentication.models import User
 # Create your class-based view here
 class CalculateExpenseView(APIView):
-    permission_classes = [AllowAny]  # Allow access to all users
+    permission_classes = [IsAuthenticated]  # Allow access to all users
 
     def post(self, request, *args, **kwargs):
         email=request.data.get('user_email')

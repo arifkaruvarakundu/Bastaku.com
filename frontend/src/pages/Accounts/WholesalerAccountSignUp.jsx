@@ -57,15 +57,15 @@ const WholesalerAccountSignUp = () => {
       return;
     }
 
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // At least 8 characters, alphanumeric
-    if (!passwordRegex.test(formData.password)) {
-      Swal.fire({
-        icon: "error",
-        title: "Weak Password",
-        text: "Password must be at least 8 characters long and contain both letters and numbers.",
-      });
-      return;
-    }
+    // const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // At least 8 characters, alphanumeric
+    // if (!passwordRegex.test(formData.password)) {
+    //   Swal.fire({
+    //     icon: "error",
+    //     title: "Weak Password",
+    //     text: "Password must be at least 8 characters long and contain both letters and numbers.",
+    //   });
+    //   return;
+    // }
 
     const payload = new FormData();
     payload.append("company_name", formData.company_name);

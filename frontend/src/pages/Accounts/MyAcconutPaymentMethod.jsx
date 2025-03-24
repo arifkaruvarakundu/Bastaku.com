@@ -42,6 +42,7 @@ const MyAcconutPaymentMethod = () => {
     e.preventDefault();
     
     try {
+      const token = localStorage.getItem("access_token")
       const email = localStorage.getItem("email");
       const response = await axios.post(
         "http://127.0.0.1:8000/wholesaler/add_bank_details/",
@@ -50,6 +51,7 @@ const MyAcconutPaymentMethod = () => {
           headers: {
             "Content-Type": "application/json",
              email: email,
+             'Authorization': `Bearer ${token}`
           },
         }
       );
@@ -66,11 +68,16 @@ const MyAcconutPaymentMethod = () => {
   useEffect(() => {
     const fetchBankDetails = async () => {
       try {
-        const email = localStorage.getItem("email");
-
+        const wholesalerEmail = localStorage.getItem("email");
+        console.log(wholesalerEmail)
+        
+        const token = localStorage.getItem("access_token")
         // Correct way to pass query parameters
         const response = await axios.get("http://127.0.0.1:8000/wholesaler/bank_details/", {
-          params: { email },  // Passing email as query parameter
+          params: { email: wholesalerEmail},
+          headers:{
+            'Authorization': `Bearer ${token}`
+          }
         });
         console.log("Bank details response:", response.data);
         setBankDetails(response.data);

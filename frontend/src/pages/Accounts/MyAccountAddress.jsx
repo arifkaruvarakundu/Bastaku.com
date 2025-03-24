@@ -45,7 +45,7 @@ const MyAccountAddress = () => {
       try {
         const email = localStorage.getItem('email'); // Get email from local storage
         const token = localStorage.getItem('access_token'); // Get token from local storage
-        console.log(token)
+        
   
         if (!email) {
           console.error('No email found in local storage');
@@ -60,14 +60,15 @@ const MyAccountAddress = () => {
         // Set up headers
         const headers = {
           'Content-Type': 'application/json',
-          email, // Pass the email as a custom header
+          email,
+          'Authorization': `Bearer ${token}`
         };
   
         // Only add Authorization header if the user is NOT a company
-        if (!isCompany) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
-        console.log('Headers:', headers);
+        // if (!isCompany) {
+        //   headers['Authorization'] = `Bearer ${token}`;
+        // }
+        // console.log('Headers:', headers);
   
         const response = await axios.get(endpoint, { headers });
         console.log('userDetails:', response.data);
@@ -192,6 +193,7 @@ const MyAccountAddress = () => {
     formData.append('mobile_number3', address.mobile_number3);
   
     try {
+      const token = localStorage.getItem('access_token')
       const email = localStorage.getItem('email');
       // const token = localStorage.getItem('access_token')
       // console.log(token)
@@ -210,7 +212,7 @@ const MyAccountAddress = () => {
         headers: {
           'Content-Type': 'multipart/form-data',
           email,
-          // 'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`
         },
       });
   

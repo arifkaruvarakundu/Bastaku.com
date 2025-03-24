@@ -9,7 +9,7 @@ from wholesaler.models import Product
 from order.models import CampaignOrder,Payment,Notification
 from decimal import Decimal
 from django.db.models import Sum
-from authentication.models import Wholesaler
+from authentication.models import User
 from rest_framework.exceptions import PermissionDenied
 from django.utils.crypto import get_random_string
 from django.db import transaction
@@ -71,7 +71,7 @@ class CampaignDetailView(generics.RetrieveAPIView):
         return Response(response_data)
 
 class JoinCampaignView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
         if request.user.is_anonymous:  # ✅ Explicit check
@@ -290,7 +290,7 @@ class JoinCampaignView(APIView):
         email.send()
 
 class StartCampaignView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         data = request.data
@@ -457,7 +457,7 @@ class StartCampaignView(APIView):
 
 
 class WholesalerCampaignsView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
@@ -466,8 +466,8 @@ class WholesalerCampaignsView(APIView):
             if not email:
                 raise PermissionDenied("Email header is required.")
 
-            wholesaler = Wholesaler.objects.get(email=email)
-        except Wholesaler.DoesNotExist:
+            wholesaler = User.objects.get(email=email, user_type = "wholesaler")
+        except User.DoesNotExist:
             raise PermissionDenied("You are not a wholesaler.")
         
         # Get all campaigns where the wholesaler's product is part of the campaign

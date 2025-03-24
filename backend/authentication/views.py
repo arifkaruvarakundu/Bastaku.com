@@ -6,10 +6,9 @@ from authentication.serializers import UserRegistrationSerializer,UserLoginSeria
 from authentication.renderers import UserRenderer
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.permissions import AllowAny
-from .models import ProductCategory, User, Wholesaler
+from .models import ProductCategory, User
 from .serializers import ProductCategorySerializer
 import os
 from dotenv import load_dotenv
@@ -183,7 +182,7 @@ class WholesalerLoginView(APIView):
         serializer = WholesalerLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         email = serializer.data.get('email')
-        user = Wholesaler.objects.get(email=email)
+        user = User.objects.get(email=email, user_type = "wholesaler")
         password = serializer.data.get('password')
 
         wholesaler = authenticate(request, email=email, password=password)  # Custom backend is used here

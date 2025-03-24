@@ -205,9 +205,11 @@ const removeVariant = (index) => {
     // formData.append("variants", JSON.stringify(variants));
   
     try {
+      const token = localStorage.getItem("access_token")
       const response = await axios.post("http://127.0.0.1:8000/add_product/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          'Authorization': `Bearer ${token}`
         },
       });
   

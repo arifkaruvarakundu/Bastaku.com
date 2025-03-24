@@ -43,6 +43,7 @@
     "join_with_5_percent_extra_discount": "Join with 5% Extra Discount",
     "join_with_25_percent_extra_discount": "Join with 25% Extra Discount",
     "selectBrand": "Brand",
-    "selectVolume": "Volume"
+    "selectVolume": "Volume",
+    "selectWeight": "Weight"
     
   }

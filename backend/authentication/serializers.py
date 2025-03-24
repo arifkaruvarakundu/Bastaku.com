@@ -119,7 +119,7 @@ class UserPasswordResetSerializer(serializers.Serializer):
       raise serializers.ValidationError('Token is not Valid or Expired')
 
 
-from .models import Wholesaler
+from .models import User
 
 # class WholesalerSerializer(serializers.ModelSerializer):
 #     class Meta:
@@ -130,13 +130,14 @@ class WholesalerRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
 
     class Meta:
-        model = Wholesaler
-        fields = ['company_name', 'license_number', 'password', 'password2','email','mobile_number1']
+        model = User
+        fields = ['company_name', 'license_number', 'password', 'password2', 'email', 'mobile_number1', 'first_name']
         extra_kwargs = {
             'password': {'write_only': True}
         }
 
     def validate(self, attrs):
+        # Validate that the passwords match
         password = attrs.get('password')
         password2 = attrs.get('password2')
         if password != password2:
@@ -144,13 +145,20 @@ class WholesalerRegistrationSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        validated_data.pop('password2')  # Remove password2 as it is not part of the model
-        return Wholesaler.objects.create_user(**validated_data)
+        # Remove password2 from validated_data as it is not a part of the model
+        validated_data.pop('password2')
 
+        # Set user_type to 'wholesaler' for wholesaler registration
+        validated_data['user_type'] = 'wholesaler'
+
+        # Call the UserManager's create_user method
+        return User.objects.create_user(**validated_data)
+    
+    
 class WholesalerLoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=255)
     class Meta:
-      model = Wholesaler
+      model = User
       fields = ['email', 'password']
 
 
