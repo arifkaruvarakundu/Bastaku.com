@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MagnifyingGlass } from "react-loader-spinner";
-import ScrollToTop from "../ScrollToTop"; // Assuming you have a ScrollToTop component
+import ScrollToTop from "../ScrollToTop";
 import { useTranslation } from "react-i18next";
 
 const ShopCart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [loaderStatus, setLoaderStatus] = useState(true);
-
+  
   const navigate = useNavigate();
   const {t} = useTranslation("cart_check")
 
   useEffect(() => {
     const fetchCart = () => {
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      
       setCartItems(cart);
       calculateTotals(cart);
       setLoaderStatus(false);
@@ -25,16 +24,16 @@ const ShopCart = () => {
 
   const calculateTotals = (cart) => {
     const total = cart.reduce(
-      (sum, item) => sum + item.product.actual_price * item.quantity,
+      (sum, item) => sum + item.variant.price * item.quantity,
       0
     );
     setTotalPrice(total);
   };
 
-  const updateQuantity = (productId, newQuantity) => {
+  const updateQuantity = (variantId, newQuantity) => {
     const updatedCart = cartItems
       .map((item) => {
-        if (item.product.id === productId) {
+        if (item.variant.id === variantId) {
           return { ...item, quantity: newQuantity > 0 ? newQuantity : 0 };
         }
         return item;
@@ -46,8 +45,8 @@ const ShopCart = () => {
     calculateTotals(updatedCart);
   };
 
-  const removeItem = (productId) => {
-    const updatedCart = cartItems.filter((item) => item.product.id !== productId);
+  const removeItem = (variantId) => {
+    const updatedCart = cartItems.filter((item) => item.variant.id !== variantId);
     setCartItems(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     calculateTotals(updatedCart);
@@ -97,33 +96,33 @@ const ShopCart = () => {
                         <ul className="list-group list-group-flush">
                           {cartItems.map((item) => (
                             <li
-                              key={item.product.id}
+                              key={item.variant.id}
                               className="list-group-item py-3 py-lg-0 px-0 border-top"
                             >
                               <div className="row align-items-center">
                                 <div className="col-3 col-md-2">
                                 <img
                                     src={
-                                      item.product.product_images && item.product.product_images?.length > 0
-                                        ? item.product.product_images[0].image_url // Cloudinary image URL
+                                      item.variant.variant_images && item.variant.variant_images?.length > 0
+                                        ? item.variant.variant_images[0].image_url // Cloudinary image URL
                                         : "https://via.placeholder.com/150" // Fallback image if no image exists
                                     }
-                                    alt={item.product.product_name}
+                                    alt={item.variant.product_name}
                                     className="img-fluid"
                                   />
                                 </div>
                                 <div className="col-4 col-md-6">
-                                  <h6 className="mb-0">{item.product.product_name}</h6>
+                                  <h6 className="mb-0">{item.variant.product_name}</h6>
                                   <span>
                                     <small className="text-muted">
-                                    {t("currency_kd")}: {Number(item.product.actual_price).toFixed(2)} {t("per_unit")}
+                                    {t("currency_kd")}: {Number(item.variant.price).toFixed(2)} {t("per_unit")}
                                     </small>
                                   </span>
                                   <div className="mt-2 small">
                                     <Link
                                       to="#!"
                                       className="text-decoration-none text-inherit"
-                                      onClick={() => removeItem(item.product.id)}
+                                      onClick={() => removeItem(item.variant.id)}
                                     >
                                       <span className="me-1 align-text-bottom">
                                         <svg
@@ -153,7 +152,7 @@ const ShopCart = () => {
                                     <button
                                       className="button-minus form-control text-center px-0"
                                       onClick={() =>
-                                        updateQuantity(item.product.id, item.quantity - 1)
+                                        updateQuantity(item.variant.id, item.quantity - 1)
                                       }
                                     >
                                       -
@@ -165,7 +164,7 @@ const ShopCart = () => {
                                       value={item.quantity}
                                       onChange={(e) =>
                                         updateQuantity(
-                                          item.product.id,
+                                          item.variant.id,
                                           parseInt(e.target.value) || 0
                                         )
                                       }
@@ -174,7 +173,7 @@ const ShopCart = () => {
                                     <button
                                       className="button-plus form-control text-center px-0"
                                       onClick={() =>
-                                        updateQuantity(item.product.id, item.quantity + 1)
+                                        updateQuantity(item.variant.id, item.quantity + 1)
                                       }
                                     >
                                       +
@@ -183,7 +182,7 @@ const ShopCart = () => {
                                 </div>
                                 <div className="col-2 text-lg-end text-start text-md-end col-md-2">
                                   <span className="fw-bold">
-                                    {t("currency_kd")}: {item.product.actual_price * item.quantity}
+                                    {t("currency_kd")}: {item.variant.price * item.quantity}
                                   </span>
                                 </div>
                               </div>

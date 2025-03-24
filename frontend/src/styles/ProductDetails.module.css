@@ -1340,4 +1340,66 @@
       grid-template-columns: 1fr;
     }
   }
+
+/* Container for the selectors */
+.variantSelectors {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem; /* Space between the brand and weight selection */
+  align-items: center; /* Align items centrally */
+}
+
+/* Label styling */
+label {
+  font-size: 1rem;
+  margin-bottom: 0.5rem; /* Space below the label */
+  color: #817e7e; /* Text color */
+}
+
+/* Styling for the select dropdown */
+select {
+  padding: 0.5rem 1rem; /* Adds padding for better spacing */
+  font-size: 1rem; /* Ensures readable font size */
+  border: 2px solid #ccc; /* Light gray border */
+  border-radius: 5px; /* Rounded corners */
+  background-color: #f9f9f9; /* Background color */
+  transition: all 0.3s ease; /* Smooth transition for interactive states */
+  width: 180px; /* Adjust width for consistency */
+  cursor: pointer; /* Pointer cursor for better UX */
+}
+
+/* Hover state */
+select:hover {
+  border-color: #7eed5ca4; /* Light greenish-blue border on hover */
+  background-color: #e1f7df; /* Light green background on hover */
+}
+
+/* Focus state */
+select:focus {
+  border-color: #00ff9d; /* Bright green border on focus */
+  outline: none; /* Removes the default outline */
+  box-shadow: 0 0 5px rgba(0, 255, 21, 0.521); /* Soft glow effect on focus */
+  background-color: #d1ffd6; /* Light green background on focus */
+}
+
+/* Styling for the option items inside the select */
+option {
+  padding: 10px; /* Adds space around the option text */
+  font-size: 1rem; /* Ensures consistency in font size */
+  background-color: #fff; /* Default white background for options */
+  color: #333; /* Default text color for options */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for hover and focus */
+}
+
+/* Hover effect for options */
+option:hover {
+  background-color: #7eed5ca4; /* Light green background on option hover */
+  color: #fff; /* White text on hover */
+}
+
+/* Optional: Styling for select options in different languages or right-to-left text */
+select[dir="rtl"] {
+  text-align: right; /* Align text to the right for RTL languages */
+}
+
   

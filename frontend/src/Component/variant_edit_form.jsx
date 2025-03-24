@@ -32,7 +32,7 @@ const VariantItem = ({ index, variant, handleVariantChange, onDrop, removeImage,
             value={variant.weight}
             onChange={(e) => handleVariantChange(index, e)}
             className="form-control"
-            disabled={variant.liter !== ""}
+            
             placeholder="Enter weight in kg"
           />
         </div>
@@ -46,7 +46,7 @@ const VariantItem = ({ index, variant, handleVariantChange, onDrop, removeImage,
             value={variant.liter}
             onChange={(e) => handleVariantChange(index, e)}
             className="form-control"
-            disabled={variant.weight !== ""}
+            
             placeholder="Enter volume in liters"
           />
         </div>

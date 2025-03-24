@@ -41,7 +41,9 @@
     "join_group_deal": "انضم إلى صفقة المجموعة",
     "join_with_5_percent_extra_discount": "انضم مع خصم إضافي 5%",
     "join_with_25_percent_extra_discount": "انضم مع خصم إضافي 25%",
-    "unit": "وحدة"
+    "unit": "وحدة",
+    "selectBrand": "اختر العلامة التجارية",
+    "selectVolume": "اختر الحجم"
 
 
   }

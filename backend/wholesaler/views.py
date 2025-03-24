@@ -6,7 +6,15 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from .serializers import WholesalerBankDetailsSerializer, WholesalerProfileSerializer, ProductSerializer
 from authentication.models import Wholesaler,ProductCategory
 from rest_framework.parsers import MultiPartParser, FormParser
-from .models import Product,WholesalerBankDetails,ProductVariantImage,ProductVariant
+from .models import Product,WholesalerBankDetails,ProductVariantImage,ProductVariant, ProductVariantImage
+from rest_framework.exceptions import ValidationError
+from .utils import upload, destroy  # Cloudinary utility functions
+import json
+from decimal import Decimal, InvalidOperation
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import decimal
+import traceback
+import cloudinary.uploader
 
 # Create your views here.
 class WholesalerDetailView(APIView):
@@ -24,7 +32,6 @@ class WholesalerDetailView(APIView):
         except Wholesaler.DoesNotExist:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         
-
         # Prepare the response data
         user_data = {
             "company_name": user.company_name,
@@ -40,11 +47,6 @@ class WholesalerDetailView(APIView):
         }
 
         return Response(user_data, status=status.HTTP_200_OK)
-    
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.core.files.uploadedfile import InMemoryUploadedFile
 
 class WholesalerProfileUpdationView(APIView):
     permission_classes = [AllowAny]
@@ -79,15 +81,6 @@ class WholesalerProfileUpdationView(APIView):
         
         return Response(serializer.errors, status=400)
 
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework import status
-import decimal
-import json
-import traceback
-from .models import Product, ProductVariant, ProductVariantImage, ProductCategory, Wholesaler
-import cloudinary.uploader
-
 class AddProductView(APIView):
     permission_classes = [AllowAny]
 
@@ -118,8 +111,7 @@ class AddProductView(APIView):
 
             # Handle variants
             variants = json.loads(data.get("variants", "[]"))
-            print("!!!!!!!!!@@@@@@@@@@@@@@@@@@@@@", variants)
-
+           
             # Extract images from request.FILES (now we correctly map variant_images)
             variant_images_files = [file for key, file in request.FILES.items() if key.startswith("variant_images")]
 
@@ -127,12 +119,12 @@ class AddProductView(APIView):
 
             # Iterate over each variant and handle its data and image (if provided)
             for index, variant_data in enumerate(variants):
-                print("###################", variant_data)
+                
 
                 # Convert price and discount values to Decimal
-                weight = decimal.Decimal(variant_data.get("weight") or 0)
-                liter = decimal.Decimal(variant_data.get("liter") or 0)  # Avoid empty string
-                price = decimal.Decimal(variant_data.get("price") or 0)
+                weight = decimal.Decimal(variant_data.get("weight"))
+                liter = decimal.Decimal(variant_data.get("liter"))  # Avoid empty string
+                price = decimal.Decimal(variant_data.get("price"))
                 campaign_discount_percentage = decimal.Decimal(variant_data.get("campaign_discount_percentage") or 0)
                 minimum_order_quantity_for_offer = decimal.Decimal(variant_data.get("minimum_order_quantity_for_offer") or 0)
 
@@ -289,15 +281,6 @@ class ProductDetailView(APIView):
         except Product.DoesNotExist:
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
     
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.exceptions import ValidationError
-from .models import Product, ProductCategory, ProductVariant, ProductVariantImage
-from .utils import upload, destroy  # Cloudinary utility functions
-import json
-from decimal import Decimal, InvalidOperation
 
 
 class EditProductView(APIView):
@@ -345,7 +328,7 @@ class EditProductView(APIView):
 
         # Process each variant sent from the frontend
         for variant_index, variant_data in enumerate(variants_data):
-            variant_id = variant_data.get("id")  # Check if variant has an ID
+            variant_id = variant_data.get("id")
 
             if variant_id and int(variant_id) in existing_variant_ids:
                 # Update existing variant
@@ -353,7 +336,26 @@ class EditProductView(APIView):
                 existing_variant_ids.remove(int(variant_id))  # Mark as updated
             else:
                 # Create new variant
-                variant = ProductVariant.objects.create(product=product)
+                variant = ProductVariant.objects.create(
+                    product=product,
+                    brand=variant_data.get("brand", ""),
+                    weight=parse_decimal(variant_data.get("weight")),
+                    liter=parse_decimal(variant_data.get("liter")),
+                    price=parse_decimal(variant_data.get("price")),
+                    stock=parse_decimal(variant_data.get("stock")),
+                    campaign_discount_percentage=parse_decimal(variant_data.get("campaign_discount_percentage")),
+                    minimum_order_quantity_for_offer=parse_decimal(variant_data.get("minimum_order_quantity_for_offer")),
+                )
+
+            # Update variant fields (for both new and existing variants)
+            variant.brand = variant_data.get("brand", variant.brand)
+            variant.weight = parse_decimal(variant_data.get("weight"))
+            variant.liter = parse_decimal(variant_data.get("liter"))
+            variant.price = parse_decimal(variant_data.get("price"))
+            variant.stock = parse_decimal(variant_data.get("stock"))
+            variant.campaign_discount_percentage = parse_decimal(variant_data.get("campaign_discount_percentage"))
+            variant.minimum_order_quantity_for_offer = parse_decimal(variant_data.get("minimum_order_quantity_for_offer"))
+            variant.save()
 
             # Handle images marked for deletion
             images_to_delete = variant_data.get("imagesToDelete", [])
@@ -364,16 +366,6 @@ class EditProductView(APIView):
                     image.delete()  # Remove from database
                 except ProductVariantImage.DoesNotExist:
                     pass  # Ignore if the image doesn't exist
-
-            # Update variant fields
-            variant.brand = variant_data.get("brand", variant.brand)
-            variant.weight = parse_decimal(variant_data.get("weight"))
-            variant.liter = parse_decimal(variant_data.get("liter"))
-            variant.price = parse_decimal(variant_data.get("price"))
-            variant.stock = parse_decimal(variant_data.get("stock"))
-            variant.campaign_discount_percentage = parse_decimal(variant_data.get("campaign_discount_percentage"))
-            variant.minimum_order_quantity_for_offer = parse_decimal(variant_data.get("minimum_order_quantity_for_offer"))
-            variant.save()
 
             # Handle new images
             variant_files_key = f"new_images_{variant_index}_"
@@ -423,7 +415,6 @@ class WholesalerBankDetailsView(APIView):
             print("Error:", str(e))
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class WholesalerAddBankDetailsView(APIView):
     """
     API endpoint for Wholesaler to add banking details.
@@ -456,4 +447,3 @@ class WholesalerAddBankDetailsView(APIView):
         else:
             print("Serializer Errors:", serializer.errors)  # Debugging
             return Response({"error": serializer.errors}, status=400)
-        

@@ -26,7 +26,20 @@ const EditProduct = () => {
   // });
 
   const [categories, setCategories] = useState([]);
-  const [variants, setVariants] = useState([]);
+  const [variants, setVariants] = useState([
+    {
+      brand: "",
+      price: "",
+      stock:"",
+      weight:"",
+      liter:"",
+      campaign_discount_percentage:"",
+      minimum_order_quantity_for_offer:"",
+      existingImages: [], // Preserving existing images
+      newImages: [], // Storing new images
+    },
+  ]);
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentLang, setCurrentLang] = useState(i18n.language);
