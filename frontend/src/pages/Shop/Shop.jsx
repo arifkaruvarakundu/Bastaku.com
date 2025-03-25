@@ -1,6 +1,6 @@
 import React, { useEffect, useState} from "react";
 import { MagnifyingGlass } from "react-loader-spinner";
-import assortment from "../../images/assortment-citrus-fruits.png";
+// import assortment from "../../images/assortment-citrus-fruits.png";
 import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -35,28 +35,30 @@ function Shop() {
         setCurrentLang(i18n.language);
       }, [i18n.language]);
 
-  useEffect(() => {
-    if (location.state && location.state.displayedCategory) {
-      const categoryName = currentLang === 'en' 
-        ? location.state.displayedCategory 
-        : location.state.displayedCategory;
-  
-      setSelectedCategory(categoryName);
-      setdisplayedCategory(categoryName);
-  
-      if (categoryName !== "All") {
-        setDisplayedProducts(
-          products.filter((product) =>
-            currentLang === "en"
-              ? product.category.name_en === categoryName
-              : product.category.name_ar === categoryName
-          )
-        );
-      } else {
-        setDisplayedProducts(products);
-      }
-    }
-  }, [location, products, setDisplayedProducts, currentLang]);
+      useEffect(() => {
+        if (location.state && location.state.displayedCategory) {
+            const categoryName = location.state.displayedCategory;
+            setSelectedCategory(categoryName);
+            setdisplayedCategory(categoryName);
+    
+            if (categoryName !== "All") {
+                // Find the category object based on name
+                const matchedCategory = categories.find(cat => 
+                    (currentLang === "en" ? cat.name_en : cat.name_ar) === categoryName
+                );
+    
+                if (matchedCategory) {
+                    setDisplayedProducts(
+                        products.filter(product => product.category === matchedCategory.id)
+                    );
+                } else {
+                    setDisplayedProducts([]); // No matching category found
+                }
+            } else {
+                setDisplayedProducts(products);
+            }
+        }
+    }, [location, products, categories, currentLang]);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -81,25 +83,28 @@ function Shop() {
 
   const handleCategoryClick = (category) => {
     const categoryName = currentLang === "en" ? category.name_en : category.name_ar;
+    console.log("Category Clicked:", category);
     console.log("Category Name Selected:", categoryName);
-  
+
     setSelectedCategory(categoryName);
     setdisplayedCategory(categoryName);
-  
+
     if (categoryName === "All") {
+      console.log("Displaying all products");
       setDisplayedProducts(products);
     } else {
-      setDisplayedProducts(
-        products.filter((product) =>
-          currentLang === "en" 
-            ? product.category.name_en === categoryName 
-            : product.category.name_ar === categoryName
-        )
-      );
+      const filteredProducts = products.filter((product) => {
+        console.log("Checking product:", product);
+        console.log("Product category (ID):", product.category);
+
+        return product.category === category.id; // Compare ID instead of name
+      });
+
+      console.log("Filtered Products:", filteredProducts);
+      setDisplayedProducts(filteredProducts);
     }
-  };
-  
-  
+};
+
 
   useEffect(() => {
     setCurrentPage(1);
@@ -153,16 +158,16 @@ function Shop() {
 
 
     // Add to cart handler
-    const handleAddToCart = (product) => {
+    const handleAddToCart = (variant) => {
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const existingItemIndex = cart.findIndex((item) => item.product.id === product.id);
+      const existingItemIndex = cart.findIndex((item) => item.variant.id === variant.id);
   
       if (existingItemIndex > -1) {
         // If the product already exists in the cart, update its quantity
         cart[existingItemIndex].quantity += quantity;
       } else {
         // Otherwise, add the new product to the cart
-        cart.push({ product, quantity });
+        cart.push({ variant, quantity });
       }
   
       // Save the updated cart to localStorage
@@ -590,8 +595,8 @@ function Shop() {
                               {/* Image */}
                               <img
                                 src={
-                                  product.product_images?.length > 0
-                                    ? product.product_images[0].image_url
+                                  product.variants[0].variant_images?.length > 0
+                                    ? product.variants[0].variant_images[0].image_url
                                     : "https://via.placeholder.com/150"
                                 }
                                 alt={product.product_name}
@@ -647,9 +652,9 @@ function Shop() {
                           {/* Price */}
                           <div className="d-flex justify-content-between align-items-center mt-3">
                             <div>
-                              <span className="text-dark">{t('price')}: {product.actual_price} {t('kd')}</span>{" "}
+                              <span className="text-dark">{t('price')}: {product.variants[0].price} {t('kd')}</span>{" "}
                               <span className="text-decoration-line-through text-muted">
-                              {t('price')}: {((Number(product.actual_price) + (Number(product.actual_price) * 10) / 100).toFixed(2))} {t('kd')}
+                              {t('price')}: {((Number(product.variants[0].price) + (Number(product.variants[0].price) * 10) / 100).toFixed(2))} {t('kd')}
                               </span>
                             </div>
                             {/* Add Button */}
@@ -657,7 +662,7 @@ function Shop() {
                             <a
                                   href="#!"
                                   className="btn btn-primary btn-sm"
-                                  onClick={() => handleAddToCart(product)} // Correct usage
+                                  onClick={() => handleAddToCart(product.variants[0])} // Correct usage
                                 >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
@@ -679,7 +684,7 @@ function Shop() {
                             </div>
                           </div>
                           <div>
-                            <span style={{ color: 'red' }}>{t('campaign_price')}: {(product.actual_price * (100 - product.campaign_discount_percentage)) / 100} {t('kd')}</span>
+                            <span style={{ color: 'red' }}>{t('campaign_price')}: {(product.variants[0].price * (100 - product.variants[0].campaign_discount_percentage)) / 100} {t('kd')}</span>
                           </div>
                         </div>
                       </div>
@@ -733,6 +738,5 @@ function Shop() {
     </div>
   );
 }
-
 
 export default Shop;

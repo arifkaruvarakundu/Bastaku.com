@@ -171,15 +171,18 @@ const Header = ({onSearch}) => {
     if (value.length >= 4) {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/search/?query=${value}`);
+
+        console.log("response",response.data)
         
-        if (response.data && (Array.isArray(response.data.products) || Array.isArray(response.data.categories))) {
-          setSuggestions({
-            products: response.data.products,
-            categories: response.data.categories,
-          });
-        } else {
-          setSuggestions({ products: [], categories: [] });
-        }
+        const products = Array.isArray(response.data?.products) ? response.data.products : [];
+        const categories = Array.isArray(response.data?.categories) ? response.data.categories : [];
+        
+        // Set suggestions state with valid arrays
+        setSuggestions({
+          products,
+          categories,
+        });
+
       } catch (error) {
         console.error("Error fetching search suggestions:", error);
         setSuggestions({ products: [], categories: [] }); // Ensure suggestions are cleared on error
@@ -534,7 +537,7 @@ const Header = ({onSearch}) => {
                         onMouseLeave={(e) => (e.target.style.backgroundColor = "transparent")}
                       >
                         <img
-                          src={product.product_images[0].image_url} // Fallback to default image if product image is not available
+                          src={product.variants[0].variant_images[0].image_url} // Fallback to default image if product image is not available
                           alt={product.product_name || "Product"} // Fallback to a generic name if product name is missing
                           style={{
                             width: "30px", // Adjust the size as needed

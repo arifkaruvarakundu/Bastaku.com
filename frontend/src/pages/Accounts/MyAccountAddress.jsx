@@ -1,18 +1,21 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState, useRef} from "react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { MagnifyingGlass } from "react-loader-spinner";
 import ScrollToTop from "../ScrollToTop";
 import axios from 'axios';
 import { useTranslation } from "react-i18next";
+import { Modal } from "bootstrap";
 
 const MyAccountAddress = () => {
   // loading
   const [loaderStatus, setLoaderStatus] = useState(true);
   const [userDetails, setUserDetails] = useState(null);
   const [licenseImage, setLicenseImage] = useState(null);
-  const [isEdit, setIsEdit] = useState(false);  // To toggle between edit and add modes
-  const [editAddressId, setEditAddressId] = useState(null); // To store the address ID when editing
+  // const [isEdit, setIsEdit] = useState(false);  // To toggle between edit and add modes
+  // const [editAddressId, setEditAddressId] = useState(null); // To store the address ID when editing
+
+  const modalRef = useRef(null); // Create a reference
 
   const{t: tCommon} = useTranslation('accounts_common')
   const{t: tAccounts} = useTranslation('accounts_others')
@@ -34,100 +37,62 @@ const MyAccountAddress = () => {
     license_number: '',
   });
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // Check if `company_name` exists in local storage
   const isCompany = localStorage.getItem('company_name') ? true : false;
 
-  // Simulate API call to fetch addresses
   useEffect(() => {
-    const fetchAddresses = async () => {
-      try {
-        const email = localStorage.getItem('email'); // Get email from local storage
-        const token = localStorage.getItem('access_token'); // Get token from local storage
-        
-  
-        if (!email) {
-          console.error('No email found in local storage');
-          return;
-        }
-  
-        // Determine the API endpoint
-        const endpoint = isCompany
-          ? 'http://127.0.0.1:8000/wholesaler/details/' // Wholesaler endpoint
-          : 'http://127.0.0.1:8000/details/'; // Individual endpoint
-  
-        // Set up headers
-        const headers = {
-          'Content-Type': 'application/json',
-          email,
-          'Authorization': `Bearer ${token}`
-        };
-  
-        // Only add Authorization header if the user is NOT a company
-        // if (!isCompany) {
-        //   headers['Authorization'] = `Bearer ${token}`;
-        // }
-        // console.log('Headers:', headers);
-  
-        const response = await axios.get(endpoint, { headers });
-        console.log('userDetails:', response.data);
-  
-        // Update user details and address state
-        setUserDetails(response.data);
-        setAddress({
-          company_name: response.data.company_name || '',
-          first_name: response.data.first_name || '',
-          last_name: response.data.last_name || '',
-          email: response.data.email || '',
-          phone_number: response.data.phone_number || '',
-          street_address: response.data.street_address || '',
-          mobile_number1: response.data.mobile_number1 || '',
-          mobile_number2: response.data.mobile_number2 || '',
-          mobile_number3: response.data.mobile_number3 || '',
-          country: response.data.country || 'KUWAIT',
-          zipcode: response.data.zipcode || '',
-          license_number: response.data.license_number || '',
-          license_image: null, // Assuming it's not needed initially
-        });
-  
-        console.log('Fetched and updated user details:', response.data);
-      } catch (error) {
-        console.error('Error fetching user data:', error.response?.data || error.message);
-      }
-    };
-  
-    fetchAddresses();
-  }, [isCompany]); // Runs when `isCompany` changes
-  
-  
+    fetchUserDetails();
+  }, [isCompany]);
 
-  // useEffect(() => {
-  //   const fetchAddresses = async () => {
-  //     try {
-  //       const email = localStorage.getItem('email')
-  //       const endpoint = isCompany
-  //         ? 'http://127.0.0.1:8000/wholesaler/details/'
-  //         : 'http://127.0.0.1:8000/details/';
-  
-  //       const response = await axios.get(endpoint, {
-  //         headers: { 'Content-Type': 'application/json' 
-  //           , email
-  //         }
-  //         ,
-          
-  //         withCredentials: true,
-  //       });
-  
-  //       setUserDetails(response.data);
-  //       console.log('Fetched user details:', response.data);
-  //     } catch (error) {
-  //       console.error('Error fetching user data:', error.response?.data || error.message);
-  //     }
-  //   };
-  
-  //   fetchAddresses();
-  // }, [isCompany]);
+  const fetchUserDetails = async () => {
+    try {
+      const email = localStorage.getItem("email");
+      const token = localStorage.getItem("access_token");
+
+      if (!email) {
+        console.error("No email found in local storage");
+        return;
+      }
+
+      const endpoint = isCompany
+        ? "http://127.0.0.1:8000/wholesaler/details/"
+        : "http://127.0.0.1:8000/details/";
+
+      const response = await axios.get(endpoint, {
+        headers: {
+          "Content-Type": "application/json",
+          email,
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Fetched user details:", response.data);
+
+      setUserDetails(response.data);
+
+      // Merge fetched data into address state
+      setAddress({
+        company_name: response.data.company_name || "",
+        first_name: response.data.first_name || "",
+        last_name: response.data.last_name || "",
+        email: response.data.email || "",
+        phone_number: response.data.phone_number || "",
+        street_address: response.data.street_address || "",
+        mobile_number1: response.data.mobile_number1 || "",
+        mobile_number2: response.data.mobile_number2 || "",
+        mobile_number3: response.data.mobile_number3 || "",
+        country: response.data.country || "KUWAIT",
+        zipcode: response.data.zipcode || "",
+        license_number: response.data.license_number || "",
+        license_image: null, // Assuming it's not needed initially
+      });
+
+    } catch (error) {
+      console.error("Error fetching user data:", error.response?.data || error.message);
+    }
+  };
   
   // Handle input change
   const handleChange = (e) => {
@@ -139,7 +104,6 @@ const MyAccountAddress = () => {
   }));
 };
 
-
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -147,86 +111,85 @@ const MyAccountAddress = () => {
     }
   };
 
-  
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
     const formData = new FormData();
   
     if (isCompany) {
-      // For company, include only these fields
-      formData.append('company_name', address.company_name);
-  
       if (!address.license_number) {
-        alert('License number is required for a company.');
+        alert("License number is required for a company.");
         return;
       }
-      formData.append('license_number', address.license_number);
+      formData.append("company_name", address.company_name);
+      formData.append("license_number", address.license_number);
   
-      // Use the licenseImage state instead of address.license_image
       if (licenseImage && licenseImage instanceof File) {
-        formData.append('license_image', licenseImage);
+        formData.append("license_image", licenseImage);
       } else {
-        alert('Please upload a valid license image.');
+        alert("Please upload a valid license image.");
         return;
       }
     } else {
-      // For individual, include these fields
       if (!address.first_name || !address.last_name || !address.city) {
-        alert('First name, last name, and city are required for an individual.');
+        alert("First name, last name, and city are required for an individual.");
         return;
       }
-      formData.append('first_name', address.first_name);
-      formData.append('last_name', address.last_name);
-      formData.append('city', address.city);
-      formData.append('phone_number', address.phone_number)
+      formData.append("first_name", address.first_name);
+      formData.append("last_name", address.last_name);
+      formData.append("city", address.city);
+      formData.append("phone_number", address.phone_number);
     }
   
-    // Common fields for both
-    formData.append('email', address.email);
-    formData.append('street_address', address.street_address);
-    formData.append('zipcode', address.zipcode);
-    formData.append('country', address.country);
-    formData.append('mobile_number1', address.mobile_number1);
-    formData.append('mobile_number2', address.mobile_number2);
-    formData.append('mobile_number3', address.mobile_number3);
+    formData.append("email", address.email);
+    formData.append("street_address", address.street_address);
+    formData.append("zipcode", address.zipcode);
+    formData.append("country", address.country);
+    formData.append("mobile_number1", address.mobile_number1);
+    formData.append("mobile_number2", address.mobile_number2);
+    formData.append("mobile_number3", address.mobile_number3);
   
     try {
-      const token = localStorage.getItem('access_token')
-      const email = localStorage.getItem('email');
-      // const token = localStorage.getItem('access_token')
-      // console.log(token)
+      const token = localStorage.getItem("access_token");
+      const email = localStorage.getItem("email");
+  
       if (!email) {
-        console.error('No email found in local storage');
-        alert('No email found in local storage.');
+        console.error("No email found in local storage");
+        alert("No email found in local storage.");
         return;
       }
   
-      // Dynamically determine the endpoint
       const endpoint = isCompany
-        ? 'http://127.0.0.1:8000/wholesaler/update_profile/'
-        : 'http://127.0.0.1:8000/profile/update/';
+        ? "http://127.0.0.1:8000/wholesaler/update_profile/"
+        : "http://127.0.0.1:8000/profile/update/";
   
-      const response = await axios.patch(endpoint, formData, {
+      await axios.patch(endpoint, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
           email,
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
       });
   
-      // Handle success
-      setUserDetails(response.data);
-      alert('Profile updated successfully! Refresh to see your new address.');
-      navigate('/MyAccountAddress');
-      
+      fetchUserDetails(); // ✅ Call the function after updating
+  
+      alert("Profile updated successfully!");
+  
+      if (modalRef.current) {
+        const modalInstance = Modal.getInstance(modalRef.current);
+        modalInstance?.hide();
+      }
+  
+      setTimeout(() => {
+        document.querySelectorAll(".modal-backdrop").forEach((backdrop) => backdrop.remove());
+        document.body.style.overflow = "auto";
+        document.body.classList.remove("modal-open");
+      }, 300);
     } catch (error) {
-      console.error('Error updating profile:', error.response?.data || error.message);
-      alert('Failed to update profile. Please check your input and try again.');
+      console.error("Error updating profile:", error.response?.data || error.message);
+      alert("Failed to update profile. Please check your input and try again.");
     }
   };
-  
+
   useEffect(() => {
     setTimeout(() => {
       setLoaderStatus(false);
@@ -533,6 +496,7 @@ const MyAccountAddress = () => {
           <div
             className="modal fade"
             id="addAddressModal"
+            ref={modalRef}
             tabIndex={-1}
             aria-labelledby="addAddressModalLabel"
             aria-hidden="true"

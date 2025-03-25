@@ -8,6 +8,7 @@
     "branch_address": "Branch Address",
     "no_bank_details_found": "No bank details found.",
     "add_bank_details": "Add Bank Details",
+    "edit_bank_details": "Edit Bank Details",
     "enter_bank_details": "Please enter your bank details.",
     "cancel": "Cancel",
     "save_bank_details": "Save Bank Details",

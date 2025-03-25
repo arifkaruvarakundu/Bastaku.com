@@ -43,22 +43,33 @@ const ProductItem = () => {
   }, []);
 
 
-  // Add to cart handler
   const handleAddToCart = (product) => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingItemIndex = cart.findIndex((item) => item.product.id === product.id);
-
+  
+    // Check if the product has variants and get the first variant
+    const firstVariant = product.variants ? product.variants[0] : null;
+  
+    if (!firstVariant) {
+      alert("This product has no variants available.");
+      return;
+    }
+  
+    // Check if the variant already exists in the cart
+    const existingItemIndex = cart.findIndex(
+      (item) => item.variant.id === firstVariant.id
+    );
+  
     if (existingItemIndex > -1) {
-      // If the product already exists in the cart, update its quantity
+      // If the variant already exists in the cart, update its quantity
       cart[existingItemIndex].quantity += quantity;
     } else {
-      // Otherwise, add the new product to the cart
-      cart.push({ product, quantity });
+      // Otherwise, add the first variant of the product to the cart
+      cart.push({ variant: firstVariant, quantity });
     }
-
+  
     // Save the updated cart to localStorage
     localStorage.setItem("cart", JSON.stringify(cart));
-
+  
     alert("Product added to cart successfully!");
     navigate("/ShopCart"); // Redirect to cart page
   };
@@ -165,7 +176,7 @@ const ProductItem = () => {
                         <line x1={5} y1={12} x2={19} y2={12} />
                       </svg>{" "}
                       {t('add')}
-                    </a>
+                    </a> 
                   </div>
                 </div>
                 <div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {Clock,ShoppingCart,Package,Percent, UserPlus,Star,ChevronLeft,ChevronRight,StarHalf,Trash2,Plus,Minus,Shield,Sparkles,Info,BarChart2,TrendingUp,Users,ArrowUp,ArrowDown,Activity,} from "lucide-react";
+import {Clock, ShoppingCart, Percent, UserPlus, Star, ChevronLeft, ChevronRight, StarHalf, Trash2, Shield, Sparkles, Info, Users} from "lucide-react";
+// import {Package, Plus, Minus, BarChart2, TrendingUp, ArrowUp, ArrowDown, Activity} from "lucide-react"
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import styles from "../styles/ProductDetails.module.css";
 import { useParams, useNavigate } from "react-router-dom";

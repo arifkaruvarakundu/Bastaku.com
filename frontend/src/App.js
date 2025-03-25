@@ -26,14 +26,12 @@ import Shop from "./pages/Shop/Shop";
 import ShopGridCol3 from "./pages/Shop/ShopGridCol3";
 import ShopListCol from "./pages/Shop/ShopListCol";
 import ShopCart from "./pages/Shop/ShopCart";
-     
 import ShopCheckOut from "./pages/Shop/ShopCheckOut";
 import ShopWishList from "./pages/Shop/ShopWishList";
 // Store pages
 import StoreList from "./pages/store/StoreList";
 import SingleShop from "./pages/store/SingleShop";
 import NotFoundPage from "./pages/NotFound_page";
-
 // Account pages
 import MyAccountOrder from "./pages/Accounts/MyAccountOrder";
 import MyAccountSetting from "./pages/Accounts/MyAcconutSetting";

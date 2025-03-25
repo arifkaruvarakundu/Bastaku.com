@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link,useNavigate } from "react-router-dom";
 import { MagnifyingGlass } from "react-loader-spinner";
-import amazonpay from "../../images/amazonpay.svg";
+// import amazonpay from "../../images/amazonpay.svg";
 import american from "../../images/american-express.svg";
 import mastercard from "../../images/mastercard.svg";
 import paypal from "../../images/paypal.svg";
 import visa from "../../images/visa.svg";
-import discover from "../../images/discover.svg";
+// import discover from "../../images/discover.svg";
 import ScrollToTop from "../ScrollToTop";
 import axios from "axios";
+import { Modal } from "bootstrap";
 import { useTranslation } from "react-i18next";
 
 const MyAcconutPaymentMethod = () => {
@@ -17,24 +18,111 @@ const MyAcconutPaymentMethod = () => {
    // State for messages
    const [message, setMessage] = useState(null);
    const [error, setError] = useState(null);
-   const [bankDetails, setBankDetails] = useState(null);
+   const [bankDetails, setBankDetails] = useState([]);
+
+    const modalRef = useRef(null); // Create a reference
 
    const{t: tCommon} = useTranslation('accounts_common')
    const{t: tAccounts} = useTranslation('accounts_others')
 
   // State for form data
-  const [bankData, setbankData] = useState({
+  const [bankData, setBankData] = useState({
     beneficiary_name: "",
     bank_name: "",
     bank_address: "",
     account_number_iban: "",
     swift_code: "",
   });
+  // Check if `company_name` exists in local storage
+  const isCompany = localStorage.getItem('company_name') ? true : false;
 
   const navigate = useNavigate();
 
+   useEffect(() => {
+      fetchBankDetails();
+    }, [isCompany]);
+
+    const fetchBankDetails = async () => {
+      try {
+        const wholesalerEmail = localStorage.getItem("email");
+        const token = localStorage.getItem("access_token");
+
+        // Correct way to pass query parameters
+        const response = await axios.get("http://127.0.0.1:8000/wholesaler/bank_details/", {
+          params: { email: wholesalerEmail},
+          headers:{
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        console.log("Bank details response:", response.data);
+        setBankDetails(response.data);
+        setBankData((prev)=>({
+          ...prev,
+          ...response.data,
+        }))
+      } catch (error) {
+        console.error("Error fetching bank details:", error);
+      }
+    };
+
+     // Simulate API call to fetch addresses
+  // useEffect(() => {
+  //   const fetchBankData = async () => {
+  //     try {
+  //       const email = localStorage.getItem('email'); // Get email from local storage
+  //       const token = localStorage.getItem('access_token'); // Get token from local storage
+        
+  
+  //       if (!email) {
+  //         console.error('No email found in local storage');
+  //         return;
+  //       }
+  
+  //       // Determine the API endpoint
+  //       const endpoint = isCompany
+  //         ? 'http://127.0.0.1:8000/wholesaler/details/' // Wholesaler endpoint
+  //         : 'http://127.0.0.1:8000/details/'; // Individual endpoint
+  
+  //       // Set up headers
+  //       const headers = {
+  //         'Content-Type': 'application/json',
+  //         email,
+  //         'Authorization': `Bearer ${token}`
+  //       };
+
+  //       const response = await axios.get(endpoint, { headers });
+        
+  //       // Update user details and address state
+  //       setUserDetails(response.data);
+  //       setAddress({
+  //         company_name: response.data.company_name || '',
+  //         first_name: response.data.first_name || '',
+  //         last_name: response.data.last_name || '',
+  //         email: response.data.email || '',
+  //         phone_number: response.data.phone_number || '',
+  //         street_address: response.data.street_address || '',
+  //         mobile_number1: response.data.mobile_number1 || '',
+  //         mobile_number2: response.data.mobile_number2 || '',
+  //         mobile_number3: response.data.mobile_number3 || '',
+  //         country: response.data.country || 'KUWAIT',
+  //         zipcode: response.data.zipcode || '',
+  //         license_number: response.data.license_number || '',
+  //         license_image: null, // Assuming it's not needed initially
+  //       });
+  
+  //       console.log('Fetched and updated user details:', response.data);
+  //     } catch (error) {
+  //       console.error('Error fetching user data:', error.response?.data || error.message);
+  //     }
+  //   };
+  
+  //   fetchAddresses();
+  // }, [isCompany]); // Runs when `isCompany` changes
+
+
   const handleChange = (e) => {
-    setbankData({ ...bankData, [e.target.name]: e.target.value });
+    setBankData({ ...bankData, [e.target.name]: e.target.value });
   };
 
   // Handle form submission
@@ -65,29 +153,11 @@ const MyAcconutPaymentMethod = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchBankDetails = async () => {
-      try {
-        const wholesalerEmail = localStorage.getItem("email");
-        console.log(wholesalerEmail)
-        
-        const token = localStorage.getItem("access_token")
-        // Correct way to pass query parameters
-        const response = await axios.get("http://127.0.0.1:8000/wholesaler/bank_details/", {
-          params: { email: wholesalerEmail},
-          headers:{
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        console.log("Bank details response:", response.data);
-        setBankDetails(response.data);
-      } catch (error) {
-        console.error("Error fetching bank details:", error);
-      }
-    };
+ 
+    
 
-    fetchBankDetails();
-}, []);
+   
+
 
   useEffect(() => {
     setTimeout(() => {
@@ -227,7 +297,9 @@ const MyAcconutPaymentMethod = () => {
                             data-bs-toggle="modal"
                             data-bs-target="#addAddressModal"
                           >
-                            {tAccounts('add_bank_details')}
+                            {Array.isArray(bankDetails) && bankDetails.length > 0
+                              ? tAccounts('edit_bank_details')
+                              : tAccounts('add_bank_details')}
                           </Link>
                         </div>
                         {

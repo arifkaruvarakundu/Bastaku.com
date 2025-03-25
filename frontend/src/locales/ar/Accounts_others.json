@@ -8,6 +8,7 @@
     "branch_address": "عنوان الفرع",
     "no_bank_details_found": "لم يتم العثور على تفاصيل البنك.",
     "add_bank_details": "إضافة تفاصيل البنك",
+    "edit_bank_details": "تعديل تفاصيل البنك",
     "enter_bank_details": "يرجى إدخال تفاصيل البنك الخاصة بك.",
     "cancel": "إلغاء",
     "save_bank_details": "حفظ تفاصيل البنك",

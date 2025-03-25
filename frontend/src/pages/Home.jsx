@@ -90,10 +90,11 @@ const Home = () => {
 
   const handleCategoryClick = (category) => {
     const categoryName = currentLang === "en" ? category.name_en : category.name_ar;
-  
-    // Navigate to the shop page with the selected category as a query parameter
-    navigate(`/Shop`, { state: { displayedCategory: categoryName } });
-  };
+
+    // Navigate to the shop page with category ID and name
+    navigate(`/Shop`, { state: { displayedCategory: categoryName, categoryId: category.id } });
+};
+
 
   const toggleVisibility = () => {
     if (window.pageYOffset > 300) {
