@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from authentication.models import User
+from authentication.models import User,ProductCategory
 
 class UserModelAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
@@ -33,3 +33,4 @@ class UserModelAdmin(BaseUserAdmin):
 
 # Register the custom UserAdmin
 admin.site.register(User, UserModelAdmin)
+admin.site.register(ProductCategory)

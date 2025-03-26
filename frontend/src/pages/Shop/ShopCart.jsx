@@ -3,53 +3,55 @@ import { Link, useNavigate } from "react-router-dom";
 import { MagnifyingGlass } from "react-loader-spinner";
 import ScrollToTop from "../ScrollToTop";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { setCart, removeFromCart, addToCart } from "../../redux/cartSlice";
 
 const ShopCart = () => {
-  const [cartItems, setCartItems] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
+  // const [cartItems, setCartItems] = useState([]);
+  // const [totalPrice, setTotalPrice] = useState(0);
   const [loaderStatus, setLoaderStatus] = useState(true);
-  
+  const cartItems = useSelector((state) => state.cart.cartItems); 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {t} = useTranslation("cart_check")
 
+  // useEffect(() => {
+  //   const fetchCart = () => {
+  //     const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  //     setCartItems(cart);
+  //     calculateTotals(cart);
+  //     setLoaderStatus(false);
+  //   };
+  //   fetchCart();
+  // }, []);
+
   useEffect(() => {
-    const fetchCart = () => {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      setCartItems(cart);
-      calculateTotals(cart);
-      setLoaderStatus(false);
-    };
-    fetchCart();
-  }, []);
+    // Load cart from local storage when the component mounts
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    dispatch(setCart(storedCart));
+    setLoaderStatus(false);
+  }, [dispatch]);
 
-  const calculateTotals = (cart) => {
-    const total = cart.reduce(
-      (sum, item) => sum + item.variant.price * item.quantity,
-      0
+  // Calculate total price dynamically
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.variant.price * item.quantity,
+    0
+  );
+
+   // Update quantity in Redux
+   const updateQuantity = (variantId, newQuantity) => {
+    const updatedCart = cartItems.map((item) =>
+      item.variant.id === variantId
+        ? { ...item, quantity: newQuantity > 0 ? newQuantity : 0 }
+        : item
     );
-    setTotalPrice(total);
+
+    dispatch(setCart(updatedCart)); // Update Redux
   };
 
-  const updateQuantity = (variantId, newQuantity) => {
-    const updatedCart = cartItems
-      .map((item) => {
-        if (item.variant.id === variantId) {
-          return { ...item, quantity: newQuantity > 0 ? newQuantity : 0 };
-        }
-        return item;
-      })
-      .filter((item) => item.quantity > 0);
-
-    setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    calculateTotals(updatedCart);
-  };
-
+  // Remove item from Redux
   const removeItem = (variantId) => {
-    const updatedCart = cartItems.filter((item) => item.variant.id !== variantId);
-    setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    calculateTotals(updatedCart);
+    dispatch(removeFromCart({id: variantId})); // Remove item from Redux state
   };
 
   const handleCheckout = () => {

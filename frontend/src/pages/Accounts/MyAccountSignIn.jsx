@@ -51,11 +51,11 @@ const MyAccountSignIn = () => {
       localStorage.setItem('user_name', response.data.first_name);
       localStorage.setItem('email', response.data.email);
       localStorage.setItem('profile_img', response.data.profile_img);
+      localStorage.setItem('user_type', response.data.user_type);
 
       dispatch(setAuthenticated(true));
       navigate("/Grocery-react/")
 
-      
     } catch (error) {
       const errorMessage =
         error.response?.data?.errors?.non_field_errors?.[0] ||

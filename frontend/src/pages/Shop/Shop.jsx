@@ -7,6 +7,8 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import ScrollToTop from "../ScrollToTop";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../redux/cartSlice";
 
 function Shop() {
   const { t,i18n } = useTranslation('shop');
@@ -29,7 +31,7 @@ function Shop() {
   
   const navigate = useNavigate();
   const location = useLocation();
-
+  const dispatch = useDispatch();
    // Update currentLang when the language is changed
       useEffect(() => {
         setCurrentLang(i18n.language);
@@ -158,21 +160,26 @@ function Shop() {
 
 
     // Add to cart handler
-    const handleAddToCart = (variant) => {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const existingItemIndex = cart.findIndex((item) => item.variant.id === variant.id);
+    // const handleAddToCart = (variant) => {
+    //   const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    //   const existingItemIndex = cart.findIndex((item) => item.variant.id === variant.id);
   
-      if (existingItemIndex > -1) {
-        // If the product already exists in the cart, update its quantity
-        cart[existingItemIndex].quantity += quantity;
-      } else {
-        // Otherwise, add the new product to the cart
-        cart.push({ variant, quantity });
-      }
+    //   if (existingItemIndex > -1) {
+    //     // If the product already exists in the cart, update its quantity
+    //     cart[existingItemIndex].quantity += quantity;
+    //   } else {
+    //     // Otherwise, add the new product to the cart
+    //     cart.push({ variant, quantity });
+    //   }
   
-      // Save the updated cart to localStorage
-      localStorage.setItem("cart", JSON.stringify(cart));
+    //   // Save the updated cart to localStorage
+    //   localStorage.setItem("cart", JSON.stringify(cart));
   
+    //   alert("Product added to cart successfully!");
+    //   navigate("/ShopCart"); // Redirect to cart page
+    // };
+    const handleAddToCart = (variant, quantity) => {
+      dispatch(addToCart({ variant, quantity })); // Dispatch action to Redux
       alert("Product added to cart successfully!");
       navigate("/ShopCart"); // Redirect to cart page
     };
@@ -662,7 +669,7 @@ function Shop() {
                             <a
                                   href="#!"
                                   className="btn btn-primary btn-sm"
-                                  onClick={() => handleAddToCart(product.variants[0])} // Correct usage
+                                  onClick={() => handleAddToCart(product.variants[0],1)} // Correct usage
                                 >
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"

@@ -13,24 +13,24 @@ import { BrowserRouter as Router, Route, Routes,Navigate} from "react-router-dom
 // Components
 import Header from './Component/Header';
 import Footer from "./Component/Footer";
-import Language_selector from "./Component/Language_selector";
+// import Language_selector from "./Component/Language_selector";
 // pages
 import Home from "./pages/Home";
 // About pages
-import AboutUs from "./pages/About/AboutUs";
-import Blog from "./pages/About/Blog";
-import BlogCategory from "./pages/About/BlogCategory";
-import Contact from "./pages/About/Contact";
+// import AboutUs from "./pages/About/AboutUs";
+// import Blog from "./pages/About/Blog";
+// import BlogCategory from "./pages/About/BlogCategory";
+// import Contact from "./pages/About/Contact";
 // Shop pages
 import Shop from "./pages/Shop/Shop";
-import ShopGridCol3 from "./pages/Shop/ShopGridCol3";
-import ShopListCol from "./pages/Shop/ShopListCol";
+// import ShopGridCol3 from "./pages/Shop/ShopGridCol3";
+// import ShopListCol from "./pages/Shop/ShopListCol";
 import ShopCart from "./pages/Shop/ShopCart";
 import ShopCheckOut from "./pages/Shop/ShopCheckOut";
-import ShopWishList from "./pages/Shop/ShopWishList";
+// import ShopWishList from "./pages/Shop/ShopWishList";
 // Store pages
-import StoreList from "./pages/store/StoreList";
-import SingleShop from "./pages/store/SingleShop";
+// import StoreList from "./pages/store/StoreList";
+// import SingleShop from "./pages/store/SingleShop";
 import NotFoundPage from "./pages/NotFound_page";
 // Account pages
 import MyAccountOrder from "./pages/Accounts/MyAccountOrder";
@@ -38,7 +38,7 @@ import MyAccountSetting from "./pages/Accounts/MyAcconutSetting";
 import MyAcconutNotification from "./pages/Accounts/MyAcconutNotification";
 import MyAcconutPaymentMethod from "./pages/Accounts/MyAcconutPaymentMethod";
 import MyAccountAddress from "./pages/Accounts/MyAccountAddress";
-import MyAccountForgetPassword from "./pages/Accounts/MyAccountForgetPassword";
+// import MyAccountForgetPassword from "./pages/Accounts/MyAccountForgetPassword";
 import MyAccountSignIn from "./pages/Accounts/MyAccountSignIn";
 import MyAccountSignUp from "./pages/Accounts/MyAccountSignUp";
 import WholesalerAccountSignUp from "./pages/Accounts/WholesalerAccountSignUp";
@@ -56,28 +56,24 @@ import ExpenseCal from "./pages/Expense_cal";
 
 const App = () => {
 
-  const getUserRole = () => {
-    if (localStorage.getItem('user_name')) {
-      return 'user';
-    }
-    if (localStorage.getItem('company_name')) {
-      return 'wholesaler';
-    }
-    return null;
+  const getUserType = () => {
+    return localStorage.getItem("user_type") || null;
   };
-
-  // Protected Route Component
-const ProtectedRoute = ({ element: Component, roles, ...rest }) => {
-  const role = getUserRole();
   
-  if (role && roles.includes(role)) {
-    return <Component {...rest} />;
-  } else if (!role) {
-    return <Navigate to="/MyAccountSignIn" />;
-  } else {
-    return <Navigate to="/" />;
-  }
-};
+  // Protected Route Component
+  const ProtectedRoute = ({ element: Component, allowedUserTypes, ...rest }) => {
+    const user_type = getUserType();
+  
+    if (!user_type) {
+      return <Navigate to="/MyAccountSignIn" />; // Redirect if not logged in
+    }
+  
+    if (allowedUserTypes.includes(user_type)) {
+      return <Component {...rest} />; // Render component if user type is allowed
+    }
+  
+    return <Navigate to="/" />; // Redirect unauthorized users to home
+  };
 
 
   return (
@@ -90,41 +86,41 @@ const ProtectedRoute = ({ element: Component, roles, ...rest }) => {
           <Route path="/Grocery-react/" element={<Home />} />
           {/* Shop pages */}
           <Route path="/Shop" element={<Shop />} />
-          <Route path="/ShopGridCol3" element={<ShopGridCol3 />} />
-          <Route path="/ShopListCol" element={<ShopListCol />} />
-          <Route path="/ShopWishList" element={<ShopWishList />} />
-          <Route path="/ShopCheckOut" element={<ShopCheckOut />} />
+          {/* <Route path="/ShopGridCol3" element={<ShopGridCol3 />} /> */}
+          {/* <Route path="/ShopListCol" element={<ShopListCol />} /> */}
+          {/* <Route path="/ShopWishList" element={<ShopWishList />} /> */}
+          <Route path="/ShopCheckOut" element={<ProtectedRoute element={ShopCheckOut} allowedUserTypes={["customer"]} />} />
           <Route path="/ShopCart" element={<ShopCart />} />
           {/* Store pages */}
-          <Route path="/StoreList" element={<StoreList />} />
-          <Route path="/SingleShop" element={<SingleShop />} />
+          {/* <Route path="/StoreList" element={<StoreList />} /> */}
+          {/* <Route path="/SingleShop" element={<SingleShop />} /> */}
           {/* Accounts pages */}
-          <Route path="/MyAccountOrder" element={<MyAccountOrder/>} />
-          <Route path="/MyAccountSetting" element={<MyAccountSetting />} />
-          <Route path="/MyAcconutNotification" element={<MyAcconutNotification />} />
-          <Route path="/MyAcconutPaymentMethod" element={<MyAcconutPaymentMethod />} />
-          <Route path="/MyAccountAddress" element={<MyAccountAddress />} />
-          <Route path="/MyAccountForgetPassword" element={<MyAccountForgetPassword />} />
+          <Route path="/MyAccountOrder" element={<ProtectedRoute element={MyAccountOrder} allowedUserTypes={["customer", "wholesaler"]} />} />
+          <Route path="/MyAccountSetting" element={<ProtectedRoute element={MyAccountSetting} allowedUserTypes={["customer", "wholesaler"]}  />} />
+          <Route path="/MyAcconutNotification" element={<ProtectedRoute element={MyAcconutNotification}  allowedUserTypes={["customer", "wholesaler"]} />} />
+          <Route path="/MyAcconutPaymentMethod" element={<ProtectedRoute element={MyAcconutPaymentMethod} allowedUserTypes={["customer", "wholesaler"]}  />} />
+          <Route path="/MyAccountAddress" element={<ProtectedRoute element={MyAccountAddress} allowedUserTypes={["customer", "wholesaler"]} />} />
+          {/* <Route path="/MyAccountForgetPassword" element={<MyAccountForgetPassword />} /> */}
           <Route path="/MyAccountSignIn" element={<MyAccountSignIn />} />
           <Route path="/MyAccountSignUp" element={<MyAccountSignUp />} />
           <Route path="/WholesalerAccountSignUp" element={<WholesalerAccountSignUp />} />
           <Route path="/WholesalerAccountSignIn" element={<WholesalerAccountSignIn />} />
-          <Route path="/AddProducts" element={<AddProducts/>}/>
-          <Route path="/AddedProducts" element={<ProductsList/>}/>
-          <Route path="/edit-product/:id" element={<EditProduct />}/>
+          <Route path="/AddProducts" element={<ProtectedRoute element={AddProducts} allowedUserTypes={['wholesaler']}/>}/>
+          <Route path="/AddedProducts" element={<ProtectedRoute element={ProductsList} allowedUserTypes={['wholesaler']}/>}/>
+          <Route path="/edit-product/:id" element={<ProtectedRoute element={EditProduct} allowedUserTypes={['wholesaler']} />}/>
           <Route path="/productDetails/:id" element={<ProductDetails />}/>
           <Route path="/campaigns/:id" element={<CampaignDetailPage />}/>
-          <Route path="/startCampaign" element={<ProtectedRoute element={StartCampaignPage} roles={['user']}/>} />
+          <Route path="/startCampaign" element={<ProtectedRoute element={StartCampaignPage} allowedUserTypes={['customer']}/>} />
           <Route path="/Campaigns" element={<Campaigns />}/>
-          <Route path="/MyCampaigns" element={<MyAccountCampaigns />}/>
-          <Route path="/EditProduct/:id" element={<EditProduct />}/>
-          <Route path="/WholesalerCampaigns" element={<WholesalerCampaigns />} />
-          <Route path="/ExpenseCalculationPage" element={<ExpenseCal />} />
+          <Route path="/MyCampaigns" element={<ProtectedRoute element={MyAccountCampaigns} allowedUserTypes={['customer']} />}/>
+          {/* <Route path="/EditProduct/:id" element={<EditProduct />}/> */}
+          <Route path="/WholesalerCampaigns" element={<ProtectedRoute element={WholesalerCampaigns} allowedUserTypes={['wholesaler']} />} />
+          <Route path="/ExpenseCalculationPage" element={<ProtectedRoute element={ExpenseCal} allowedUserTypes={['customer']} />} />
           {/* About pages */}
-          <Route path="/Blog" element={<Blog />} />
-          <Route path="/BlogCategory" element={<BlogCategory />} />
-          <Route path="/Contact" element={<Contact />} />
-          <Route path="/AboutUs" element={<AboutUs />} />
+          {/* <Route path="/Blog" element={<Blog />} /> */}
+          {/* <Route path="/BlogCategory" element={<BlogCategory />} /> */}
+          {/* <Route path="/Contact" element={<Contact />} /> */}
+          {/* <Route path="/AboutUs" element={<AboutUs />} /> */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <Footer/>

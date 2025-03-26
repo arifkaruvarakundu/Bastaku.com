@@ -6,6 +6,8 @@ import styles from "../styles/ProductDetails.module.css";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/cartSlice";
 // import { Line } from "react-chartjs-2";
 // import { Bar, Pie } from "react-chartjs-2";
 // import {Chart as ChartJS,CategoryScale, LinearScale,PointElement,LineElement,BarElement,ArcElement,Title,Tooltip,Legend,Filler,} from "chart.js";
@@ -44,6 +46,7 @@ const ProductDetails = () => {
  
   const { id } = useParams()
   const navigate = useNavigate()
+  const dispatch = useDispatch();
 
   // Update currentLang when the language is changed
     useEffect(() => {
@@ -152,8 +155,6 @@ const ProductDetails = () => {
           }
         }, [selectedBrand, selectedWeight, selectedVolume, product]);  // Effect should trigger when brand, weight, or product changes
         
-        
-
           const handleBrandChange = (e) => {
             setSelectedBrand(e.target.value); // Update selected brand
           };
@@ -248,7 +249,7 @@ const ProductDetails = () => {
       setFilteredWeights(selectedBrandData ? [...selectedBrandData.weights] : []);
       setFilteredVolumes(selectedBrandData ? [...selectedBrandData.volumes] : []);
       
-    }, [selectedBrand, uniqueBrands]);
+        }, [selectedBrand, uniqueBrands]);
 
     const handleImageNavigation = (direction) => {
       if (variantImages.length === 0) return;
@@ -289,7 +290,8 @@ const ProductDetails = () => {
     }
   };
 
-  const handleAddToCart = (variantId) => {
+  const handleAddToCart = (variantId, cartQuantity) => {
+  
     console.log("Variant ID passed:", variantId);
     console.log("Product Variants:", product?.variants);
   
@@ -303,7 +305,9 @@ const ProductDetails = () => {
       return;
     }
   
-    const selectedVariantDetails = product.variants.find((variant) => variant.id === variantId);
+    const selectedVariantDetails = product.variants.find(
+      (variant) => variant.id === variantId
+    );
     console.log("Selected Variant Details:", selectedVariantDetails);
   
     if (!selectedVariantDetails) {
@@ -311,26 +315,13 @@ const ProductDetails = () => {
       return;
     }
   
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  
-    const existingItemIndex = cart.findIndex(
-      (item) => item.variant?.id === selectedVariantDetails.id
-    );
-  
-    if (existingItemIndex > -1) {
-      cart[existingItemIndex].quantity = cartQuantity;
-    } else {
-      cart.push({
-        variant: selectedVariantDetails, 
+    // Now dispatch the action to Redux instead of working with localStorage
+    dispatch(
+      addToCart({
+        variant: selectedVariantDetails,
         quantity: cartQuantity,
-      });
-    }
-  
-    localStorage.setItem("cart", JSON.stringify(cart));
-  
-    const quantities = JSON.parse(localStorage.getItem("quantities")) || {};
-    quantities[selectedVariantDetails.id] = cartQuantity;
-    localStorage.setItem("quantities", JSON.stringify(quantities));
+      })
+    );
   
     alert("Product added to cart successfully!");
     navigate("/ShopCart");
@@ -600,7 +591,7 @@ const ProductDetails = () => {
                 </div>
                   <button
                     className={styles.addToCartButton}
-                    onClick={() => handleAddToCart(selectedVariant)} 
+                    onClick={() => handleAddToCart(selectedVariant, cartQuantity)} 
                   >
                     <ShoppingCart size={16} strokeWidth={2} />
                     {t('addToCart')}

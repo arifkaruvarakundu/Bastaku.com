@@ -46,14 +46,15 @@ class UserRegistrationView(APIView):
         )
 
 class UserLoginView(APIView):
-    renderer_classes = [UserRenderer]
     permission_classes = [AllowAny]
+    renderer_classes = [UserRenderer]
 
     def post(self, request, format=None):
         serializer = UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         email = serializer.data.get('email')
+        user = User.objects.get(email=email, user_type="customer")
         password = serializer.data.get('password')
 
         # Authenticate the user
@@ -75,7 +76,8 @@ class UserLoginView(APIView):
                 'first_name': user.first_name,
                 'last_name':user.last_name,
                 'email': user.email,
-                'profile_img': profile_img_url,  # Send the profile image URL if it exists
+                'profile_img': profile_img_url,
+                'user_type': user.user_type
             }, status=status.HTTP_200_OK)
         else:
             return Response({
@@ -188,7 +190,7 @@ class WholesalerLoginView(APIView):
         wholesaler = authenticate(request, email=email, password=password)  # Custom backend is used here
         if wholesaler is not None:
             token = get_tokens_for_wholesaler(wholesaler)
-            return Response({'token': token, 'msg': 'Login Successful','company_name':user.company_name,'email':user.email}, status=status.HTTP_200_OK)
+            return Response({'token': token, 'msg': 'Login Successful','company_name':user.company_name,'email':user.email, 'user_type':user.user_type}, status=status.HTTP_200_OK)
         else:
             return Response({'errors': {'non_field_errors': ['Email or Password is not valid']}}, 
                             status=status.HTTP_404_NOT_FOUND)

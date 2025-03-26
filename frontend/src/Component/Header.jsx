@@ -14,14 +14,15 @@ import { Trans } from "react-i18next";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
 
+
 const Header = ({onSearch}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
+  // const [cartItems, setCartItems] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [displayedCategory, setDisplayedCategory] = useState(" ");
-  const [displayedProducts, setDisplayedProducts] = useState([]);
-  const [products, setProducts] = useState([]);
+  // const [displayedProducts, setDisplayedProducts] = useState([]);
+  // const [products, setProducts] = useState([]);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState({
     products: [], // Default empty array for products
@@ -47,7 +48,7 @@ const Header = ({onSearch}) => {
     dispatch(setAuthenticated(null)); // Reset the authenticated state
     navigate("/Grocery-react/");
   };
-
+  const cartItems = useSelector((state) => state.cart.cartItems);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -148,17 +149,17 @@ const Header = ({onSearch}) => {
   //   return () => clearInterval(intervalId);
   // }, []);
 
-  useEffect(() => {
-    const updateCart = () => {
-      const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-      setCartItems((prev) => (JSON.stringify(prev) !== JSON.stringify(storedCart) ? storedCart : prev));
-    };
+  // useEffect(() => {
+  //   const updateCart = () => {
+  //     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+  //     setCartItems((prev) => (JSON.stringify(prev) !== JSON.stringify(storedCart) ? storedCart : prev));
+  //   };
   
-    updateCart();
+  //   updateCart();
   
-    window.addEventListener("storage", updateCart); 
-    return () => window.removeEventListener("storage", updateCart);
-  }, []);
+  //   window.addEventListener("storage", updateCart); 
+  //   return () => window.removeEventListener("storage", updateCart);
+  // }, []);
  
   const handleClick = () => {
     setIsOpen(!isOpen);

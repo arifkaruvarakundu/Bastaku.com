@@ -71,7 +71,7 @@ const ProductItem = () => {
     localStorage.setItem("cart", JSON.stringify(cart));
   
     alert("Product added to cart successfully!");
-    navigate("/ShopCart"); // Redirect to cart page
+    // navigate("/ShopCart"); // Redirect to cart page
   };
 
   

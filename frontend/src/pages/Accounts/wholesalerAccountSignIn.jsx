@@ -51,6 +51,7 @@ const WholesalerAccountSignIn = () => {
       localStorage.setItem("company_name", response.data.company_name);
       localStorage.setItem("email", response.data.email);
       localStorage.setItem("profile_img", response.data.profile_img);
+      localStorage.setItem("user_type", response.data.user_type);
 
       dispatch(setAuthenticated(true));
       navigate("/Grocery-react/"); // Redirect to wholesaler dashboard

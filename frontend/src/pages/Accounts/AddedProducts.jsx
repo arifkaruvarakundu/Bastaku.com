@@ -193,7 +193,7 @@ const ProductsList = () => {
                               <span className="text-dark">{product.first_variant.price} {tCommon("currency_kd")}</span>
                             </div>
                             <div>
-                              <Link to={`/EditProduct/${product.id}`} className="btn btn-primary btn-sm">
+                              <Link to={`/edit-product/${product.id}`} className="btn btn-primary btn-sm">
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   width={16}
