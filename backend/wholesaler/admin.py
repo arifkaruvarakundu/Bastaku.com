@@ -17,7 +17,12 @@ class ProductAdmin(admin.ModelAdmin):
         return obj.product_images.first().image_url if obj.product_images.exists() else "No Image"
     get_images.short_description = "Product Image"
 
+class ProductVariantAdmin(admin.ModelAdmin):
+    list_display = ('id', 'product', 'brand', 'weight', 'liter', 'price', 'stock', 'campaign_discount_percentage', 'minimum_order_quantity_for_offer', 'wholesaler' )  # Add fields you want to see
+    # search_fields = ('id', 'name')  # Allow search by ID and name
+    # list_filter = ('price',)  # Optional: Add filter
+
 # Registering other models
 admin.site.register(WholesalerBankDetails)
-admin.site.register(ProductVariant)
+admin.site.register(ProductVariant, ProductVariantAdmin)
 admin.site.register(ProductVariantImage)

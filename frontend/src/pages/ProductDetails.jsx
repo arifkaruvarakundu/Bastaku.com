@@ -33,6 +33,7 @@ const ProductDetails = () => {
   const [images,setImages] = useState([]);
   const [variants,setVariants] = useState([]);
   const [campaignPrice, setCampaignPrice] = useState(null);
+  const [selectedVariantId, setSelectedVariantId] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [uniqueBrands, setUniqueBrands] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState("");
@@ -148,7 +149,7 @@ const ProductDetails = () => {
             if (matchingVariant && matchingVariant.variant_images?.length > 0) {
               setVariantImages(matchingVariant.variant_images);  // Set images for the selected variant
               setCurrentImageIndex(0);  // Reset image index
-              setSelectedVariant(matchingVariant.id); 
+              setSelectedVariantId(matchingVariant.id); 
             } else {
               setVariantImages([]);  // No images found for selected variant
             }
@@ -193,7 +194,7 @@ const ProductDetails = () => {
 
         useEffect(() => {
           if (product && product.variants && product.variants.length > 0) {
-            setSelectedVariant(product.variants[0].id);
+            setSelectedVariantId(product.variants[0].id);
           }
         }, [product]);
 
@@ -205,7 +206,7 @@ const ProductDetails = () => {
   
     // const handleVariantChange = (e) => {
     //   const selectedVariantId = e.target.value;
-    //   setSelectedVariant(selectedVariantId);
+    //   setSelectedVariantId(selectedVariantId);
     
     //   // Find the selected variant from the list of variants
     //   const selectedVariant = product?.variants.find((v) => v.id === selectedVariantId);
@@ -339,8 +340,14 @@ const ProductDetails = () => {
       alert("Please select a payment option.");
       return;
     }
+
+    const selectedVariantDetails = product.variants.find(
+      (variant) => variant.id === selectedVariantId
+    );
+
+    console.log("Selected Variant Details:", selectedVariantDetails);
     const payload = {
-      product_id: product.id,
+      variant: selectedVariantDetails,
       quantity: quantity,
       payment_option: selectedPaymentOption,
     };
@@ -352,7 +359,7 @@ const ProductDetails = () => {
         
         // Navigate to the start campaign page
         // navigate("/startCampaign/");
-        navigate("*");
+        navigate("/startCampaign");
 
       } else {
         // If joining an existing campaign, use the product ID for the campaign detail page
@@ -545,7 +552,7 @@ const ProductDetails = () => {
               </div>
               <div className={styles.priceContent}>
               <p className={styles.singlePrice}>
-                {product?.variants?.find(variant => variant.id === selectedVariant)?.price} {t('kd')}
+                {product?.variants?.find(variant => variant.id === selectedVariantId)?.price} {t('kd')}
               </p>
                 {/* Quantity Selector */}
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -591,7 +598,7 @@ const ProductDetails = () => {
                 </div>
                   <button
                     className={styles.addToCartButton}
-                    onClick={() => handleAddToCart(selectedVariant, cartQuantity)} 
+                    onClick={() => handleAddToCart(selectedVariantId, cartQuantity)} 
                   >
                     <ShoppingCart size={16} strokeWidth={2} />
                     {t('addToCart')}
@@ -613,9 +620,9 @@ const ProductDetails = () => {
                 </div>
               </div>
               <p className={styles.wholesalePrice}>
-                {calculateCampaignPrice(variants.find(v => v.id === selectedVariant))} {t("kd")}
+                {calculateCampaignPrice(variants.find(v => v.id === selectedVariantId))} {t("kd")}
                 <span className={styles.savingsBadge}>
-                  {t('save')} {variants.find(v => v.id === selectedVariant)?.campaign_discount_percentage}%
+                  {t('save')} {variants.find(v => v.id === selectedVariantId)?.campaign_discount_percentage}%
                 </span>
               </p>
                 </div>

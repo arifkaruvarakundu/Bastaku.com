@@ -31,13 +31,17 @@ function ExpenseCal() {
       setError("User email not found. Please log in.");
       return;
     }
+    const token = localStorage.getItem("access_token"); // Get token from localStorage
 
     setLoading(true);  // Set loading to true when starting calculation
 
     try {
       const response = await axios.post("http://127.0.0.1:8000/calculate_expense/", {
         ...formData,
-        user_email: userEmail, // Send email in API request
+        user_email: userEmail}, // Send email in API request
+        {headers:{
+          Authorization: `Bearer ${token}`
+        }
       });
 
       setExpenseResult(response.data);
