@@ -166,7 +166,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
         fields = [
             "id", "brand", "weight", "liter", "price", "stock",
             "campaign_discount_percentage", "minimum_order_quantity_for_offer", 
-            "wholesaler", "variant_images"
+            "wholesaler", "variant_images", "is_in_campaign", "is_available"
         ]
 
 class ProductSerializer(serializers.ModelSerializer):

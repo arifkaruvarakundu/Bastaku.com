@@ -963,9 +963,11 @@ const Header = ({onSearch}) => {
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  <Trans i18nKey="account" ns="header">
-                  Account
-                  </Trans>
+                  {localStorage.getItem("company_name") ? (
+                    localStorage.getItem("company_name")
+                  ) : (
+                    localStorage.getItem("user_name") || <Trans i18nKey="account" ns="header">Account</Trans>
+                  )}
                 </Link>
                 <div
                   className="dropdown-menu sm-menu"

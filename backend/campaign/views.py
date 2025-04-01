@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from .models import Campaign, CampaignParticipant
 from .serializers import CampaignSerializer,CampaignListSerializer
 from rest_framework.permissions import AllowAny,IsAuthenticated
-from wholesaler.models import Product
+from wholesaler.models import Product, ProductVariant
 from order.models import CampaignOrder,Payment,Notification
 from decimal import Decimal
 from django.db.models import Sum
@@ -19,6 +19,7 @@ from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from datetime import datetime
+import decimal
 
 # Create your views here.
 
@@ -32,8 +33,6 @@ class CampaignListView(generics.ListAPIView):
 
     def get_serializer_context(self):
         return {'request': self.request}
-
-
 
 # class CampaignDetailView(generics.RetrieveAPIView):
 #     permission_classes = [AllowAny]
@@ -74,6 +73,7 @@ class JoinCampaignView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
+        
         if request.user.is_anonymous:  # ✅ Explicit check
             return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -86,24 +86,26 @@ class JoinCampaignView(APIView):
         if campaign.has_ended():
             return Response({'error': 'Campaign has ended.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        product = campaign.product
+        variant = campaign.variant
         # Extract the participant's desired quantity from the request body
         participant_quantity = request.data.get('participant_quantity', 1)
         payment_amount = Decimal(request.data.get('payment_amount', 0))
-        actual_price = Decimal(product.actual_price)
-        discount_percentage = Decimal(product.campaign_discount_percentage)
-        discounted_price_per_unit = actual_price * (Decimal(1) - discount_percentage / Decimal(100))
+        price = Decimal(variant.price)
+        discount_percentage = Decimal(variant.campaign_discount_percentage)
+        discounted_price_per_unit = price * (Decimal(1) - discount_percentage / Decimal(100))
         total_price = discounted_price_per_unit * Decimal(participant_quantity)
 
         # Determine required payment amount based on `payment_option`
         required_payment = Decimal(0)
 
-        if campaign.payment_option == "free":
+        payment_option = request.data.get('payment_option')
+
+        if payment_option == "free":
             required_payment = Decimal(0)
-        elif campaign.payment_option == "10_percent":
-            required_payment = total_price * Decimal(0.10)  # 10% advance
-        elif campaign.payment_option == "100_percent":
-            required_payment = total_price  # Full amount
+        elif payment_option == "10_percent":
+            required_payment = total_price * Decimal(0.10)
+        elif payment_option == "100_percent":
+            required_payment = total_price
 
         # Validate if the provided payment amount matches the required payment
         if payment_amount < required_payment:
@@ -134,7 +136,7 @@ class JoinCampaignView(APIView):
         campaign.save()
 
         # Check if campaign is ready to disperse
-        if campaign.current_quantity >= campaign.product.minimum_order_quantity_for_offer:
+        if campaign.current_quantity >= campaign.variant.minimum_order_quantity_for_offer:
             self.disperse_campaign(campaign)
 
         return Response({'message': 'Successfully joined or updated the campaign!'}, status=status.HTTP_200_OK)
@@ -145,14 +147,14 @@ class JoinCampaignView(APIView):
         orders = []
 
         # Dynamically calculate the discounted price
-        product = campaign.product
-        if product.campaign_discount_percentage is None or product.actual_price is None:
+        variant = campaign.variant
+        if variant.campaign_discount_percentage is None or variant.price is None:
             raise ValueError("Product's actual price or discount percentage is not set.")
 
         # Convert actual_price and campaign_discount_percentage to Decimal for calculations
-        actual_price = Decimal(product.actual_price)
-        discount_percentage = Decimal(product.campaign_discount_percentage)
-        discounted_price_per_unit = actual_price * (Decimal(1) - discount_percentage / Decimal(100))
+        price = Decimal(variant.price)
+        discount_percentage = Decimal(variant.campaign_discount_percentage)
+        discounted_price_per_unit = price * (Decimal(1) - discount_percentage / Decimal(100))
 
         total_campaign_quantity = Decimal(0)
         total_campaign_amount = Decimal(0)
@@ -191,13 +193,15 @@ class JoinCampaignView(APIView):
         # Mark the campaign as inactive or dispersed
         campaign.is_active = False
         campaign.save()
-        product.is_in_campaign = False
-        product.save()
+        variant.is_in_campaign = False
+        variant.save()
+        variant.product.is_in_campaign = False
+        variant.product.save()  # Save the product
 
     def send_wholesaler_email(self, campaign, total_quantity, total_amount, participant_details):
         wholesaler_email = 'harifn786@gmail.com'
         order_no = f"PO-{campaign.id:04d}"
-        product = campaign.product
+        variant = campaign.variant
         order_date = datetime.now().strftime('%d/%m/%Y')
 
         # Generate PDF
@@ -231,49 +235,47 @@ class JoinCampaignView(APIView):
 
         # Product Table Header
         p.setFont("Helvetica-Bold", 12)
-        # p.drawString(30, height - 280, "Serial No.")  # Uncomment if needed
-        p.drawString(60, height - 280, "Product Name")
-        p.drawString(200, height - 280, "Quantity")
-        p.drawString(280, height - 280, "Unit Price (KD)")
-        p.drawString(380, height - 280, "Total Amount (KD)")
+        p.drawString(60, height - 250, "Product Name")
+        p.drawString(160, height - 250, "Brand Name")
+        p.drawString(260, height - 250, "Variant")
+        p.drawString(360, height - 250, "Quantity")
+        p.drawString(460, height - 250, "Unit Price (KD)")
+        p.drawString(560, height - 250, "Total Amount (KD)")
 
-        p.line(30, height - 285, 510, height - 285)
+        p.line(30, height - 255, 580, height - 255)
 
         # Product Row
         p.setFont("Helvetica", 10)
-        # p.drawString(50, height - 300, "Box")
-        p.drawString(60, height - 300, f"{product.product_name}")
-        p.drawString(200, height - 300, f"{total_quantity} Kg")
-        # Calculate and Display Discounted Price
-        discounted_price = product.get_campaign_discounted_price()
-        p.drawString(280, height - 300, f"{discounted_price:.2f}") 
-        p.drawString(380, height - 300, f"{total_amount}")
-
-        # Participants
-        # p.setFont("Helvetica-Bold", 12)
-        # p.drawString(50, height - 340, "Participants:")
-        # p.setFont("Helvetica", 10)
-        # for idx, participant in enumerate(participant_details):
-        #     p.drawString(70, height - 360 - (idx * 15), f"- {participant}")
+        p.drawString(60, height - 270, f"{variant.product.product_name}")
+        p.drawString(160, height - 270, f"{variant.brand}")
+        if variant.weight:
+            p.drawString(260, height - 270, f"{variant.weight} Kg")
+        elif variant.liter:
+            p.drawString(260, height - 270, f"{variant.liter} L")
+        p.drawString(360, height - 270, f"{total_quantity} ")
+        discounted_price = variant.get_discounted_price()
+        p.drawString(460, height - 270, f"{discounted_price:.2f}") 
+        p.drawString(560, height - 270, f"{total_amount}")
 
         # Payment Terms
         p.setFont("Helvetica-Bold", 12)
-        p.drawString(50, height - 420, "Payment Terms:")
+        p.drawString(50, height - 320, "Payment Terms:")
         p.setFont("Helvetica", 10)
-        p.drawString(70, height - 440, "5% advance payment collected.")
-        p.drawString(70, height - 455, "Balance due upon delivery.")
+        p.drawString(70, height - 340, "5% advance payment collected.")
+        p.drawString(70, height - 355, "Balance due upon delivery.")
 
         # Shipment Details
         p.setFont("Helvetica-Bold", 12)
-        p.drawString(50, height - 490, "Shipment Details:")
+        p.drawString(50, height - 380, "Shipment Details:")
         p.setFont("Helvetica", 10)
-        p.drawString(70, height - 510, "Expected Delivery: 3 – 4 weeks after advance payment.")
-        p.drawString(70, height - 525, "Shipment Port: Shuwaikh Port, Kuwait")
-        p.drawString(70, height - 540, "No. of Containers: 1X40 HC")
+        p.drawString(70, height - 400, "Expected Delivery: 3 – 4 weeks after advance payment.")
+        p.drawString(70, height - 415, "Shipment Port: Shuwaikh Port, Kuwait")
+        p.drawString(70, height - 430, "No. of Containers: 1X40 HC")
 
         # Signatures
-        p.drawString(50, height - 580, "Buyer Signature: ______________________")
-        p.drawString(300, height - 580, "Seller Signature: ______________________")
+        p.setFont("Helvetica", 10)
+        p.drawString(50, height - 460, "Buyer Signature: ______________________")
+        p.drawString(300, height - 460, "Seller Signature: ______________________")
 
         p.showPage()
         p.save()
@@ -289,31 +291,46 @@ class JoinCampaignView(APIView):
         email.attach(f"Purchase_Order_{order_no}.pdf", buffer.getvalue(), 'application/pdf')
         email.send()
 
+
 class StartCampaignView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         data = request.data
+        print("Data received:", data)
         try:
-            product = Product.objects.get(id=data.get("product"))
-            if not product.is_available:
-                return Response({"error": "Product is not available"}, status=status.HTTP_400_BAD_REQUEST)
-
-            serializer = CampaignListSerializer(data=data)
+            variant = ProductVariant.objects.get(id=data.get("variant"))
+            product = variant.product.is_in_campaign
+            print("Product:@@@@@@@@@@@@@@@@@@@@@", product)
+            
+            
+            # if not product.is_available:
+            #     return Response({"error": "Product is not available"}, status=status.HTTP_400_BAD_REQUEST)
+            if "discounted_price" in data:
+                data["discounted_price"] = round(decimal.Decimal(data["discounted_price"]), 2)
+            serializer = CampaignListSerializer(data=data, context={'request': request})
             if serializer.is_valid():
-                campaign = serializer.save()
-                product.is_in_campaign = True
-                product.save()
+                campaign = serializer.save()  # Save the campaign
+
+                # Set the variant and product as being in the campaign
+                variant.is_in_campaign = True
+                variant.product.is_in_campaign = True
+
+                # Save both in a single step if no other changes are required
+                variant.product.save()  # Save the product
+                variant.save() 
 
                 self.create_campaign_participant(campaign, request)
                 return Response({"message": "Campaign started successfully", "data": serializer.data}, status=status.HTTP_201_CREATED)
-
+            
+            print("Serializer errors:", serializer.errors)  # 🛑 Debug: Show errors
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        except Product.DoesNotExist:
+        except ProductVariant.DoesNotExist:
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
     def create_campaign_participant(self, campaign, request):
+        print("Creating campaign participant...@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         participant_quantity = request.data.get('quantity', 1)
         participant = CampaignParticipant.objects.filter(campaign=campaign, user=request.user).first()
         if participant:
@@ -328,20 +345,20 @@ class StartCampaignView(APIView):
 
         campaign.save()
 
-        if campaign.current_quantity >= campaign.product.minimum_order_quantity_for_offer:
+        if campaign.current_quantity >= campaign.variant.minimum_order_quantity_for_offer:
             self.disperse_campaign(campaign)
 
     def disperse_campaign(self, campaign):
         participants = campaign.participants.all()
         orders = []
 
-        product = campaign.product
-        if product.campaign_discount_percentage is None or product.actual_price is None:
+        variant = campaign.variant
+        if variant.campaign_discount_percentage is None or variant.price is None:
             raise ValueError("Product's actual price or discount percentage is not set.")
 
-        actual_price = Decimal(product.actual_price)
-        discount_percentage = Decimal(product.campaign_discount_percentage)
-        discounted_price_per_unit = actual_price * (Decimal(1) - discount_percentage / Decimal(100))
+        price = Decimal(variant.price)
+        discount_percentage = Decimal(variant.campaign_discount_percentage)
+        discounted_price_per_unit = price * (Decimal(1) - discount_percentage / Decimal(100))
 
         total_campaign_quantity = Decimal(0)
         total_campaign_amount = Decimal(0)
@@ -370,13 +387,13 @@ class StartCampaignView(APIView):
 
         campaign.is_active = False
         campaign.save()
-        product.is_in_campaign = False
-        product.save()
+        variant.is_in_campaign = False
+        variant.save()
 
     def send_wholesaler_email(self, campaign, total_quantity, total_amount, participant_details):
         wholesaler_email = 'harifn786@gmail.com'
         order_no = f"PO-{campaign.id:04d}"
-        product = campaign.product
+        variant = campaign.variant
         order_date = datetime.now().strftime('%d/%m/%Y')
 
         buffer = BytesIO()
@@ -409,6 +426,7 @@ class StartCampaignView(APIView):
         # Product Table Header
         p.setFont("Helvetica-Bold", 12)
         p.drawString(60, height - 280, "Product Name")
+        p.drawString(60, height - 280, "Brand Name")
         p.drawString(200, height - 280, "Quantity")
         p.drawString(280, height - 280, "Unit Price (KD)")
         p.drawString(380, height - 280, "Total Amount (KD)")
@@ -417,9 +435,10 @@ class StartCampaignView(APIView):
 
         # Product Row
         p.setFont("Helvetica", 10)
-        p.drawString(60, height - 300, f"{product.product_name}")
+        p.drawString(60, height - 300, f"{variant.product.product_name}")
+        p.drawString(60, height - 300, f"{variant.brand}")
         p.drawString(200, height - 300, f"{total_quantity} Kg")
-        discounted_price = product.get_campaign_discounted_price()
+        discounted_price = variant.get_campaign_discounted_price()
         p.drawString(280, height - 300, f"{discounted_price:.2f}")
         p.drawString(380, height - 300, f"{total_amount}")
 

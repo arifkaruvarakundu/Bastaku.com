@@ -17,6 +17,7 @@ class UserOrdersView(APIView):
     renderer_classes = [UserRenderer]
 
     def get(self, request):
+        
         # Get all orders for the current user
         orders = Order.objects.filter(user=request.user)
         campaign_orders = CampaignOrder.objects.filter(participant=request.user)

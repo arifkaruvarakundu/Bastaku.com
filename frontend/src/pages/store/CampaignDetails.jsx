@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 
 const CampaignDetailPage = () => {
-  const [product, setProduct] = useState(null);
+  const [variant, setVariant] = useState(null);
   const [progress, setProgress] = useState(0);
   const [campaign, setCampaign] = useState(null);
   const [campaignPrice, setCampaignPrice] = useState(0);
@@ -29,13 +29,14 @@ const CampaignDetailPage = () => {
       .get(`http://127.0.0.1:8000/campaigns/${id}/`)
       .then((response) => {
         const campaignData = response.data;
+        console.log("Campaign Data:", campaignData);
         setCampaign(campaignData);
-        setProduct(campaignData.product);
+        setVariant(campaignData.variant);
         setCurrentQuantity(campaignData.current_quantity);
   
         let calculatedPrice =
-          (campaignData.product.actual_price *
-            (100 - campaignData.product.campaign_discount_percentage)) /
+          (campaignData.variant.price *
+            (100 - campaignData.variant.campaign_discount_percentage)) /
           100;
   
         if (selectedPaymentOption === "basic") {
@@ -47,7 +48,7 @@ const CampaignDetailPage = () => {
         setCampaignPrice(calculatedPrice);
         const initialProgress =
           ((campaignData.current_quantity + storedQuantity) /
-            campaignData.product.minimum_order_quantity_for_offer) *
+            campaignData.variant.minimum_order_quantity_for_offer) *
           100;
         setProgress(initialProgress);
       })
@@ -60,18 +61,18 @@ const CampaignDetailPage = () => {
   
     const totalQuantity = currentQuantity + newAdditionalQuantity;
     setProgress(
-      Math.min((totalQuantity / product.minimum_order_quantity_for_offer) * 100, 100) // Progress capped at 100%
+      Math.min((totalQuantity / variant.minimum_order_quantity_for_offer) * 100, 100) // Progress capped at 100%
     );
   };
   
   const decreaseQuantity = () => {
-    if (additionalQuantity > 0) {
+    if (additionalQuantity > 1) {
       const newAdditionalQuantity = additionalQuantity - 1;
       setAdditionalQuantity(newAdditionalQuantity);
   
       const totalQuantity = currentQuantity + newAdditionalQuantity;
       setProgress(
-        Math.min((totalQuantity / product.minimum_order_quantity_for_offer) * 100, 100) // Progress capped at 100%
+        Math.min((totalQuantity / variant.minimum_order_quantity_for_offer) * 100, 100) // Progress capped at 100%
       );
     }
   };
@@ -79,8 +80,9 @@ const CampaignDetailPage = () => {
   const joinCampaign = async () => {
     const token = localStorage.getItem("access_token");
     const data = {
-      product: campaign.product.id,
+      variant: campaign.variant.id,
       participant_quantity: additionalQuantity,
+      payment_option: paymentOption,
       start_time: new Date().toISOString(),
       end_time: new Date(
         new Date().getTime() + 7 * 24 * 60 * 60 * 1000
@@ -147,8 +149,8 @@ const CampaignDetailPage = () => {
           {/* Product Image */}
           <div style={{ flex: "1 1 40%" }}>
             <img
-              src={campaign.product.product_images[0].image_url}
-              alt={campaign.product.product_name}
+              src={campaign.variant.variant_images[0].image_url}
+              alt={campaign.variant.brand}
               style={{
                 width: "100%",
                 borderRadius: "10px",
@@ -184,7 +186,7 @@ const CampaignDetailPage = () => {
               <p style={{ fontSize: "20px", fontWeight: "600", color: "#444" }}>
                 Price:{" "}
                 <span style={{ color: "#064E3B" }}>
-                  {campaign.product.actual_price} KD
+                  {campaign.variant.price} KD
                 </span>
               </p>
               <p
@@ -202,7 +204,7 @@ const CampaignDetailPage = () => {
                   color: "#059669",
                 }}
               >
-                Minimum Order Quantity For Offer: {campaign.product.minimum_order_quantity_for_offer}
+                Minimum Order Quantity For Offer: {campaign.variant.minimum_order_quantity_for_offer}
               </p>
               </p>
             </div>
@@ -375,7 +377,7 @@ const CampaignDetailPage = () => {
             {progress >= 100
               ? "Target Achieved!"
               : `${(
-                  product.minimum_order_quantity_for_offer - totalQuantity
+                  variant.minimum_order_quantity_for_offer - totalQuantity
                 ).toFixed(2)} Kg more to unlock!`}
           </p>
         </div>

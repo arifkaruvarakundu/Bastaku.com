@@ -1,13 +1,13 @@
 from django.db import models
 from authentication.models import User
-from wholesaler.models import Product
+from wholesaler.models import Product, ProductVariant
 from django.utils.timezone import now
 from django.utils.timezone import now
 
 class Campaign(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="campaigns")
+    variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, related_name="campaigns", null=True, blank =True)
     title = models.CharField(max_length=255)
-    description = models.TextField(null=True, blank=True)
+    # description = models.TextField(null=True, blank=True)
     discounted_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     start_time = models.DateTimeField(null=True, blank=True)
     end_time = models.DateTimeField(null=True, blank=True)

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'modeltranslation',
+    'django_extensions',
     "cloudinary",
     "cloudinary_storage",
     'corsheaders',

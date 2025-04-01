@@ -17,6 +17,7 @@ const MyAccountOrder = () => {
   const {t: tAccounts} = useTranslation('accounts_others')
 
   useEffect(() => {
+
     const fetchOrders = async () => {
       try {
         const email = localStorage.getItem("email");
@@ -247,7 +248,7 @@ const MyAccountOrder = () => {
                                   <td className="align-middle border-top-0 w-0">
                                     <Link to="#">
                                       <img
-                                        src={order.product.product_images[0].image_url}
+                                        src={order.variant.variant_images[0].image_url}
                                         alt="Ecommerce"
                                         className="icon-shape icon-xl"
                                       />

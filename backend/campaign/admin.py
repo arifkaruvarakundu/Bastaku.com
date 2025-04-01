@@ -5,7 +5,7 @@ from django.utils.html import format_html
 # Custom Admin for Campaign
 class CampaignAdmin(admin.ModelAdmin):
     # Display fields in the list view of Campaigns
-    list_display = ('title', 'product', 'start_time', 'end_time', 'current_quantity', 'current_participants', 'is_active')
+    list_display = ('title','id', 'variant', 'start_time', 'end_time', 'current_quantity', 'current_participants', 'is_active')
 
     # Add the current_participants as a dynamic property for the list view
     def current_participants(self, obj):
@@ -16,7 +16,7 @@ class CampaignAdmin(admin.ModelAdmin):
     # Optionally, add more fields to the form view
     fieldsets = (
         (None, {
-            'fields': ('title', 'product', 'description', 'discounted_price', 'start_time', 'end_time', 'current_quantity', 'is_active')
+            'fields': ('title', 'variant', 'discounted_price', 'start_time', 'end_time', 'current_quantity', 'is_active')
         }),
     )
 

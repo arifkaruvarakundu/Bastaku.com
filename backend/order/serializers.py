@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from .models import Order, CampaignOrder,Notification
 from authentication.serializers import UserSerializer
-from wholesaler.serializers import ProductSerializer
+from wholesaler.serializers import ProductVariantSerializer
 
 class OrderSerializer(serializers.ModelSerializer):
-    product = serializers.StringRelatedField()
+    variant = serializers.StringRelatedField()
     product_wholesaler = serializers.CharField(source='product.wholesaler.company_name')
     
     class Meta:
@@ -13,10 +13,10 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class CampaignOrderSerializer(serializers.ModelSerializer):
     campaign = serializers.StringRelatedField()
-    product = ProductSerializer(source='campaign.product', read_only=True)
+    variant = ProductVariantSerializer(source='campaign.variant', read_only=True)
     # product_name = serializers.CharField(source='campaign.product.product_name', read_only=True)
     # product_image = serializers.ImageField(source='campaign.product.product_image', read_only=True)
-    campaign_product_wholesaler = serializers.CharField(source='campaign.product.wholesaler.company_name')
+    campaign_product_wholesaler = serializers.CharField(source='campaign.variant.product.wholesaler.company_name')
     campaign_title = serializers.CharField(source='campaign.title', read_only=True)
     participant = UserSerializer()  # Include user details in the campaign order
 

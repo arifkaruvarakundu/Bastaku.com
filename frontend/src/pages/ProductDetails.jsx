@@ -3,7 +3,7 @@ import {Clock, ShoppingCart, Percent, UserPlus, Star, ChevronLeft, ChevronRight,
 // import {Package, Plus, Minus, BarChart2, TrendingUp, ArrowUp, ArrowDown, Activity} from "lucide-react"
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import styles from "../styles/ProductDetails.module.css";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
@@ -16,7 +16,7 @@ import { addToCart } from "../redux/cartSlice";
 
 const ProductDetails = () => {
   const {t, i18n} = useTranslation('product_details');
-  const [product, setProduct] = useState(null);
+  const [product, setProduct] = useState({});
   const [selectedPaymentOption, setSelectedPaymentOption] = useState(null);
   const [progress, setProgress] = useState(0);
   const [timeLeft, setTimeLeft] = useState(172800);
@@ -48,27 +48,42 @@ const ProductDetails = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch();
+  const location = useLocation();
 
+  // useEffect(() => {
+  //   const queryParams = new URLSearchParams(location.search);
+  //   const variantIdFromQuery = queryParams.get('variantId');
+    
+  //   if (variantIdFromQuery) {
+      
+  //     setSelectedVariantId(variantIdFromQuery);  // Use variantId from URL query parameter
+  //   } else {
+  //     console.log("No variantId in query parameters, setting default logic.");
+  //     // Fallback to first variant if no variantId is available
+  //     setSelectedVariantId(product?.variants?.[0]?.id || null);
+  //   }
+  // }, [location.search, product?.variants]);
+ 
   // Update currentLang when the language is changed
     useEffect(() => {
       setCurrentLang(i18n.language);
     }, [i18n.language]);
 
     useEffect(() => {
-      const loadingTimer = setTimeout(() => setIsLoading(false), 1500);
-      const progressInterval = setInterval(() => {
-        setProgress((prev) => Math.min(prev + 1, 70));
-      }, 50);
-      const timerInterval = setInterval(() => {
-        setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-      }, 1000);
+        const loadingTimer = setTimeout(() => setIsLoading(false), 1500);
+        const progressInterval = setInterval(() => {
+          setProgress((prev) => Math.min(prev + 1, 70));
+        }, 50);
+        const timerInterval = setInterval(() => {
+          setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+        }, 1000);
 
-      return () => {
-        clearTimeout(loadingTimer);
-        clearInterval(progressInterval);
-        clearInterval(timerInterval);
-      };
-    }, []);
+        return () => {
+          clearTimeout(loadingTimer);
+          clearInterval(progressInterval);
+          clearInterval(timerInterval);
+        };
+      }, []);
 
         const calculateCampaignPrice = (variant) => {
           if (variant && variant.price && variant.campaign_discount_percentage) {
@@ -86,10 +101,11 @@ const ProductDetails = () => {
             try {
               const response = await axios.get(`http://127.0.0.1:8000/product_details/${id}/`);
               const fetchedProduct = response.data;
+        
               setProduct(fetchedProduct);
               setVariants(fetchedProduct.variants);
         
-              console.log("Fetched Product:", fetchedProduct);
+              console.log("Fetched Product variants:", fetchedProduct.variants);
         
               localStorage.setItem("productDetails", JSON.stringify(fetchedProduct));
               const storedQuantity = parseInt(localStorage.getItem("productQuantity"), 10) || 1;
@@ -100,26 +116,10 @@ const ProductDetails = () => {
                 setImages(fetchedProduct.product_images);
               }
         
-              if (fetchedProduct.is_in_campaign) {
-                const campaignResponse = await axios.get(`http://127.0.0.1:8000/campaigns/`);
-                // console.log("Campaigns:", campaignResponse.data);
-        
-                const relatedCampaign = campaignResponse.data.find(
-                  (campaign) => parseInt(campaign.product) === fetchedProduct.id
-                );
-        
-                if (relatedCampaign) {
-                  setCampaignDetails(relatedCampaign);
-                  const numberOfParticipants = relatedCampaign?.current_participants ?? 0;
-                  const currentQuantity = relatedCampaign?.current_quantity ?? 0;
-                  const minOrderQuantity = fetchedProduct?.minimum_order_quantity_for_offer ?? 1;
-                  setProgress((currentQuantity / minOrderQuantity) * 100);
-                }
-              }
+              setLoading(false);
             } catch (err) {
               setError("Failed to load product details");
               console.error(err);
-            } finally {
               setLoading(false);
             }
           };
@@ -127,10 +127,74 @@ const ProductDetails = () => {
           fetchProduct();
         }, [id]);
 
+        
+
+        useEffect(() => {
+          if (!product || !product.variants || product.variants.length === 0) return; // Ensure product and variants exist
+        
+          const queryParams = new URLSearchParams(location.search);
+          const variantIdFromQuery = queryParams.get("variantId");
+        
+          let selectedVariant;
+        
+          if (variantIdFromQuery) {
+            selectedVariant = product.variants.find((v) => v.id === variantIdFromQuery);
+            if (!selectedVariant) {
+              console.warn("Variant ID from URL not found in product variants.");
+              selectedVariant = product.variants[0]; // Default to first variant if not found
+            }
+          } else {
+            selectedVariant = product.variants[0]; // Default to first variant if no variantId in URL
+          }
+        
+          if (selectedVariant) {
+            setSelectedVariantId(selectedVariant.id);
+            setSelectedBrand(selectedVariant.brand);
+            setSelectedWeight(selectedVariant.weight);
+            setSelectedVolume(selectedVariant.liter);
+          }
+        }, [product, location.search]); // Depend on `product` and `location.search`
+        
+        
+      
+
+        useEffect(() => {
+          if (!product || !Array.isArray(product.variants)) return;
+        
+          // Get all variants that are in a campaign
+          const campaignVariants = product.variants.filter((variant) => variant.is_in_campaign);
+          console.log("Campaign Variants:", campaignVariants);
+        
+          if (campaignVariants.length > 0) {
+            axios.get("http://127.0.0.1:8000/campaigns/")
+              .then((response) => {
+                console.log("Campaigns Data from API:", response.data);
+        
+                const relatedCampaign = response.data.find(
+                  (campaign) => parseInt(campaign.variant.id) === selectedVariantId
+                );
+        
+                console.log("Related Campaign:", relatedCampaign);
+        
+                if (relatedCampaign) {
+                  setCampaignDetails(relatedCampaign);
+                  const numberOfParticipants = relatedCampaign?.current_participants ?? 0;
+                  const currentQuantity = relatedCampaign?.current_quantity ?? 0;
+                  // const minOrderQuantity = selectedVariantDetails?.minimum_order_quantity_for_offer ?? 1;
+        
+                  // setProgress((currentQuantity / minOrderQuantity) * 100);
+                }
+              })
+              .catch((error) => {
+                console.error("Error fetching campaigns:", error);
+              });
+          }
+        }, [selectedVariantId, product?.variants]);
+
         useEffect(() => {
           if (product && product.variants && product.variants.length > 0) {
             const firstVariant = product.variants[0];
-            console.log("first variant",firstVariant)
+            // console.log("first variant",firstVariant)
             setSelectedBrand(firstVariant.brand); // Set default selected brand
             setSelectedWeight(firstVariant.weight); // Set default selected weight
             setSelectedVolume(firstVariant.liter)
@@ -192,11 +256,11 @@ const ProductDetails = () => {
           setSelectedVolume(e.target.value);
         };
 
-        useEffect(() => {
-          if (product && product.variants && product.variants.length > 0) {
-            setSelectedVariantId(product.variants[0].id);
-          }
-        }, [product]);
+        // useEffect(() => {
+        //   if (product && product.variants && product.variants.length > 0) {
+        //     setSelectedVariantId(product.variants[0].id);
+        //   }
+        // }, [product]);
 
         useEffect(() => {
           if (variantImages.length > 0) {
@@ -335,6 +399,16 @@ const ProductDetails = () => {
         }
       }, [variantImages]);
 
+      useEffect(() => {
+        if (!product || !product.variants) return;
+        const selectedVariantDetails = product.variants.find(
+          (variant) => variant.id === selectedVariantId
+        );
+      
+        console.log("Selected Variant Details:", selectedVariantDetails);
+        setSelectedVariant(selectedVariantDetails);
+      }, [selectedVariantId, product.variants]);
+
   const handleButtonClick = async () => {
     if (!selectedPaymentOption) {
       alert("Please select a payment option.");
@@ -346,14 +420,18 @@ const ProductDetails = () => {
     );
 
     console.log("Selected Variant Details:", selectedVariantDetails);
+    setSelectedVariant(selectedVariantDetails);
+    
+    
     const payload = {
       variant: selectedVariantDetails,
       quantity: quantity,
       payment_option: selectedPaymentOption,
     };
+
     try {
       // Check if the user is starting or joining the campaign
-      if (!product.is_in_campaign) {
+      if (!selectedVariantDetails.is_in_campaign) {
         // Store details in localStorage for starting a campaign
         localStorage.setItem("start_campaign_details", JSON.stringify(payload));
         
@@ -364,9 +442,9 @@ const ProductDetails = () => {
       } else {
         // If joining an existing campaign, use the product ID for the campaign detail page
         localStorage.setItem("join_campaign_details", JSON.stringify(payload));
-        const id = campaignDetails.id
-        // navigate(`/campaigns/${id}`);
-        navigate("*");
+        const id = campaignDetails?.id
+        navigate(`/campaigns/${id}`);
+        // navigate("*");
       }
       
     } catch (error) {
@@ -417,7 +495,7 @@ const ProductDetails = () => {
               ) : (
                 <p>No images available for this variant.</p>
               )}
-            {product?.is_in_campaign && (
+            {selectedVariant?.is_in_campaign && (
                       <div className={styles.timerOverlay}>
                         <div className={styles.timerContent}>
                           <Clock className={styles.timerIcon} strokeWidth={2} />
@@ -667,7 +745,7 @@ const ProductDetails = () => {
 
                 </div>
 
-            {product?.is_in_campaign ? (
+            {selectedVariant?.is_in_campaign ? (
               <>
                 <div className={styles.groupProgressSection}>
                   <div className={styles.groupInfo}>
@@ -677,7 +755,7 @@ const ProductDetails = () => {
                       <p className={styles.groupStats}>
                       <strong>{campaignDetails?.current_participants ?? 0}</strong>{" "}
                         {t('participants')} ·
-                        <strong>{campaignDetails.product.minimum_order_quantity_for_offer-campaignDetails.current_quantity}</strong> 
+                        <strong>{campaignDetails?.variant?.minimum_order_quantity_for_offer - campaignDetails?.current_quantity}</strong> 
                         {t('moreToUnlockCampaignPrice')}
                       </p>
                     </div>
@@ -777,8 +855,9 @@ const ProductDetails = () => {
             </div>
             </>
             )}
+
             {/* Payment Options */}
-            {product?.is_in_campaign && (
+            {selectedVariant?.is_in_campaign && (
             <div className={styles.groupDealOptions}>
               {[
                 {
@@ -835,6 +914,7 @@ const ProductDetails = () => {
               ))}
             </div>
             )}
+
             {/* Quantity Selector */}
             <div className={styles.quantitySelector}>
               <span className={styles.quantityLabel}>
@@ -887,7 +967,7 @@ const ProductDetails = () => {
             >
               {isAlreadyJoined
                 ? t('already_joined')
-                : !product?.is_in_campaign
+                : !selectedVariant?.is_in_campaign
                 ? selectedPaymentOption === "free"
                   ? t('start_group_deal', { quantity })
                   : selectedPaymentOption === "basic"

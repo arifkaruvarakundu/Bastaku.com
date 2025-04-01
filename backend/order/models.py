@@ -1,6 +1,6 @@
 from django.db import models
 from authentication.models import User
-from wholesaler.models import Product
+from wholesaler.models import ProductVariant
 from campaign.models import Campaign
 # # Create your models here.
 
@@ -84,7 +84,7 @@ from campaign.models import Campaign
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="orders")
+    variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, related_name="orders", null=True, blank=True)
     quantity = models.PositiveIntegerField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     is_paid = models.BooleanField(default=False)

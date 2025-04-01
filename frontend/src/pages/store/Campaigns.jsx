@@ -22,14 +22,14 @@ const Campaigns = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   
 
-  // Function to handle clicking on a campaign
   const handleCampaignClick = (campaign) => {
-    if (isAuthenticated) {
-      const productId = campaign.product.id; // Extract product ID from the campaign
-      navigate(`/productDetails/${productId}`);
-    } else {
-      alert("Please log in to see the campaign details.");
-    }
+    console.log("Campaign Clicked:", campaign);
+    const productId = campaign.product_id; // Extract product ID from the campaign
+    console.log("productId", productId); // Log product ID
+    const variantId = campaign.variant.id; // Extract variant ID from the campaign
+    console.log("variantId", variantId); // Log variant ID
+     // Pass variantId in the URL as a query parameter
+    navigate(`/productDetails/${productId}?variantId=${variantId}`);
   };
 
   return (
@@ -44,13 +44,13 @@ const Campaigns = () => {
           {campaigns.map((campaign) => {
             // Calculate the sale price
             const salePrice = (
-              campaign.product.actual_price -
-              (campaign.product.actual_price * campaign.product.campaign_discount_percentage) / 100
+              campaign.variant.price -
+              (campaign.variant.price * campaign.variant.campaign_discount_percentage) / 100
             ).toFixed(2);
 
             // Calculate progress
             const progress = Math.min(
-              (campaign.current_quantity / campaign.product.minimum_order_quantity_for_offer) * 100,
+              (campaign.current_quantity / campaign.variant.minimum_order_quantity_for_offer) * 100,
               100
             );
 
@@ -59,32 +59,46 @@ const Campaigns = () => {
                 <div className="card card-product" onClick={() => handleCampaignClick(campaign)}>
                   <div className="card-body">
                     <div className="text-center position-relative">
-                      {campaign.product.is_in_campaign && (
+                      {campaign.variant.is_in_campaign && (
                         <div className="position-absolute top-0 start-0">
                           <span className="badge bg-danger">Campaign</span>
                         </div>
                       )}
                       <a href="#!">
                         <img
-                          src={campaign.product.product_images[0].image_url}
-                          alt={campaign.product.product_name}
+                          src={campaign.variant.variant_images[0].image_url}
+                          alt={campaign.variant.brand}
                           className="mb-3 img-fluid"
                         />
                       </a>
                     </div>
                     <div className="text-small mb-1">
                       <a href="#!" className="text-decoration-none text-muted">
-                        <small>{campaign.product.category}</small>
+                        <small>{campaign.title}</small>
                       </a>
                     </div>
+                    {campaign.variant.weight && (
+                    <div className="text-small mb-1">
+                      <a href="#!" className="text-decoration-none text-muted">
+                        <small>{campaign.variant.weight} Kg</small>
+                      </a>
+                    </div>
+                    )}
+                    {campaign.variant.liter && (
+                    <div className="text-small mb-1">
+                      <a href="#!" className="text-decoration-none text-muted">
+                        <small>{campaign.variant.liter} L</small>
+                      </a>
+                    </div>
+                    )}
                     <h2 className="fs-6">
                       <a href="#!" className="text-inherit text-decoration-none">
-                        {campaign.product.product_name}
+                        {campaign.current_quantity} of {campaign.variant.minimum_order_quantity_for_offer}{" "}
                       </a>
                     </h2>
                     <div className="d-flex justify-content-between align-items-center mt-3">
                       <div>
-                        <span className="text-dark">KD : {campaign.product.actual_price}</span>{" "}
+                        <span className="text-dark">KD : {campaign.variant.price}</span>{" "}
                         <span className="text-decoration-line-through text-muted">
                           KD: {salePrice}
                         </span>

@@ -98,7 +98,8 @@ class ProductVariant(models.Model):
         related_name='product_variants',  # Unique related_name
         limit_choices_to={'user_type': 'wholesaler'}
     )
-
+    is_in_campaign = models.BooleanField(default=False)
+    is_available = models.BooleanField(default=True)
 
     def get_discounted_price(self):
         """Calculate and return the discounted price for the variant."""

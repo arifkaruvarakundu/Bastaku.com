@@ -18,7 +18,7 @@ class ProductAdmin(admin.ModelAdmin):
     get_images.short_description = "Product Image"
 
 class ProductVariantAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product', 'brand', 'weight', 'liter', 'price', 'stock', 'campaign_discount_percentage', 'minimum_order_quantity_for_offer', 'wholesaler' )  # Add fields you want to see
+    list_display = ('id', 'product', 'brand', 'weight', 'liter', 'price', 'is_in_campaign', 'stock', 'campaign_discount_percentage', 'minimum_order_quantity_for_offer', 'wholesaler' )  # Add fields you want to see
     # search_fields = ('id', 'name')  # Allow search by ID and name
     # list_filter = ('price',)  # Optional: Add filter
 

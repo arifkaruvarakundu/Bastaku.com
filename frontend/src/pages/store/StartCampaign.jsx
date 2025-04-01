@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
 import axios from "axios";
 
 const StartCampaignPage = () => {
@@ -12,6 +11,10 @@ const StartCampaignPage = () => {
   const [paymentOption, setPaymentOption] = useState("");
 
   const navigate = useNavigate();
+
+  const productDetails = JSON.parse(localStorage.getItem("productDetails"));
+  const product_name = productDetails?.product_name || "Product Name";
+
   // Fetch product details from localStorage
   useEffect(() => {
     // const storedProduct = JSON.parse(localStorage.getItem("productDetails"));
@@ -38,12 +41,12 @@ const StartCampaignPage = () => {
       setCampaignPrice(calculatedPrice);
       setQuantity(storedQuantity);
       setProgress((storedQuantity / start_campaign_details.minimum_order_quantity_for_offer) * 100);
+
     } else {
       console.error("No product details or campaign details found in localStorage.");
     }
   }, []);
 
-  
   const increaseQuantity = () => {
     if (quantity < variant.stock) {
       const newQuantity = quantity + 1;
@@ -64,20 +67,28 @@ const StartCampaignPage = () => {
 
   const handleStartCampaign = async () => {
     const data = {
-      variant_id: variant.id,
-      // title: product.product_name,
+      variant: variant.id,
+      title: `${variant.brand} ${product_name}`,
       // description: product.description,
       discounted_price: campaignPrice,
+      
       payment_option: paymentOption,
       quantity,
       start_time: new Date().toISOString(),
       end_time: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     };
+
     setIsLoading(true); // Start loading
+
     try {
       const token = localStorage.getItem("access_token");
-      // const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-      const response = await axios.post("http://127.0.0.1:8000/start_campaign/", data, { headers: { Authorization: `Bearer ${token}` } });
+      
+      const response = await axios.post("http://127.0.0.1:8000/start_campaign/", data, 
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}` 
+          } 
+        });
 
       if (response.status === 201) {
         alert("Campaign started successfully!");
@@ -97,8 +108,6 @@ const StartCampaignPage = () => {
 
   return (
     <div style={{ maxWidth: "1200px", margin: "40px auto", padding: "20px", backgroundColor: "#F0FFF4", borderRadius: "10px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
-     
-
       {variant ? (
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <h1 style={{ fontSize: "28px", fontWeight: "bold", textAlign: "center", color: "#065F46" }}>Start a New Campaign</h1>
@@ -116,25 +125,48 @@ const StartCampaignPage = () => {
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                 }}
               />
-
             )}
             </div>
-
             {/* Product Details and Form */}
             <div style={{ flex: "1 1 60%" }}>
-              <p><strong>Minimum Order Quantity For Offer:</strong> {variant.minimum_order_quantity_for_offer} Kg</p>
-
+              
               <form style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
                 {/* Campaign Title */}
                 <div>
                   <label>Campaign Title</label>
                   <input
                     type="text"
-                    value={variant.brand}
+                    value={`${variant.brand} ${product_name}`}
                     readOnly
                     style={{ width: "100%", padding: "10px", borderRadius: "5px", border: "1px solid #D1D5DB" }}
                   />
                 </div>
+
+                {/* Variant Volume */}
+                {variant?.liter && (
+                <div>
+                  <label>Volume (Litre)</label>
+                  <input
+                    type="text"
+                    value={variant.liter} 
+                    readOnly
+                    style={{ width: "100%", padding: "10px", borderRadius: "5px", border: "1px solid #D1D5DB" }}
+                  />
+                </div>
+                )}
+
+                {/* Variant Weight */}
+                {variant?.weight && (
+                <div>
+                  <label>Weight (Kg)</label>
+                  <input
+                    type="text"
+                    value={variant.weight} 
+                    readOnly
+                    style={{ width: "100%", padding: "10px", borderRadius: "5px", border: "1px solid #D1D5DB" }}
+                  />
+                </div>
+                )}
 
                 {/* Your Price */}
                 <div>
@@ -192,6 +224,7 @@ const StartCampaignPage = () => {
 
                 {/* Progress Bar */}
                 <div>
+                <p><strong>Minimum Order Quantity For Offer:</strong> {variant.minimum_order_quantity_for_offer} Kg</p>
                     <label>Progress</label>
                     <div style={{ height: "20px", backgroundColor: "#rgb(155, 227, 192)", borderRadius: "5px", overflow: "hidden" }}>
                         <div
@@ -229,6 +262,7 @@ const StartCampaignPage = () => {
                     style={{ width: "100%", padding: "10px", borderRadius: "5px", border: "1px solid #D1D5DB" }}
                   />
                 </div>
+
                 {isLoading && (
                   <div style={{
                     position: "fixed",
@@ -287,7 +321,6 @@ const StartCampaignPage = () => {
       ) : (
         <p>Loading product details...</p>
       )}
-
    
     </div>
   );
