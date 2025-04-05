@@ -69,10 +69,10 @@ const MyAccountCampaigns = () => {
                   </li>
                   
                   <li className="nav-item">
-                                        <Link className="nav-link" to="/MyAccountSetting">
-                                          <i className="fas fa-cog me-2" />
-                                          {tCommon('settings')}
-                                        </Link>
+                                        {/* <Link className="nav-link" to="/MyAccountSetting">
+                                              <i className="fas fa-cog me-2" />
+                                              {tCommon('settings')}
+                                            </Link> */}
                                       </li>
                                       {/* nav item */}
                                       <li className="nav-item">

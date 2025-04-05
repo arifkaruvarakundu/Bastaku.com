@@ -42,7 +42,7 @@ const ShopCart = () => {
    const updateQuantity = (variantId, newQuantity) => {
     const updatedCart = cartItems.map((item) =>
       item.variant.id === variantId
-        ? { ...item, quantity: newQuantity > 0 ? newQuantity : 0 }
+        ? { ...item, quantity: newQuantity > 1 ? newQuantity : 1 } // Ensure quantity is at least 1
         : item
     );
 
@@ -55,7 +55,7 @@ const ShopCart = () => {
   };
 
   const handleCheckout = () => {
-    navigate("/ShopCheckOut", { state: { cartItems, totalPrice } });
+    navigate("/ShopCheckOut");
   };
 
   return (

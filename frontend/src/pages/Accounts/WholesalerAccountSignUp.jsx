@@ -89,9 +89,11 @@ const WholesalerAccountSignUp = () => {
           title: "Registration Successful",
           text: "Your account has been created successfully!",
         });
+
         const user = { name: formData.company_name };
         localStorage.setItem("company_name", user.name);
         const email = { email: formData.email };
+        localStorage.setItem("user_type", response.data.user_type);
         localStorage.setItem("email", email.email);
         localStorage.setItem("access_token", response.data.token.access);
         dispatch(setAuthenticated(user));

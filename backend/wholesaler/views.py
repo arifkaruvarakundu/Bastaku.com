@@ -138,7 +138,8 @@ class AddProductView(APIView):
                     price=price,
                     stock=variant_data.get("stock"),
                     campaign_discount_percentage=campaign_discount_percentage,
-                    minimum_order_quantity_for_offer=minimum_order_quantity_for_offer
+                    minimum_order_quantity_for_offer=minimum_order_quantity_for_offer,
+                    wholesaler = wholesaler_instance,
                 )
 
                 # Handle variant-specific images (if exists)

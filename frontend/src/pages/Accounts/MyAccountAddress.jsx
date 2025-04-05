@@ -84,6 +84,7 @@ const MyAccountAddress = () => {
         mobile_number2: response.data.mobile_number2 || "",
         mobile_number3: response.data.mobile_number3 || "",
         country: response.data.country || "KUWAIT",
+        city: response.data.city || "",
         zipcode: response.data.zipcode || "",
         license_number: response.data.license_number || "",
         license_image: null, // Assuming it's not needed initially

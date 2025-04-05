@@ -5,9 +5,12 @@ import { useNavigate } from "react-router-dom";
 // import Swal from "sweetalert2";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/cartSlice"
 
 const ProductItem = () => {
   const{t,i18n} = useTranslation('productItem');
+  const dispatch = useDispatch();
 
   const [products, setProducts] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState([]);
@@ -44,35 +47,21 @@ const ProductItem = () => {
 
 
   const handleAddToCart = (product) => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  
-    // Check if the product has variants and get the first variant
+
+    
     const firstVariant = product.variants ? product.variants[0] : null;
-  
+
     if (!firstVariant) {
-      alert("This product has no variants available.");
-      return;
+        alert("This product has no variants available.");
+        return;
     }
-  
-    // Check if the variant already exists in the cart
-    const existingItemIndex = cart.findIndex(
-      (item) => item.variant.id === firstVariant.id
-    );
-  
-    if (existingItemIndex > -1) {
-      // If the variant already exists in the cart, update its quantity
-      cart[existingItemIndex].quantity += quantity;
-    } else {
-      // Otherwise, add the first variant of the product to the cart
-      cart.push({ variant: firstVariant, quantity });
-    }
-  
-    // Save the updated cart to localStorage
-    localStorage.setItem("cart", JSON.stringify(cart));
-  
+
+    const quantity = 1; // Default quantity to add
+
+    dispatch(addToCart({ variant: firstVariant, quantity }));
+
     alert("Product added to cart successfully!");
-    // navigate("/ShopCart"); // Redirect to cart page
-  };
+};
 
   
   return (
@@ -180,7 +169,7 @@ const ProductItem = () => {
                   </div>
                 </div>
                 <div>
-                  <span style={{ color: 'red' }}>{t('campaign_price_label')}: {(product?.variants?.[0].price * (100 - product?.variants?.[0].campaign_discount_percentage)) / 100} {t('kd')}</span>
+                  <span style={{ color: 'red' }}>{t('campaign_price_label')}: {((product?.variants?.[0].price * (100 - product?.variants?.[0].campaign_discount_percentage)) / 100).toFixed(3)} {t('kd')}</span>
                 </div>
               </div>
             </div>

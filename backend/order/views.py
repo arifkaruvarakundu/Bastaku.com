@@ -7,6 +7,7 @@ from .serializers import OrderSerializer, CampaignOrderSerializer, NotificationS
 from authentication.models import User
 from authentication.renderers import UserRenderer
 from rest_framework.exceptions import PermissionDenied
+from django.db.models import Q
 from django.utils.crypto import get_random_string
 from rest_framework import status
 
@@ -28,7 +29,8 @@ class UserOrdersView(APIView):
 
         return Response({
             'orders': order_serializer.data,
-            'campaign_orders': campaign_order_serializer.data
+            'campaign_orders': campaign_order_serializer.data,
+            
         })
     
 
@@ -44,14 +46,17 @@ class WholesalerOrdersView(APIView):
                 raise PermissionDenied("Email header is required.")
 
             wholesaler = User.objects.get(email=email, user_type="wholesaler")
+            
         except User.DoesNotExist:
             raise PermissionDenied("You are not a wholesaler.")
         
         # Get all orders for the products supplied by this wholesaler
-        orders = Order.objects.filter(product__wholesaler=wholesaler)
+        orders = Order.objects.filter(variant__wholesaler=wholesaler)
         
         # Get all campaign orders for the products supplied by this wholesaler
-        campaign_orders = CampaignOrder.objects.filter(campaign__product__wholesaler=wholesaler)
+        
+        campaign_orders = CampaignOrder.objects.filter(
+            Q(variant__wholesaler=wholesaler) | Q(campaign__variant__wholesaler=wholesaler)).distinct()
         
         # Serialize the orders and campaign orders
         order_serializer = OrderSerializer(orders, many=True)
@@ -93,9 +98,6 @@ class AdvancePaymentView(APIView):
             'amount_paid': payment.amount_paid,
             'status': payment.status,
         }, status=status.HTTP_201_CREATED)
-
-
-
 
 class NotificationListView(APIView):
     permission_classes = [IsAuthenticated]

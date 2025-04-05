@@ -111,6 +111,7 @@ class Order(models.Model):
 
 class CampaignOrder(models.Model):
     participant = models.ForeignKey(User, on_delete=models.CASCADE, related_name="campaign_orders")
+    variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, related_name="campaign_orders", null=True, blank=True)
     campaign = models.ForeignKey(Campaign, on_delete=models.PROTECT, related_name="orders")
     quantity = models.PositiveIntegerField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -136,7 +137,6 @@ class CampaignOrder(models.Model):
         else:
             self.payment_status = 'pending'
         self.save()
-
 
 class Payment(models.Model):
     PAYMENT_TYPES = (

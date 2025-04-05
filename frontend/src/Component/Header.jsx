@@ -702,7 +702,7 @@ const Header = ({onSearch}) => {
                   </Link>
                 </div>
               </li>
-
+              {!localStorage.getItem("company_name") && (
               <li className="nav-item dmenu dropdown">
                 <Link
                   className="nav-link dropdown-toggle"
@@ -739,6 +739,7 @@ const Header = ({onSearch}) => {
                   </Link>
                 </div>
               </li>
+              )}
 
               {/* <li className="nav-item dmenu dropdown">
                 <Link
@@ -1003,18 +1004,18 @@ const Header = ({onSearch}) => {
                           onClick={handleLogout}
                         >
                           <Trans i18nKey="logout" ns="header">
-                          Logout
+                            Logout
                           </Trans>
                         </button>
-                        <Link className="dropdown-item" to="/MyAccountSetting">
-                        {/* <Trans i18nKey="settings" ns="header">
+                        {/* <Link className="dropdown-item" to="/MyAccountSetting">
+                        <Trans i18nKey="settings" ns="header">
                         Settings
-                        </Trans> */}
-                        </Link>
-                        <Link className="dropdown-item" to="/MyAccountAddress">
-                        <Trans i18nKey="address" ns="header">
-                        Address
                         </Trans>
+                        </Link> */}
+                        <Link className="dropdown-item" to="/MyAccountAddress">
+                          <Trans i18nKey="address" ns="header">
+                            Address
+                          </Trans>
                         </Link>
                         <Link
                         className="dropdown-item"

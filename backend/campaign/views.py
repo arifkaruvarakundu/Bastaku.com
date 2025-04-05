@@ -167,6 +167,7 @@ class JoinCampaignView(APIView):
 
             # Create a CampaignOrder for each participant
             order = CampaignOrder.objects.create(
+                variant=variant,
                 participant=participant.user,
                 campaign=campaign,
                 quantity=quantity,
@@ -370,6 +371,7 @@ class StartCampaignView(APIView):
             remaining = discounted_price_per_unit * quantity - advance
 
             order = CampaignOrder.objects.create(
+                variant=variant,
                 participant=participant.user,
                 campaign=campaign,
                 quantity=quantity,
@@ -490,7 +492,7 @@ class WholesalerCampaignsView(APIView):
             raise PermissionDenied("You are not a wholesaler.")
         
         # Get all campaigns where the wholesaler's product is part of the campaign
-        campaigns = Campaign.objects.filter(product__wholesaler=wholesaler)
+        campaigns = Campaign.objects.filter(variant__wholesaler=wholesaler)
 
         # ✅ Pass the `request` context to the serializer
         serializer = CampaignSerializer(campaigns, many=True, context={'request': request})

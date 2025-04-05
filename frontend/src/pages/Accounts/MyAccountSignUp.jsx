@@ -80,13 +80,13 @@ const MyAccountSignUp = () => {
           title: 'Registration Successful',
           text: 'Your account has been created successfully!',
         });
-        const user = { name: formData.name};
-        console.log(user);
+        const user = { name: formData.first_name};
         localStorage.setItem('user_name', user.name);
+        localStorage.setItem('user_type', response.data.user_type);
         const email = { email: formData.email};
         localStorage.setItem('email', email.email);
         localStorage.setItem('access_token', response.data.token.access);
-        dispatch(setAuthenticated(user))
+        dispatch(setAuthenticated(true))
         navigate('/Grocery-react');
 
       })

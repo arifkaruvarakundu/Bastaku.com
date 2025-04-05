@@ -193,13 +193,13 @@ const removeVariant = (index) => {
       formData.append("wholesaler", wholesalerEmail);
     }
   
-   // Add variant data to formData
-   variants.forEach((variant, index) => {
+    // Add variant data to formData
+    variants.forEach((variant, index) => {
     variant.images.forEach((file, fileIndex) => {
       formData.append(`variant_images_${index}_${fileIndex}`, file);
     });
     formData.append("variants", JSON.stringify(variants))
-  });
+    });
 
     // // Append variants as JSON
     // formData.append("variants", JSON.stringify(variants));

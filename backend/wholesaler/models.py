@@ -40,7 +40,6 @@ from authentication.models import ProductCategory, User
 #     def __str__(self):
 #         return self.product_name
 
-
 class Product(models.Model):
     product_name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
@@ -77,7 +76,6 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
-
 
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product, related_name="variants", on_delete=models.CASCADE)
@@ -135,7 +133,6 @@ class ProductVariantImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.variant.product.product_name} - Variant: {self.variant}"
-
 
 from django.utils import timezone
 

@@ -69,8 +69,7 @@ function Shop() {
         const categoriesResponse = await axios.get("http://127.0.0.1:8000/productcategories/");
         setProducts(productsResponse.data);
         setDisplayedProducts(productsResponse.data);
-        console.log("productsResponse",productsResponse.data)
-        console.log("categories",categoriesResponse.data)
+        
         setCategories([{ id: "All", name: "All" }, ...categoriesResponse.data]); // Include "All" category
       } catch (err) {
         setError("Failed to load data");
@@ -85,14 +84,13 @@ function Shop() {
 
   const handleCategoryClick = (category) => {
     const categoryName = currentLang === "en" ? category.name_en : category.name_ar;
-    console.log("Category Clicked:", category);
-    console.log("Category Name Selected:", categoryName);
+    
 
     setSelectedCategory(categoryName);
     setdisplayedCategory(categoryName);
 
     if (categoryName === "All") {
-      console.log("Displaying all products");
+      
       setDisplayedProducts(products);
     } else {
       const filteredProducts = products.filter((product) => {
@@ -691,7 +689,7 @@ function Shop() {
                             </div>
                           </div>
                           <div>
-                            <span style={{ color: 'red' }}>{t('campaign_price')}: {(product.variants[0].price * (100 - product.variants[0].campaign_discount_percentage)) / 100} {t('kd')}</span>
+                            <span style={{ color: 'red' }}>{t('campaign_price')}: {((product.variants[0].price * (100 - product.variants[0].campaign_discount_percentage)) / 100).toFixed(3)} {t('kd')}</span>
                           </div>
                         </div>
                       </div>

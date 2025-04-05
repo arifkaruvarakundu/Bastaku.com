@@ -10,9 +10,17 @@ const ProductsList = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentLang, setCurrentLang] = useState(i18n.language);
+  const [displayedProducts, setDisplayedProducts] = useState([]);
+   const [currentPage, setCurrentPage] = useState(1);
 
   const { t: tCommon } = useTranslation('accounts_common');
   const { t: tProduct } = useTranslation('add_added_edit_prod');
+
+  const itemsPerPage = 12;
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentProducts = displayedProducts.slice(indexOfFirstItem, indexOfLastItem);
 
     // Update currentLang when the language is changed
     useEffect(() => {
@@ -34,6 +42,7 @@ const ProductsList = () => {
     
           console.log("Response:", response.data);  // Check the response
           setProducts(response.data);
+          setDisplayedProducts(response.data); // Set the displayed products to the fetched products
         } catch (err) {
           setError("Failed to load products");
           console.error(err);
@@ -44,6 +53,56 @@ const ProductsList = () => {
     
       fetchProducts();
     }, []);
+
+  useEffect(() => {
+      setCurrentPage(1);
+    }, [displayedProducts]);
+  
+    const handlePageChange = (pageNumber) => {
+      setCurrentPage(pageNumber);
+    };
+  
+    const totalPages = Math.ceil(displayedProducts.length / itemsPerPage);
+  
+    // Inline styles
+    const commonStyles = {
+      backgroundColor: "white",
+      border: "2px solid green",
+      color: "black",
+    };
+  
+    const hoverStyles = {
+      backgroundColor: "green",
+      color: "white",
+    };
+  
+    const activeStyles = {
+      backgroundColor: "green",
+      borderColor: "green",
+      color: "white",
+    };
+  
+    const disabledStyles = {
+      backgroundColor: "#f8f9fa",
+      borderColor: "green",
+      color: "gray",
+      pointerEvents: "none",
+    };
+  
+    const paginationButtons = Array.from({ length: totalPages }, (_, index) => (
+      <li key={index + 1} className={`page-item ${currentPage === index + 1 ? "active" : ""}`}>
+        <Link
+          className="page-link mx-1 rounded-3"
+          to="#"
+          onClick={() => handlePageChange(index + 1)}
+          style={currentPage === index + 1 ? activeStyles : commonStyles}
+          onMouseOver={(e) => Object.assign(e.target.style, hoverStyles)}
+          onMouseOut={(e) => Object.assign(e.target.style, currentPage === index + 1 ? activeStyles : commonStyles)}
+        >
+          {index + 1}
+        </Link>
+      </li>
+    )); 
     
 
   if (loading) {
@@ -125,8 +184,8 @@ const ProductsList = () => {
             {/* Product List */}
             <div className="col-md-9 mt-6">
               <div className="row g-3">
-                {products.length > 0 ? (
-                  products.map((product) => (
+                {currentProducts.length > 0 ? (
+                  currentProducts.map((product) => (
                     <div className="col-md-4" key={product.id}>
                       <div className="card card-product">
                         <div className="card-body">
@@ -221,10 +280,54 @@ const ProductsList = () => {
                   <p>{tProduct("no_products_found")}</p>
                 )}
               </div>
+              <div className="row mt-8">
+                        <div className="col">
+                          <nav>
+                            <ul className="pagination">
+                              {/* Previous Button */}
+                              <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+                                <Link
+                                  className="page-link mx-1 rounded-3"
+                                  to="#"
+                                  aria-label="Previous"
+                                  onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+                                  style={currentPage === 1 ? disabledStyles : commonStyles}
+                                  onMouseOver={(e) => currentPage > 1 && Object.assign(e.target.style, hoverStyles)}
+                                  onMouseOut={(e) => Object.assign(e.target.style, currentPage === 1 ? disabledStyles : commonStyles)}
+                                >
+                                  <i className="fa fa-chevron-left" />
+                                </Link>
+                              </li>
+      
+                              {/* Pagination Buttons */}
+                              {paginationButtons}
+      
+                              {/* Next Button */}
+                              <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+                                <Link
+                                  className="page-link mx-1 rounded-3"
+                                  to="#"
+                                  aria-label="Next"
+                                  onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
+                                  style={currentPage === totalPages ? disabledStyles : commonStyles}
+                                  onMouseOver={(e) => currentPage < totalPages && Object.assign(e.target.style, hoverStyles)}
+                                  onMouseOut={(e) => Object.assign(e.target.style, currentPage === totalPages ? disabledStyles : commonStyles)}
+                                >
+                                  <i className="fa fa-chevron-right" />
+                                </Link>
+                              </li>
+                            </ul>
+                          </nav>
+                        </div>
+                      </div>
             </div>
+            
           </div>
+          
         </div>
+        
       </section>
+       
     </div>
   );
 };

@@ -12,6 +12,7 @@ const CampaignDetailPage = () => {
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const [selectedQuantity,setSelectedQuantity] = useState(1)
   const [paymentOption, setPaymentOption] = useState("");
+  const [isWholesaler, setIsWholesaler] = useState(false); // State to check if user is wholesaler
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -76,6 +77,13 @@ const CampaignDetailPage = () => {
       );
     }
   };
+
+  useEffect(() => {
+    const userType = localStorage.getItem("user_type");
+    if (userType === "wholesaler") {
+      setIsWholesaler(true);
+    }
+  }, []);
 
   const joinCampaign = async () => {
     const token = localStorage.getItem("access_token");
@@ -315,7 +323,7 @@ const CampaignDetailPage = () => {
                 <button
                   onClick={joinCampaign}
                   style={{
-                    backgroundColor: isLoading ? "#D1D5DB" : "#0aad0a",
+                    backgroundColor: isLoading || isWholesaler ? "#e5e7eb" : "#0aad0a", // lighter when disabled
                     width: "200px",
                     color: isLoading ? "#888" : "white",
                     padding: "10px 15px",
@@ -324,9 +332,13 @@ const CampaignDetailPage = () => {
                     fontSize: "14px",
                     cursor: isLoading ? "not-allowed" : "pointer",
                   }}
-                  disabled={isLoading}
-                  onMouseOver={(e) => !isLoading && (e.target.style.backgroundColor = "#088a08")}
-                  onMouseOut={(e) => !isLoading && (e.target.style.backgroundColor = "#0aad0a")}
+                  disabled={isLoading || isWholesaler}
+                  onMouseOver={(e) =>
+                    !isLoading && !isWholesaler && (e.target.style.backgroundColor = "#088a08")
+                  }
+                  onMouseOut={(e) =>
+                    !isLoading && !isWholesaler && (e.target.style.backgroundColor = "#0aad0a")
+                  }
                 >
                   {isLoading
                     ? "Joining..."

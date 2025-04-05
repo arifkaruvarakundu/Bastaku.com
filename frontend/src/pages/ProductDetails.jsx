@@ -12,7 +12,7 @@ import { addToCart } from "../redux/cartSlice";
 // import { Bar, Pie } from "react-chartjs-2";
 // import {Chart as ChartJS,CategoryScale, LinearScale,PointElement,LineElement,BarElement,ArcElement,Title,Tooltip,Legend,Filler,} from "chart.js";
 // Register ChartJS components
-// ChartJS.register(CategoryScale,LinearScale,PointElement,LineElement,BarElement,ArcElement,Title,Tooltip,Legend,Filler);
+// ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend, Filler);
 
 const ProductDetails = () => {
   const {t, i18n} = useTranslation('product_details');
@@ -127,8 +127,6 @@ const ProductDetails = () => {
           fetchProduct();
         }, [id]);
 
-        
-
         useEffect(() => {
           if (!product || !product.variants || product.variants.length === 0) return; // Ensure product and variants exist
         
@@ -154,9 +152,6 @@ const ProductDetails = () => {
             setSelectedVolume(selectedVariant.liter);
           }
         }, [product, location.search]); // Depend on `product` and `location.search`
-        
-        
-      
 
         useEffect(() => {
           if (!product || !Array.isArray(product.variants)) return;
@@ -391,8 +386,7 @@ const ProductDetails = () => {
     alert("Product added to cart successfully!");
     navigate("/ShopCart");
   };
-  
-  
+
       useEffect(() => {
         if (variantImages.length > 0) {
           setCurrentImageIndex(0);
@@ -421,8 +415,7 @@ const ProductDetails = () => {
 
     console.log("Selected Variant Details:", selectedVariantDetails);
     setSelectedVariant(selectedVariantDetails);
-    
-    
+
     const payload = {
       variant: selectedVariantDetails,
       quantity: quantity,

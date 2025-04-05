@@ -41,7 +41,7 @@ class UserRegistrationView(APIView):
         token = get_tokens_for_user(user)
 
         return Response(
-            {'token': token, 'msg': 'Registration Success'},
+            {'token': token, 'user_type': user.user_type ,'msg': 'Registration Success'},
             status=status.HTTP_201_CREATED
         )
 
@@ -155,7 +155,7 @@ class WholesalerRegistrationView(APIView):
         phone_number = wholesaler.mobile_number1
         if phone_number:
             self.send_whatsapp_message(phone_number)
-        return Response({'token': token, 'msg': 'Registration Success'}, status=status.HTTP_201_CREATED)
+        return Response({'token': token, 'user_type':wholesaler.user_type, 'msg': 'Registration Success'}, status=status.HTTP_201_CREATED)
     
     def send_whatsapp_message(self, phone_number):
         # Twilio credentials (should be stored in environment variables or a secure place)

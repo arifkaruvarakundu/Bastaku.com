@@ -169,12 +169,12 @@ const WholesalerCampaigns = () => {
                                 {campaign.id}
                               </td>
                               <td className="align-middle border-top-0">
-                                {campaign.product_name}
+                                {campaign.title}
                               </td>
                               <td className="align-middle border-top-0">
                                 <img 
-                                    src={campaign.product.product_image} 
-                                    alt={campaign.product.product_name} 
+                                    src={campaign.variant.variant_images[0].image_url} 
+                                    alt={campaign.variant.brand} 
                                     className="img-fluid" 
                                     style={{ width: "50px", height: "50px", objectFit: "cover" }} 
                                 />
@@ -183,7 +183,7 @@ const WholesalerCampaigns = () => {
                                 {new Date(campaign.start_time).toLocaleDateString()}
                               </td>
                               <td className="align-middle border-top-0">
-                              {((campaign.current_quantity / campaign.product.minimum_order_quantity_for_offer) * 100).toFixed(2)}%
+                              {((campaign.current_quantity / campaign.variant.minimum_order_quantity_for_offer) * 100).toFixed(2)}%
                               </td>
                               <td className="align-middle border-top-0">
                               {campaign.is_active ? ( <span className="badge bg-success">{tAccounts('active')}</span>) : ( <span className="badge bg-danger">{tCommon('inactive')}</span>)}

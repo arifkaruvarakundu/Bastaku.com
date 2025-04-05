@@ -1,6 +1,6 @@
 import slider1_en from "../images/slide-1.jpg";
 // import abouticon from "../images/about-icons-1.svg";
-import planBudget from '../images/Plan_Budget_image.jpg'
+// import planBudget from '../images/Plan_Budget_image.jpg'
 import carousel_ar1 from "../images/carousel_ar1.jpg"
 import carousel_ar2 from "../images/carousel_ar2.jpg"
 import slider2_en from "../images/slider-2.jpg";
@@ -36,7 +36,7 @@ import { Trans } from 'react-i18next';
 import { Link,useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import ProductItem from "../ProductList/ProductItem";
-import Slider from "react-slick";
+// import Slider from "react-slick";
 import axios from 'axios';
 import HomeWholesaler from "./HomeWholeSaler";
 // import "slick-carousel/slick/slick.css";
@@ -55,7 +55,7 @@ const Home = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [categories, setCategories] = useState([]);
   const [currentLang, setCurrentLang] = useState(i18n.language);
-  const [isButtonsVisible, setIsButtonsVisible] = useState(true);
+  // const [isButtonsVisible, setIsButtonsVisible] = useState(true);
   const navigate = useNavigate();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
@@ -374,31 +374,31 @@ const Home = () => {
                 </div>
               </section>
             </>
-            <>
+            {/* <>
             {isAuthenticated && (
-              <section className="mt-8">
+              <section className="mt-8"> */}
                 {/* container */}
-                <div className="container">
-                  <div className="row">
+                {/* <div className="container">
+                  <div className="row"> */}
                     {/* col */}
-                    <Slide direction="down">
-                      <div className="col-12">
+                    {/* <Slide direction="down">
+                      <div className="col-12"> */}
                         {/* cta */}
-                        <div className="bg-light d-lg-flex justify-content-between align-items-center py-6 py-lg-3 px-8 rounded-3 text-center text-lg-start">
+                        {/* <div className="bg-light d-lg-flex justify-content-between align-items-center py-6 py-lg-3 px-8 rounded-3 text-center text-lg-start"> */}
                           {/* img container */}
-                          <div className="d-lg-flex align-items-center position-relative">
+                          {/* <div className="d-lg-flex align-items-center position-relative">
                             <img
                               src={planBudget}
                               alt="about-icon"
                               className="img-fluid"
                               style={{ width: "100%", borderRadius: "0.5rem" }} // Ensure the image takes up the full container
-                            />
+                            /> */}
 
                             {/* Button overlay */}
-                            <div className="position-absolute" style={{ bottom: "30px", right: "20px" }}>
-                              <div className="d-flex flex-column align-items-center">
+                            {/* <div className="position-absolute" style={{ bottom: "30px", right: "20px" }}>
+                              <div className="d-flex flex-column align-items-center"> */}
                                 {/* Plan Your Budget With Us Button */}
-                                <Link
+                                {/* <Link
                                   to="/ExpenseCalculationPage"
                                   className="btn btn-dark mb-3 rounded-circle d-flex justify-content-center align-items-center text-center"
                                   style={{
@@ -411,7 +411,7 @@ const Home = () => {
                                   }}
                                 >
                                   Plan Your Monthly Expense With us !
-                                </Link>
+                                </Link> */}
 
                                 {/* Budget More than 200 KD */}
                                 {/* <div
@@ -455,7 +455,7 @@ const Home = () => {
                                 </Link>
                               </div>
                             </div> */}
-                          </div>
+                          {/* </div>
                         </div>
                       </div>
                       </div>
@@ -465,7 +465,125 @@ const Home = () => {
                 </div>
               </section>
             )}
-          </>
+          </> */}
+            
+            <>
+              {/* section category */}
+              <section className="my-lg-14 my-8">
+                <div className="container">
+                  <div className="row">
+                    <div className="col-12">
+                      <div className="mb-6">
+                        {/* heading */}
+                        <div className="section-head text-center mt-8">
+                          <h3 className="h3style" data-title="Shop Popular Categories">
+                            {t('shop_popular_categories')}
+                          </h3>
+                          <div className="wt-separator bg-primarys"></div>
+                          <div className="wt-separator2 bg-primarys"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    {categories.map((category) => (
+                      <div className="col-lg-2 col-md-4 col-6 fade-zoom" key={category.id}>
+                        <Zoom>
+                          <div className="text-center mb-10">
+                            {/* img */}
+                            <div onClick={() => handleCategoryClick(category)}>
+                            <img
+                                src={`http://127.0.0.1:8000${category.category_image}`}
+                                alt={category.name}
+                                className="card-image rounded-circle"
+                                style={{ width: "150px", height: "150px", objectFit: "cover" }}
+                              />
+
+                            </div>
+                            <div className="mt-4">
+                              {/* text */}
+                              <h5 className="fs-6 mb-0">
+                                <Link to={`/category/${category.id}`} className="text-inherit">
+                                {currentLang === "en" ? category.name_en : category.name_ar}
+                                </Link>
+                              </h5>
+                            </div>
+                          </div>
+                        </Zoom>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+              {/* section */}
+            </>
+            
+            <>
+              <ProductItem />
+            </>
+            <>
+              {/* section coming soon */}
+              <section>
+                <div className="container ">
+                  <div className="row">
+                    <div className="col-12 col-lg-6 mb-3 mb-lg-0  fade-in-left">
+                      <Slide direction="left">
+                        <div>
+                          <div
+                            className="py-10 px-8 rounded-3"
+                            style={{
+                              background: `url(${grocerybanner}) no-repeat`,
+                              backgroundSize: "cover",
+                              backgroundPosition: "center",
+                            }}
+                          >
+                            <div>
+                              <h3 className="fw-bold mb-1">
+                                Fruits &amp; Vegetables
+                              </h3>
+                              <p className="mb-4">
+                                Get Upto <span className="fw-bold">30%</span>{" "}
+                                Off
+                              </p>
+                              <Link to="/Shop" className="btn btn-dark">
+                              <Trans>shop_now</Trans>
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      </Slide>
+                    </div>
+                    <div className="col-12 col-lg-6 fade-in-left ">
+                      <Slide direction="right">
+                        <div>
+                          <div
+                            className="py-10 px-8 rounded-3"
+                            style={{
+                              background: `url(${grocerybanner2}) no-repeat`,
+                              backgroundSize: "cover",
+                              backgroundPosition: "center",
+                            }}
+                          >
+                            <div>
+                              <h3 className="fw-bold mb-1">
+                                Freshly Baked Buns
+                              </h3>
+                              <p className="mb-4">
+                                Get Upto <span className="fw-bold">25%</span>{" "}
+                                Off
+                              </p>
+                              <Link to="/Shop" className="btn btn-dark">
+                                <Trans>shop_now</Trans>
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      </Slide>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </>
             <>
               {/* section */}
               <section className="mt-8">
@@ -571,120 +689,6 @@ const Home = () => {
                 </div>
               </section>
               {/* section */}
-            </>
-            <>
-              {/* section category */}
-              <section className="my-lg-14 my-8">
-                <div className="container">
-                  <div className="row">
-                    <div className="col-12">
-                      <div className="mb-6">
-                        {/* heading */}
-                        <div className="section-head text-center mt-8">
-                          <h3 className="h3style" data-title="Shop Popular Categories">
-                            {t('shop_popular_categories')}
-                          </h3>
-                          <div className="wt-separator bg-primarys"></div>
-                          <div className="wt-separator2 bg-primarys"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row">
-                    {categories.map((category) => (
-                      <div className="col-lg-2 col-md-4 col-6 fade-zoom" key={category.id}>
-                        <Zoom>
-                          <div className="text-center mb-10">
-                            {/* img */}
-                            <div onClick={() => handleCategoryClick(category)}>
-                              <img
-                                src={`http://127.0.0.1:8000${category.category_image}`}
-                                alt={category.name}
-                                className="card-image rounded-circle"
-                              />
-                            </div>
-                            <div className="mt-4">
-                              {/* text */}
-                              <h5 className="fs-6 mb-0">
-                                <Link to={`/category/${category.id}`} className="text-inherit">
-                                {currentLang === "en" ? category.name_en : category.name_ar}
-                                </Link>
-                              </h5>
-                            </div>
-                          </div>
-                        </Zoom>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-              {/* section */}
-            </>
-            <>
-              {/* section coming soon */}
-              <section>
-                <div className="container ">
-                  <div className="row">
-                    <div className="col-12 col-lg-6 mb-3 mb-lg-0  fade-in-left">
-                      <Slide direction="left">
-                        <div>
-                          <div
-                            className="py-10 px-8 rounded-3"
-                            style={{
-                              background: `url(${grocerybanner}) no-repeat`,
-                              backgroundSize: "cover",
-                              backgroundPosition: "center",
-                            }}
-                          >
-                            <div>
-                              <h3 className="fw-bold mb-1">
-                                Fruits &amp; Vegetables
-                              </h3>
-                              <p className="mb-4">
-                                Get Upto <span className="fw-bold">30%</span>{" "}
-                                Off
-                              </p>
-                              <Link to="/Shop" className="btn btn-dark">
-                              <Trans>shop_now</Trans>
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-                      </Slide>
-                    </div>
-                    <div className="col-12 col-lg-6 fade-in-left ">
-                      <Slide direction="right">
-                        <div>
-                          <div
-                            className="py-10 px-8 rounded-3"
-                            style={{
-                              background: `url(${grocerybanner2}) no-repeat`,
-                              backgroundSize: "cover",
-                              backgroundPosition: "center",
-                            }}
-                          >
-                            <div>
-                              <h3 className="fw-bold mb-1">
-                                Freshly Baked Buns
-                              </h3>
-                              <p className="mb-4">
-                                Get Upto <span className="fw-bold">25%</span>{" "}
-                                Off
-                              </p>
-                              <Link to="/Shop" className="btn btn-dark">
-                                <Trans>shop_now</Trans>
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-                      </Slide>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </>
-            <>
-              <ProductItem />
             </>
             <>
               {/* cta section */}
