@@ -46,6 +46,26 @@ const MyAccountCampaigns = () => {
     fetchCampaigns();
   }, []);
 
+  const handleCancel = async (campaignId) => {
+    try {
+      const token = localStorage.getItem("access_token"); // Assuming you store an auth token in localStorage
+      const response = await axios.post(
+        `http://127.0.0.1:8000/cancel_campaign/${campaignId}/`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Campaign canceled:", response.data);
+    }
+    catch (error) {
+      console.error("Error canceling campaign:", error);
+    }
+  };
+
   useEffect(() => {
     setTimeout(() => {
       setLoaderStatus(false);
@@ -158,6 +178,7 @@ const MyAccountCampaigns = () => {
                             <th className="border-0">{tAccounts('start_date')}</th>
                             <th className="border-0">{tAccounts('progress')}</th>
                             <th className="border-0">{tAccounts('status')}</th>
+                            <th className="border-0">{tAccounts('action')}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -189,6 +210,25 @@ const MyAccountCampaigns = () => {
                               <td className="align-middle border-top-0">
                               {campaign.is_active ? ( <span className="badge bg-success">{tAccounts('active')}</span>) : ( <span className="badge bg-danger">{tAccounts('inactive')}</span>)}
                               </td>
+                              <td className="align-middle border-top-0">
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                  <button
+                                    onClick={() => handleCancel(campaign.id)} // Make sure to define this function
+                                    style={{
+                                      backgroundColor: "#e3342f",
+                                      color: "white",
+                                      border: "none",
+                                      padding: "5px 10px",
+                                      borderRadius: "5px",
+                                      fontSize: "12px",
+                                      cursor: "pointer",
+                                      marginLeft: "10px"
+                                    }}
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                            </td>
                             </tr>
                           ))}
                         </tbody>

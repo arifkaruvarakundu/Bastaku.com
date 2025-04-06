@@ -8,5 +8,6 @@ urlpatterns = [
     path('start_campaign/', StartCampaignView.as_view(), name='start_campaign'),
     path('wholesaler/campaigns/', WholesalerCampaignsView.as_view(), name='wholesaler_campaigns'),
     path('user_campaigns/', UserCampaignsView.as_view(), name='user_campaigns'),
+    path('cancel_campaign/<int:pk>/', CancelCampaignView.as_view(), name='cancel_campaign'),
 
 ]

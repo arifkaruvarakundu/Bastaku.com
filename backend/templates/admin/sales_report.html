@@ -1,0 +1,21 @@
+{% extends "admin/base_site.html" %}  <!-- Extending the admin base template -->
+
+{% block content %}
+  <h1>{{ title }}</h1>
+
+  <!-- Form to select start and end date -->
+  <form method="get" action="{% url 'admin:sales-report' %}">
+    <label for="start_date">Start Date:</label>
+    <input type="date" name="start_date" value="{{ start_date }}">
+    <label for="end_date">End Date:</label>
+    <input type="date" name="end_date" value="{{ end_date }}">
+    <button type="submit">Filter</button>
+  </form>
+
+  <!-- Display the results -->
+  <h3>Total Orders: {{ total_orders }}</h3>
+  <h3>Total Sales: ${{ total_sales }}</h3>
+
+{% endblock %}
+
+

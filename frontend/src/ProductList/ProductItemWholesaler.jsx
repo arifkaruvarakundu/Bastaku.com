@@ -88,7 +88,7 @@ const ProductItem = () => {
                               : "https://via.placeholder.com/150"
                           }
                           alt={product.product_name}
-                          style={{ width: "120px", height: "120px", margin: "5px" }}
+                          style={{ width: "150px", height: "150px", margin: "5px" }}
                         />
                       </a>
                     </div>

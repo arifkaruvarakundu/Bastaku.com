@@ -16,9 +16,6 @@ import decimal
 import traceback
 import cloudinary.uploader
 
-
-
-
 # Create your views here.
 class WholesalerDetailView(APIView):
     permission_classes = [IsAuthenticated]

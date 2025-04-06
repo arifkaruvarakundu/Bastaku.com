@@ -569,3 +569,40 @@ class UserCampaignsView(APIView):
         campaign_data = CampaignSerializer([cp.campaign for cp in campaigns], many=True, context={'request': request})
 
         return Response(campaign_data.data)
+    
+class CancelCampaignView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+
+        print(f"Campaign ID (pk): {pk}")
+        user = request.user
+
+        # Get the participant object
+        participant = CampaignParticipant.objects.get( campaign=pk, user=user)
+
+        print(f"Found participant: {participant}")
+
+        # Get related campaign (assuming ForeignKey is named `campaign`)
+        campaign = participant.campaign
+
+        # Deduct the participant's quantity from the campaign's total (if applicable)
+        
+        campaign.current_quantity -= participant.quantity
+
+        if campaign.current_quantity == 0:
+            
+            campaign.variant.is_in_campaign = False
+            campaign.variant.save()  # Save the updated variant
+
+            # Assuming `variant.product` is the correct reference to the related product
+            campaign.variant.product.is_in_campaign = False
+            campaign.variant.product.save()  # Save the updated product
+            campaign.delete()
+
+        campaign.save()
+
+        # Delete the participant
+        participant.delete()
+
+        return Response({"message": "Campaign participation cancelled successfully."}, status=status.HTTP_200_OK)

@@ -247,7 +247,7 @@ const StartCampaignPage = () => {
                     <p style={{ textAlign: "center", marginTop: "5px" }}>
                         {progress >= 100
                             ? "Target Achieved!" // Show only "Target Achieved!" when progress reaches or exceeds 100%
-                            : `${Math.max(0, (variant.minimum_order_quantity_for_offer - quantity).toFixed(2))} Kg more to unlock!`} 
+                            : `${Math.max(0, (variant.minimum_order_quantity_for_offer - quantity).toFixed(2))} more to unlock!`} 
                         {/* Prevent negative quantities */}
                     </p>
                 </div>

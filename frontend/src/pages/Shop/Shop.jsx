@@ -606,7 +606,7 @@ function Shop() {
                                 }
                                 alt={product.product_name}
                                 className="mb-3 img-fluid"
-                                style={{ width: "120px", height: "120px", margin: "5px" }}
+                                style={{ width: "150px", height: "150px", margin: "5px" }}
                               />
                             </Link>
                             {/* Action Buttons */}
