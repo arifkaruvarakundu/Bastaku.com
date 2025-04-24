@@ -220,26 +220,7 @@ const ShopCheckOut = () => {
                             >
                               <div className="mt-5">
                                 <div className="row">
-                                  {/* <div className="col-lg-6 col-12 mb-4"> */}
-                                    {/* form */}
-                                    {/* <div className="border p-6 rounded-3"> */}
-                                      {/* <div className="form-check mb-4">
-                                        <input
-                                          className="form-check-input"
-                                          type="radio"
-                                          name="flexRadioDefault"
-                                          id="homeRadio"
-                                          defaultChecked
-                                        />
-                                        <label
-                                          className="form-check-label text-dark"
-                                          htmlFor="homeRadio"
-                                        >
-                                          Home
-                                        </label>
-                                      </div> */}
-                                      {/* address */}
-                                      
+
                                                                   {/* Check if userDetails is available */}
                                                                   {userDetails ? (
                                                                     <div className="col-lg-5 col-xxl-4 col-12 mb-4">
@@ -266,23 +247,7 @@ const ShopCheckOut = () => {
                                                                         {/* Action Buttons */}
                                                                         <div className="mt-4">
                                                                           {/* Edit Address Button */}
-                                                                          {/* <Link
-                                                                            to="#"
-                                                                            className="btn btn-outline-primary"
-                                                                            data-bs-toggle="modal"
-                                                                            data-bs-target="#addAddressModal"
-                                                                          >
-                                                                            Edit Address
-                                                                          </Link> */}
-                                      
-                                                                          {/* Delete Button */}
-                                                                          {/* <Link
-                                                                            to="#"
-                                                                            className="text-danger ms-3"
-                                                                            // onClick={() => handleDeleteAddress()}
-                                                                          >
-                                                                            Delete
-                                                                          </Link> */}
+                                                                          
                                                                         </div>
                                                                       </div>
                                                                     </div>
@@ -471,22 +436,7 @@ const ShopCheckOut = () => {
                               />
                               </div>
                             )}
-                            {/* col */}
-                            {/* <div className="col-12"> */}
-                              {/* input */}
-                              {/* <input
-                                type="text"
-                                className="form-control"
-                                id="email"
-                                name="email"
-                                placeholder="Email"
-                                aria-label="Email"
-                                value={address.email}
-                                onChange={handleChange}
-                                required
-                              />
-                            </div> */}
-                            {/* col */}
+                           
                             <div className="col-12">
                               {/* input */}
                               <input
@@ -535,26 +485,10 @@ const ShopCheckOut = () => {
                                 value={address.country} // Dynamically controlled by state
                                 onChange={handleChange} // Updates the state on change
                               >
-                                {/* <option value="UAE">UAE</option>
-                                <option value="UK">UK</option>
-                                <option value="USA">USA</option> */}
                                 <option value="KUWAIT">KUWAIT</option>
                               </select>
                             </div>
-                            {/* col */}
-                            {/* <div className="col-12"> */}
-                              {/* form select */}
-                              {/* <select
-                                className="form-select"
-                                aria-label="Default select example"
-                              >
-                                <option selected>Shuwaik</option>
-                                <option value={1}>Northern Ireland</option>
-                                <option value={2}> Alaska</option>
-                                <option value={3}>Abu Dhabi</option>
-                              </select>
-                            </div> */}
-                            {/* col */}
+                           
                             <div className="col-12">
                               {/* input */}
                               <input
@@ -567,34 +501,7 @@ const ShopCheckOut = () => {
                                 onChange={handleChange}
                               />
                             </div>
-                            {/* col */}
-                            {/* <div className="col-12"> */}
-                              {/* input */}
-                              {/* <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Business Name"
-                              />
-                            </div> */}
-                            {/* col */}
-                            {/* <div className="col-12">
-                              
-                              <div className="form-check">
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  defaultValue
-                                  id="flexCheckDefault"
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor="flexCheckDefault"
-                                >
-                                  Set as Default
-                                </label>
-                              </div>
-                            </div> */}
-                            {/* col */}
+                           
                             <div className="col-12 text-end">
                               <button
                                 type="button"

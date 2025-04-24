@@ -14,7 +14,10 @@ const Campaigns = () => {
       .get("http://127.0.0.1:8000/campaigns/")
       .then((response) => {
         console.log("Campaigns Data:", response.data); // Log response data
-        setCampaigns(response.data);
+        // Filter out campaigns with 0 participants and 0 quantity
+        const filteredCampaigns = response.data.filter((campaign) =>
+          !(campaign.has_ended) && !(campaign.current_quantity===0|| campaign.current_participants===0));
+        setCampaigns(filteredCampaigns);
       })
       .catch((error) => console.error("Error fetching campaigns:", error));
   }, []);

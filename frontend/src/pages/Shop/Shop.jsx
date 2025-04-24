@@ -70,7 +70,8 @@ function Shop() {
         setProducts(productsResponse.data);
         setDisplayedProducts(productsResponse.data);
         
-        setCategories([{ id: "All", name: "All" }, ...categoriesResponse.data]); // Include "All" category
+        setCategories([{ id: "All", name_en: "All", name_ar: "الكل" }, ...categoriesResponse.data]);
+        
       } catch (err) {
         setError("Failed to load data");
         console.error(err);
@@ -84,27 +85,18 @@ function Shop() {
 
   const handleCategoryClick = (category) => {
     const categoryName = currentLang === "en" ? category.name_en : category.name_ar;
-    
 
     setSelectedCategory(categoryName);
     setdisplayedCategory(categoryName);
 
-    if (categoryName === "All") {
-      
+    if (category.id === "All") {
       setDisplayedProducts(products);
     } else {
-      const filteredProducts = products.filter((product) => {
-        console.log("Checking product:", product);
-        console.log("Product category (ID):", product.category);
-
-        return product.category === category.id; // Compare ID instead of name
-      });
-
-      console.log("Filtered Products:", filteredProducts);
+      const filteredProducts = products.filter((product) => product.category === category.id);
       setDisplayedProducts(filteredProducts);
     }
-};
-
+    
+  };
 
   useEffect(() => {
     setCurrentPage(1);
@@ -156,33 +148,11 @@ function Shop() {
     </li>
   ));
 
-
-    // Add to cart handler
-    // const handleAddToCart = (variant) => {
-    //   const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    //   const existingItemIndex = cart.findIndex((item) => item.variant.id === variant.id);
-  
-    //   if (existingItemIndex > -1) {
-    //     // If the product already exists in the cart, update its quantity
-    //     cart[existingItemIndex].quantity += quantity;
-    //   } else {
-    //     // Otherwise, add the new product to the cart
-    //     cart.push({ variant, quantity });
-    //   }
-  
-    //   // Save the updated cart to localStorage
-    //   localStorage.setItem("cart", JSON.stringify(cart));
-  
-    //   alert("Product added to cart successfully!");
-    //   navigate("/ShopCart"); // Redirect to cart page
-    // };
     const handleAddToCart = (variant, quantity) => {
       dispatch(addToCart({ variant, quantity })); // Dispatch action to Redux
       alert("Product added to cart successfully!");
       navigate("/ShopCart"); // Redirect to cart page
     };
-
-
 
   const toggleDropdown = (index) => {
     if (openDropdowns.includes(index)) {
@@ -248,23 +218,7 @@ function Shop() {
                         }`}
                         id={`categoryFlush${index + 1}`}
                       >
-                        {/* <div>
-                          <ul className="nav flex-column ms-3">
-                            {category.items && category.items.length > 0 ? (
-                              category.items.map((item, itemIndex) => (
-                                <li className="nav-item" key={itemIndex}>
-                                  <Link className="nav-link" to="#">
-                                    {item}
-                                  </Link>
-                                </li>
-                              ))
-                            ) : (
-                              <li className="nav-item">
-                                <span className="nav-link">No sub-items</span>
-                              </li>
-                            )}
-                          </ul>
-                        </div> */}
+                        
                       </div>
                     </li>
                   </ul>
@@ -274,257 +228,9 @@ function Shop() {
               )}
                 <div>
                   <div className="py-4">
-                    {/* <h5 className="mb-3">Stores</h5>
-                    <div className="my-4"> */}
-                      {/* input */}
-                      {/* <input
-                        type="search"
-                        className="form-control"
-                        placeholder="Search by store"
-                      />
-                    </div> */}
-                    {/* form check */}
-                    {/* <div className="form-check mb-2"> */}
-                      {/* input */}
-                      {/* <input
-                        className="form-check-input"
-                        type="checkbox"
-                        defaultValue
-                        id="eGrocery"
-                        defaultChecked
-                      />
-                      <label className="form-check-label" htmlFor="eGrocery">
-                        E-Grocery
-                      </label>
-                    </div> */}
-                    {/* form check */}
-                    {/* <div className="form-check mb-2"> */}
-                      {/* input */}
-                      {/* <input
-                        className="form-check-input"
-                        type="checkbox"
-                        defaultValue
-                        id="DealShare"
-                      />
-                      <label className="form-check-label" htmlFor="DealShare">
-                        DealShare
-                      </label>
-                    </div> */}
-                    {/* form check */}
-                    {/* <div className="form-check mb-2"> */}
-                      {/* input */}
-                      {/* <input
-                        className="form-check-input"
-                        type="checkbox"
-                        defaultValue
-                        id="Dmart"
-                      />
-                      <label className="form-check-label" htmlFor="Dmart">
-                        DMart
-                      </label>
-                    </div> */}
-                    {/* form check */}
-                    {/* <div className="form-check mb-2"> */}
-                      {/* input */}
-                      {/* <input
-                        className="form-check-input"
-                        type="checkbox"
-                        defaultValue
-                        id="Blinkit"
-                      />
-                      <label className="form-check-label" htmlFor="Blinkit">
-                        Blinkit
-                      </label>
-                    </div> */}
-                    {/* form check */}
-                    {/* <div className="form-check mb-2"> */}
-                      {/* input */}
-                      {/* <input
-                        className="form-check-input"
-                        type="checkbox"
-                        defaultValue
-                        id="BigBasket"
-                      />
-                      <label className="form-check-label" htmlFor="BigBasket">
-                        BigBasket
-                      </label>
-                    </div> */}
-                    {/* form check */}
-                    {/* <div className="form-check mb-2"> */}
-                      {/* input */}
-                      {/* <input
-                        className="form-check-input"
-                        type="checkbox"
-                        defaultValue
-                        id="StoreFront"
-                      />
-                      <label className="form-check-label" htmlFor="StoreFront">
-                        StoreFront
-                      </label>
-                    </div> */}
-                    {/* form check */}
-                    {/* <div className="form-check mb-2"> */}
-                      {/* input */}
-                      {/* <input
-                        className="form-check-input"
-                        type="checkbox"
-                        defaultValue
-                        id="Spencers"
-                      />
-                      <label className="form-check-label" htmlFor="Spencers">
-                        Spencers
-                      </label>
-                    </div> */}
-                    {/* form check */}
-                    {/* <div className="form-check mb-2"> */}
-                      {/* input */}
-                      {/* <input
-                        className="form-check-input"
-                        type="checkbox"
-                        defaultValue
-                        id="onlineGrocery"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="onlineGrocery"
-                      >
-                        Online Grocery
-                      </label>
-                    </div> */}
+                    
                   </div>
-                  {/* <div className="py-4"> */}
-                    {/* price */}
-                    {/* <h5 className="mb-3">Price</h5>
-                    <div> */}
-                      {/* range */}
-                      {/* <div id="priceRange" className="mb-3" />
-                      <small className="text-muted">Price:</small>{" "}
-                      <span id="priceRange-value" className="small" />
-                    </div>
-                  </div> */}
-                  {/* rating */}
-                  {/* <div className="py-4">
-                    <h5 className="mb-3">Rating</h5>
-                    <div> */}
-                      {/* form check */}
-                      {/* <div className="form-check mb-2"> */}
-                        {/* input */}
-                        {/* <input
-                          className="form-check-input"
-                          type="checkbox"
-                          defaultValue
-                          id="ratingFive"
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="ratingFive"
-                        >
-                          <i className="bi bi-star-fill text-warning" />
-                          <i className="bi bi-star-fill text-warning " />
-                          <i className="bi bi-star-fill text-warning " />
-                          <i className="bi bi-star-fill text-warning " />
-                          <i className="bi bi-star-fill text-warning " />
-                        </label>
-                      </div> */}
-                      {/* form check */}
-                      {/* <div className="form-check mb-2"> */}
-                        {/* input */}
-                        {/* <input
-                          className="form-check-input"
-                          type="checkbox"
-                          defaultValue
-                          id="ratingFour"
-                          defaultChecked
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="ratingFour"
-                        >
-                          <i className="bi bi-star-fill text-warning" />
-                          <i className="bi bi-star-fill text-warning " />
-                          <i className="bi bi-star-fill text-warning " />
-                          <i className="bi bi-star-fill text-warning " />
-                          <i className="bi bi-star text-warning" />
-                        </label>
-                      </div> */}
-                      {/* form check */}
-                      {/* <div className="form-check mb-2"> */}
-                        {/* input */}
-                        {/* <input
-                          className="form-check-input"
-                          type="checkbox"
-                          defaultValue
-                          id="ratingThree"
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="ratingThree"
-                        >
-                          <i className="bi bi-star-fill text-warning" />
-                          <i className="bi bi-star-fill text-warning " />
-                          <i className="bi bi-star-fill text-warning " />
-                          <i className="bi bi-star text-warning" />
-                          <i className="bi bi-star text-warning" />
-                        </label>
-                      </div> */}
-                      {/* form check */}
-                      {/* <div className="form-check mb-2"> */}
-                        {/* input */}
-                        {/* <input
-                          className="form-check-input"
-                          type="checkbox"
-                          defaultValue
-                          id="ratingTwo"
-                        />
-                        <label className="form-check-label" htmlFor="ratingTwo">
-                          <i className="bi bi-star-fill text-warning" />
-                          <i className="bi bi-star-fill text-warning" />
-                          <i className="bi bi-star text-warning" />
-                          <i className="bi bi-star text-warning" />
-                          <i className="bi bi-star text-warning" />
-                        </label>
-                      </div> */}
-                      {/* form check */}
-                      {/* <div className="form-check mb-2"> */}
-                        {/* input */}
-                        {/* <input
-                          className="form-check-input"
-                          type="checkbox"
-                          defaultValue
-                          id="ratingOne"
-                        />
-                        <label className="form-check-label" htmlFor="ratingOne">
-                          <i className="bi bi-star-fill text-warning" />
-                          <i className="bi bi-star text-warning" />
-                          <i className="bi bi-star text-warning" />
-                          <i className="bi bi-star text-warning" />
-                          <i className="bi bi-star text-warning" />
-                        </label>
-                      </div>
-                    </div>
-                  </div> */}
-                  {/* <div className="py-4"> */}
-                    {/* Banner Design */}
-                    {/* Banner Content */}
-                    {/* <div className="position-absolute p-5 py-8">
-                      <h3 className="mb-0">Fresh Fruits </h3>
-                      <p>Get Upto 25% Off</p>
-                      <Link to="#" className="btn btn-dark">
-                        Shop Now
-                        <i className="feather-icon icon-arrow-right ms-1" />
-                      </Link>
-                    </div> */}
-                    {/* Banner Content */}
-                    {/* Banner Image */}
-                    {/* img */}
-                    {/* <img
-                      src={assortment}
-                      alt="assortment"
-                      className="img-fluid rounded-3"
-                    /> */}
-                    {/* Banner Image */}
-                  {/* </div> */}
-                  {/* Banner Design */}
+                  
                 </div>
               </div>
               {/* Cards Column */}
@@ -546,40 +252,7 @@ function Shop() {
                   </div>
                   {/* icon */}
                   <div className="d-flex justify-content-between align-items-center">
-                    {/* <Link to="/ShopListCol" className="text-muted me-3">
-                      <i className="bi bi-list-ul" />
-                    </Link>
-                    <Link to="/ShopGridCol3" className=" me-3 active">
-                      <i className="bi bi-grid" />
-                    </Link>
-                    <Link to="/Shop" className="me-3 text-muted">
-                      <i className="bi bi-grid-3x3-gap" />
-                    </Link> */}
-                    {/* <div className="me-2"> */}
-                      {/* select option */}
-                      {/* <select
-                        className="form-select"
-                        aria-label="Default select example"
-                      >
-                        <option selected>Show: 50</option>
-                        <option value={10}>10</option>
-                        <option value={20}>20</option>
-                        <option value={30}>30</option>
-                      </select>
-                    </div>
-                    <div> */}
-                      {/* select option */}
-                      {/* <select
-                        className="form-select"
-                        aria-label="Default select example"
-                      >
-                        <option selected>Sort by: Featured</option>
-                        <option value="Low to High">Price: Low to High</option>
-                        <option value="High to Low"> Price: High to Low</option>
-                        <option value="Release Date"> Release Date</option>
-                        <option value="Avg. Rating"> Avg. Rating</option>
-                      </select>
-                    </div> */}
+                  
                   </div>
                 </div>
                 {/* row */}
@@ -740,7 +413,9 @@ function Shop() {
           </div>
         </>
       )}
+      
     </div>
+    
   );
 }
 

@@ -1,5 +1,5 @@
 // react 
-import React from "react";
+import React,{useState, useEffect} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';    
 //redux
@@ -8,6 +8,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import store, { persistor } from './redux/store';
 // css
 import "./App.css";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // browserrouter 
 import { BrowserRouter as Router, Route, Routes,Navigate} from "react-router-dom";
 // Components
@@ -53,27 +55,32 @@ import Campaigns from "./pages/store/Campaigns";
 import MyAccountCampaigns from "./pages/Accounts/UserCampaignsList";
 import WholesalerCampaigns from "./pages/Accounts/WholesalerCampaignsList";
 import ExpenseCal from "./pages/Expense_cal";
+import ScrollToTop from "./Component/scroll_to_top";
+import { toast } from 'react-toastify';
+import ProtectedRoute from "./Component/ProtectedRoute";
 
 const App = () => {
 
-  const getUserType = () => {
-    return localStorage.getItem("user_type") || null;
-  };
+  // const getUserType = () => {
+  //   return localStorage.getItem("user_type") || null;
+  // };
   
-  // Protected Route Component
-  const ProtectedRoute = ({ element: Component, allowedUserTypes, ...rest }) => {
-    const user_type = getUserType();
+  // // Protected Route Component
+  // const ProtectedRoute = ({ element: Component, allowedUserTypes, ...rest }) => {
+    
+  //   const user_type = getUserType();
   
-    if (!user_type) {
-      return <Navigate to="/MyAccountSignIn" />; // Redirect if not logged in
-    }
+  //   if (!user_type) {
+  //     toast.error("Please login to access this page.");
+  //     return <Navigate to="/MyAccountSignIn" />; // Redirect if not logged in
+  //   }
   
-    if (allowedUserTypes.includes(user_type)) {
-      return <Component {...rest} />; // Render component if user type is allowed
-    }
+  //   if (allowedUserTypes.includes(user_type)) {
+  //     return <Component {...rest} />; // Render component if user type is allowed
+  //   }
   
-    return <Navigate to="/" />; // Redirect unauthorized users to home
-  };
+  //   return <Navigate to="/" />; // Redirect unauthorized users to home
+  // };
 
 
   return (
@@ -81,6 +88,7 @@ const App = () => {
       <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
       <Router>
+        <ScrollToTop />
         <Header/>
         <Routes>
           <Route path="/Grocery-react/" element={<Home />} />
@@ -109,7 +117,7 @@ const App = () => {
           <Route path="/AddedProducts" element={<ProtectedRoute element={ProductsList} allowedUserTypes={['wholesaler']}/>}/>
           <Route path="/edit-product/:id" element={<ProtectedRoute element={EditProduct} allowedUserTypes={['wholesaler']} />}/>
           <Route path="/productDetails/:id" element={<ProductDetails />}/>
-          <Route path="/campaigns/:id" element={<CampaignDetailPage />}/>
+          <Route path="/campaigns/:id" element={<ProtectedRoute element={CampaignDetailPage} allowedUserTypes={['customer']}/>}/>
           <Route path="/startCampaign" element={<ProtectedRoute element={StartCampaignPage} allowedUserTypes={['customer']}/>} />
           <Route path="/Campaigns" element={<Campaigns />}/>
           <Route path="/MyCampaigns" element={<ProtectedRoute element={MyAccountCampaigns} allowedUserTypes={['customer']} />}/>
@@ -124,6 +132,7 @@ const App = () => {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <Footer/>
+          <ToastContainer position="top-center" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick pauseOnFocusLoss draggable pauseOnHover />
       </Router>
       </PersistGate>
     </Provider>

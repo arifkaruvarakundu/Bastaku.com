@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const StartCampaignPage = () => {
   const [variant, setVariant] = useState(null);
@@ -11,6 +12,7 @@ const StartCampaignPage = () => {
   const [paymentOption, setPaymentOption] = useState("");
 
   const navigate = useNavigate();
+  const { t } = useTranslation("start_campaign"); // Use the correct namespace for translation
 
   const productDetails = JSON.parse(localStorage.getItem("productDetails"));
   const product_name = productDetails?.product_name || "Product Name";
@@ -133,7 +135,7 @@ const StartCampaignPage = () => {
               <form style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
                 {/* Campaign Title */}
                 <div>
-                  <label>Campaign Title</label>
+                  <label>{t("campaignTitle")}</label>
                   <input
                     type="text"
                     value={`${variant.brand} ${product_name}`}
@@ -145,7 +147,7 @@ const StartCampaignPage = () => {
                 {/* Variant Volume */}
                 {variant?.liter && (
                 <div>
-                  <label>Volume (Litre)</label>
+                  <label>{t("volumeLitre")}</label>
                   <input
                     type="text"
                     value={variant.liter} 
@@ -158,7 +160,7 @@ const StartCampaignPage = () => {
                 {/* Variant Weight */}
                 {variant?.weight && (
                 <div>
-                  <label>Weight (Kg)</label>
+                  <label>{t("weightKg")}</label>
                   <input
                     type="text"
                     value={variant.weight} 
@@ -170,7 +172,7 @@ const StartCampaignPage = () => {
 
                 {/* Your Price */}
                 <div>
-                  <label>Your Price (in KD)</label>
+                  <label>{t("yourPriceKD")}</label>
                   <input
                     type="text"
                     value={campaignPrice.toFixed(2)}
@@ -181,7 +183,7 @@ const StartCampaignPage = () => {
 
                 {/* Quantity Selector */}
                 <div>
-                  <label>My Quantity (in Kg)</label>
+                  <label>{t("myQuantityKg")}</label>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <button
                       type="button"
@@ -224,8 +226,8 @@ const StartCampaignPage = () => {
 
                 {/* Progress Bar */}
                 <div>
-                <p><strong>Minimum Order Quantity For Offer:</strong> {variant.minimum_order_quantity_for_offer} Kg</p>
-                    <label>Progress</label>
+                <p><strong>{t("minOrderQty")}</strong> {variant.minimum_order_quantity_for_offer} Kg</p>
+                    <label>{t("progress")}</label>
                     <div style={{ height: "20px", backgroundColor: "#rgb(155, 227, 192)", borderRadius: "5px", overflow: "hidden" }}>
                         <div
                             style={{
@@ -254,7 +256,7 @@ const StartCampaignPage = () => {
 
                 {/* Total Amount */}
                 <div>
-                  <label>Total Amount (in KD)</label>
+                  <label>{t("totalAmountKD")}</label>
                   <input
                     type="text"
                     value={totalAmount.toFixed(2)}
@@ -319,9 +321,8 @@ const StartCampaignPage = () => {
           </div>
         </div>
       ) : (
-        <p>Loading product details...</p>
+        <p>{t("loadingProductDetails")}</p>
       )}
-   
     </div>
   );
 };

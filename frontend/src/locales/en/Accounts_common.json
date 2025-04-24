@@ -1,6 +1,7 @@
 {
     "account_settings": "Account Settings",
-    "your_orders": "Your Orders",
+    "your_orders": "Orders",
+    "campaign_orders": "Campaign Orders",
     "settings": "Settings",
     "address": "Address",
     "payment_method": "Payment Method",

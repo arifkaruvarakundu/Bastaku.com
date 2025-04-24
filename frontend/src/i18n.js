@@ -1,26 +1,3 @@
-// import i18n from "i18next";
-// import { initReactI18next } from "react-i18next";
-// import LanguageDetector from "i18next-browser-languagedetector";
-// import Backend from "i18next-http-backend";
-
-// i18n
-//   .use(LanguageDetector)
-//   .use(initReactI18next)
-//   .use(Backend)
-//   .init({
-//     debug: true,
-//     fallbackLng: "en",
-//     returnObjects: true, 
-//     interpolation: {
-//       escapeValue: false, // React already escapes by default
-//     },
-//     // backend: {
-//     //   loadPath: "/locales/{{lng}}/Home.json", // Adjust path
-//     // },
-//   });
-
-// export default i18n;
-
 // src/i18n.js
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next'; // Required for React integration
@@ -54,6 +31,10 @@ import home_whEN from './locales/en/Home_wh.json';
 import home_whAR from './locales/ar/Home_wh.json';
 import product_detailsEN from './locales/en/Product_details.json';
 import product_detailsAR from './locales/ar/Product_details.json';
+import start_campaignEN from './locales/en/startCampaign.json';
+import start_campaignAR from './locales/ar/startCampaign.json';
+import CampaignDetailPageEN from './locales/en/campaignDetails.json';
+import CampaignDetailPageAR from './locales/ar/campaignDetails.json';
 
 
 i18next
@@ -75,7 +56,9 @@ i18next
         accounts_others: accounts_othersEN,
         modal: modalEN,
         home_wh: home_whEN,
-        product_details: product_detailsEN
+        product_details: product_detailsEN,
+        start_campaign: start_campaignEN,
+        campaign_detail: CampaignDetailPageEN
       },
       ar: {
         home: homeAR,
@@ -92,7 +75,9 @@ i18next
         accounts_others: accounts_othersAR,
         modal: modalAR,
         home_wh: home_whAR,
-        product_details: product_detailsAR
+        product_details: product_detailsAR,
+        start_campaign: start_campaignAR,
+        campaign_detail: CampaignDetailPageAR
       },
 
     },
@@ -101,7 +86,7 @@ i18next
     interpolation: {
       escapeValue: false, // React already does escaping
     },
-    ns: ['home', 'header','productItem','footer','shop','signIn','wh_signIn','signup', 'cart_check', 'accounts_common', 'add_added_edit_prod', 'accounts_others','modal','home_wh', 'product_details'], // List of namespaces
+    ns: ['home', 'header','productItem','footer','shop','signIn','wh_signIn','signup', 'cart_check', 'accounts_common', 'add_added_edit_prod', 'accounts_others','modal','home_wh', 'product_details', 'start_campaign', 'campaign_detail'], // List of namespaces
     defaultNS: 'home', // Default namespace to use
   });
 

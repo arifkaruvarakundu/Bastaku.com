@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import {useSelector} from 'react-redux';
+import { toast } from 'react-toastify';
 
 const CampaignDetailPage = () => {
   const [variant, setVariant] = useState(null);
@@ -13,8 +16,12 @@ const CampaignDetailPage = () => {
   const [selectedQuantity,setSelectedQuantity] = useState(1)
   const [paymentOption, setPaymentOption] = useState("");
   const [isWholesaler, setIsWholesaler] = useState(false); // State to check if user is wholesaler
+
+  const isAuthenticated = useSelector((state)=> state.auth.isAuthenticated)
+
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation("campaign_detail");
 
   useEffect(() => {
     const joinCampaignDetails = JSON.parse(localStorage.getItem("join_campaign_details"));
@@ -86,6 +93,11 @@ const CampaignDetailPage = () => {
   }, []);
 
   const joinCampaign = async () => {
+    // if(!isAuthenticated){
+    //   toast.error("Please login to join the campaign.");
+    //   navigate("/MyAccountSignIn")
+    //   return;
+    // }
     const token = localStorage.getItem("access_token");
     const data = {
       variant: campaign.variant.id,
@@ -127,7 +139,7 @@ const CampaignDetailPage = () => {
 
   if (!campaign) {
     return (
-      <div style={{ textAlign: "center", margin: "50px" }}>No Campaigns Are Going On Now</div>
+      <div style={{ textAlign: "center", margin: "50px" }}>{t("noCampaignsNow")}</div>
     );
   }
 
@@ -204,7 +216,7 @@ const CampaignDetailPage = () => {
                   color: "#059669",
                 }}
               >
-                Your Price: {campaignPrice.toFixed(2)} KD
+                {t("yourPrice")} {campaignPrice.toFixed(2)} KD
                 <p
                 style={{
                   fontSize: "20px",
@@ -212,7 +224,7 @@ const CampaignDetailPage = () => {
                   color: "#059669",
                 }}
               >
-                Minimum Order Quantity For Offer: {campaign.variant.minimum_order_quantity_for_offer}
+                {t("minOrderQty")} {campaign.variant.minimum_order_quantity_for_offer}
               </p>
               </p>
             </div>
@@ -225,7 +237,7 @@ const CampaignDetailPage = () => {
                   marginBottom: "10px",
                 }}
               >
-              Quantity in Kg:
+              {t("quantityKg")}
               </label>
               <div
                 style={{
@@ -276,7 +288,7 @@ const CampaignDetailPage = () => {
               </div>
             </div>
             <div style={{ marginTop: "20px", fontSize: "16px", fontWeight: "600", color: "#065F46" }}>
-              <label>Total Amount: </label>
+              <label>{t("totalAmount")} </label>
               <span style={{ color: "#059669" }}>{totalAmount} KD</span>
             </div>
             {isLoading && (
@@ -317,7 +329,7 @@ const CampaignDetailPage = () => {
                   }}
                   disabled
                 >
-                  Already Joined
+                  {t("alreadyJoined")}
                 </button>
               ) : (
                 <button
@@ -363,7 +375,7 @@ const CampaignDetailPage = () => {
 
         {/* Progress Bar */}
         <div>
-          <label style={{marginTop: "30px"}}>Progress</label>
+          <label style={{marginTop: "30px"}}>{t("progress")}</label>
           <div
             style={{
               height: "15px",

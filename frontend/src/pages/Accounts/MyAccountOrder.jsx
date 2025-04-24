@@ -223,7 +223,7 @@ const MyAccountOrder = () => {
                     <>
                       <div className="p-6 p-lg-10">
                         {/* heading */}
-                        <h2 className="mb-6">{tCommon('your_orders')}</h2>
+                        <h2 className="mb-6">{tCommon('campaign_orders')}</h2>
                         <div className="table-responsive border-0">
                           {/* Table */}
                           
@@ -231,13 +231,16 @@ const MyAccountOrder = () => {
                             {/* Table Head */}
                             <thead className="table-light">
                               <tr>
-                                <th className="border-0">&nbsp;</th>
-                                <th className="border-0">{tAccounts('product')}</th>
+                                {/* <th className="border-0">&nbsp;</th> */}
+                                <th className="border-0">{tAccounts('image')}</th>
                                 <th className="border-0">{tAccounts('order')}</th>
                                 <th className="border-0">{tAccounts('date')}</th>
+                                <th className="border-0">{tAccounts('product')}</th>
+                                <th className="border-0">{tAccounts('volume')}</th>
+                                <th className="border-0">{tAccounts('price')}</th>
                                 <th className="border-0">{tAccounts('quantity')}</th>
-                                <th className="border-0">{tAccounts('status')}</th>
                                 <th className="border-0">{tAccounts('amount')}</th>
+                                <th className="border-0">{tAccounts('status')}</th>
                                 <th className="border-0">{tAccounts('action')}</th>
                                 <th className="border-0" />
                               </tr>
@@ -255,14 +258,6 @@ const MyAccountOrder = () => {
                                     </Link>
                                   </td>
                                   <td className="align-middle border-top-0">
-                                    <Link to="#" className="fw-semi-bold text-inherit">
-                                      <h6 className="mb-0">{order.product_name}</h6>
-                                    </Link>
-                                    <span>
-                                      {/* <small className="text-muted">{order.quantity}</small> */}
-                                    </span>
-                                  </td>
-                                  <td className="align-middle border-top-0">
                                     <Link to="#" className="text-inherit">
                                       #{order.id}
                                     </Link>
@@ -270,13 +265,28 @@ const MyAccountOrder = () => {
                                   <td className="align-middle border-top-0">
                                     {new Date(order.created_at).toLocaleDateString()}
                                   </td>
+                                  <td className="align-middle border-top-0">
+                                    <Link to="#" className="fw-semi-bold text-inherit">
+                                      <h6 className="mb-0">{order?.campaign}</h6>
+                                    </Link>
+                                    <span>
+                                      {/* <small className="text-muted">{order.quantity}</small> */}
+                                    </span>
+                                  </td>
+                                  <td className="align-middle border-top-0">
+                                    <Link to="#" className="text-inherit">
+                                    {order.variant?.weight ? `${order.variant.weight} kg` : `${order.variant.liter} L`}
+                                    </Link>
+                                  </td>
+                                  <td className="align-middle border-top-0">{order?.variant?.price}</td>
                                   <td className="align-middle border-top-0">{order.quantity}</td>
+                                  <td className="align-middle border-top-0">{order.total_price} KD</td>
+                                  
                                   <td className="align-middle border-top-0">
                                     <span className={`badge bg-${order.payment_status === 'Processing' ? 'warning' : 'success'}`}>
                                       {order.payment_status}
                                     </span>
                                   </td>
-                                  <td className="align-middle border-top-0">{order.total_price} KD</td>
                                   {!localStorage.getItem("company_name") && (
                                   <td className="align-middle border-top-0">
                                     {order.payment_status !== 'full_paid' ? (
@@ -289,6 +299,100 @@ const MyAccountOrder = () => {
                                     ) : (
                                       <button className="btn btn-success btn-sm" disabled>
                                         {tAccounts('paid')}
+                                      </button>
+                                    )}
+                                  </td>
+                                  )}
+                                  <td className="text-muted align-middle border-top-0">
+                                    <Link to="#" className="text-inherit">
+                                      <i className="feather-icon icon-eye" />
+                                    </Link>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div className="p-6 p-lg-10">
+
+                        {/* heading */}
+                        <h2 className="mb-6">{tCommon('your_orders')}</h2>
+                        <div className="table-responsive border-0">
+
+                          {/* Table */}
+                          <table className="table mb-0 text-nowrap">
+
+                            {/* Table Head */}
+                            <thead className="table-light">
+                              <tr>
+                                {/* <th className="border-0">&nbsp;</th> */}
+                                <th className="border-0">{tAccounts('image')}</th>
+                                <th className="border-0">{tAccounts('order')}</th>
+                                <th className="border-0">{tAccounts('date')}</th>
+                                <th className="border-0">{tAccounts('product')}</th>
+                                <th className="border-0">{tAccounts('volume')}</th>
+                                <th className="border-0">{tAccounts('price')}</th>
+                                <th className="border-0">{tAccounts('quantity')}</th>
+                                <th className="border-0">{tAccounts('amount')}</th>
+                                <th className="border-0">{tAccounts('status')}</th>
+                                <th className="border-0">{tAccounts('action')}</th>
+                                <th className="border-0" />
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {orders?.map((order) => (
+                                <tr key={order.id}>
+                                  <td className="align-middle border-top-0 w-0">
+                                    <Link to="#">
+                                      <img
+                                        src={order.variant?.variant_images?.[0]?.image_url}
+                                        alt="Ecommerce"
+                                        className="icon-shape icon-xl"
+                                      />
+                                    </Link>
+                                  </td>
+                                  <td className="align-middle border-top-0">
+                                    <Link to="#" className="text-inherit">
+                                      #{order.id}
+                                    </Link>
+                                  </td>
+                                  <td className="align-middle border-top-0">
+                                    {new Date(order.created_at).toLocaleDateString()}
+                                  </td>
+                                  <td className="align-middle border-top-0">
+                                    <Link to="#" className="fw-semi-bold text-inherit">
+                                      <h6 className="mb-0">{order?.variant?.brand}</h6>
+                                    </Link>
+                                    <span>
+                                      {/* <small className="text-muted">{order.quantity}</small> */}
+                                    </span>
+                                  </td>
+                                  <td className="align-middle border-top-0">
+                                    <Link to="#" className="text-inherit">
+                                    {order.variant?.weight ? `${order.variant.weight} kg` : `${order.variant.liter} L`}
+                                    </Link>
+                                  </td>
+                                  <td className="align-middle border-top-0">{order?.variant?.price}</td>
+                                  <td className="align-middle border-top-0">{order.quantity}</td>
+                                  <td className="align-middle border-top-0">{order?.total_price} KD</td>
+                                  <td className="align-middle border-top-0">
+                                    <span className={`badge bg-${order.payment_status === 'Processing' ? 'warning' : 'success'}`}>
+                                      {order?.payment_status}
+                                    </span>
+                                  </td>
+                                  {!localStorage.getItem("company_name") && (
+                                  <td className="align-middle border-top-0">
+                                    {order?.payment_status !== 'full_paid' ? (
+                                      <button
+                                        className="btn btn-outline-success btn-sm"  // ✅ Green border, white background, black text
+                                        onClick={() => handlePayment(order?.id)}
+                                      >
+                                        {tAccounts('cancel')}
+                                      </button>
+                                    ) : (
+                                      <button className="btn btn-success btn-sm" disabled>
+                                        {tAccounts('cancel')}
                                       </button>
                                     )}
                                   </td>
