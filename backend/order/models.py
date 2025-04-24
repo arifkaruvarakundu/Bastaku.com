@@ -94,7 +94,7 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Order {self.id} - {self.user.name}"
+        return f"Order {self.id} - {self.user.first_name}"
 
     def update_payment_status(self):
         """

@@ -73,7 +73,7 @@ class JoinCampaignView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        
+
         if request.user.is_anonymous:  # ✅ Explicit check
             return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -87,6 +87,7 @@ class JoinCampaignView(APIView):
             return Response({'error': 'Campaign has ended.'}, status=status.HTTP_400_BAD_REQUEST)
 
         variant = campaign.variant
+        
         # Extract the participant's desired quantity from the request body
         participant_quantity = request.data.get('participant_quantity', 1)
         payment_amount = Decimal(request.data.get('payment_amount', 0))
@@ -554,7 +555,6 @@ class UpdateQuantityView(APIView):
             status=status.HTTP_200_OK
         )
     
-
 class UserCampaignsView(APIView):
     permission_classes = [IsAuthenticated]  # Only authenticated users can access this endpoint
 

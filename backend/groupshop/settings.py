@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-bm6u09%+cd#581_xrbu!w7pg6wq+9!#ixk^ar6878m806ov1pg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','testserver']
+ALLOWED_HOSTS = ['localhost','127.0.0.1','testserver','192.168.8.68']
 
 AUTH_USER_MODEL = 'authentication.User'
 # Application definition
@@ -73,7 +73,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+    ]
 
 ROOT_URLCONF = 'groupshop.urls'
 
@@ -240,7 +240,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:3001",
-    "http://127.0.0.1:3001"
+    "http://127.0.0.1:3001",
+    "http://192.168.8.68:8000",
 ]
 
 CORS_ALLOW_METHODS = [
@@ -277,7 +278,8 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "http://localhost:3001",
-    "http://127.0.0.1:3001"
+    "http://127.0.0.1:3001",
+    "http://192.168.8.68:8000",
      ]
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024

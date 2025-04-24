@@ -4,8 +4,8 @@ from authentication.serializers import UserSerializer
 from wholesaler.serializers import ProductVariantSerializer
 
 class OrderSerializer(serializers.ModelSerializer):
-    variant = serializers.StringRelatedField()
-    product_wholesaler = serializers.CharField(source='product.wholesaler.company_name')
+    variant = ProductVariantSerializer(read_only=True)
+    product_wholesaler = serializers.CharField(source='variant.product.wholesaler.company_name', read_only=True)
     
     class Meta:
         model = Order
