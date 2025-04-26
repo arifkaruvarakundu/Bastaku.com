@@ -24,7 +24,6 @@ const MyAccountSignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-
   const navigate = useNavigate()
   const dispatch = useDispatch();
 

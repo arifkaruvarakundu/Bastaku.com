@@ -7,6 +7,7 @@ import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/cartSlice"
+import {toast} from 'react-toastify'
 
 const ProductItem = () => {
   const{t,i18n} = useTranslation('productItem');
@@ -60,7 +61,15 @@ const ProductItem = () => {
 
     dispatch(addToCart({ variant: firstVariant, quantity }));
 
-    alert("Product added to cart successfully!");
+    toast.info("Item Added to Cart", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
 };
 
   

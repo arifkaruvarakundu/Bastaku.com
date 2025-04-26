@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/cartSlice";
+import {toast} from 'react-toastify'
 
 function Shop() {
   const { t,i18n } = useTranslation('shop');
@@ -150,8 +151,8 @@ function Shop() {
 
     const handleAddToCart = (variant, quantity) => {
       dispatch(addToCart({ variant, quantity })); // Dispatch action to Redux
-      alert("Product added to cart successfully!");
-      navigate("/ShopCart"); // Redirect to cart page
+      toast.info("Item Added to Cart")
+      // navigate("/ShopCart"); // Redirect to cart page
     };
 
   const toggleDropdown = (index) => {

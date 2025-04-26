@@ -47,25 +47,35 @@ const MyAccountCampaigns = () => {
   }, []);
 
   const handleCancel = async (campaignId) => {
-    try {
-      const token = localStorage.getItem("access_token"); // Assuming you store an auth token in localStorage
-      const response = await axios.post(
-        `http://127.0.0.1:8000/cancel_campaign/${campaignId}/`,
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("Campaign canceled:", response.data);
-    }
-    catch (error) {
-      console.error("Error canceling campaign:", error);
+    const isConfirmed = window.confirm(tAccounts("confirmCancelMessage"));
+    
+    if (isConfirmed) {
+      try {
+        const token = localStorage.getItem("access_token");
+        const response = await axios.post(
+          `http://127.0.0.1:8000/cancel_campaign/${campaignId}/`,
+          {},
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        setCampaigns((prevCampaigns) =>
+          prevCampaigns.filter((campaign) => campaign.id !== campaignId)
+        );
+  
+        alert(tAccounts("cancelSuccess"));
+        // console.log("Campaign canceled:", response.data);
+      } catch (error) {
+        console.error("Error canceling campaign:", error);
+        alert(tAccounts("cancelError."));
+      }
     }
   };
-
+  
   useEffect(() => {
     setTimeout(() => {
       setLoaderStatus(false);

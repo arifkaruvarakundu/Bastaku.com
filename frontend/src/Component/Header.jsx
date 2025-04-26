@@ -13,6 +13,7 @@ import Language_selector from "./Language_selector";
 import { Trans } from "react-i18next";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
+import { toast } from 'react-toastify';
 
 const Header = ({onSearch}) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,6 +46,7 @@ const Header = ({onSearch}) => {
   const handleLogout = () => {
     localStorage.clear();
     dispatch(setAuthenticated(null)); // Reset the authenticated state
+    toast.success("Successfully logged out");
     navigate("/Grocery-react/");
   };
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -221,144 +223,138 @@ const Header = ({onSearch}) => {
             <div className="container">
               <div className="row">
                 <Language_selector />
-                <div
-                  className="col-md-10 col-12 d-flex "
-                  style={{ alignItems: "center"}}
-                >
+                <div className="col-md-10 col-12 d-flex" style={{ alignItems: "center" }}>
                   {/* <span> Super Value Deals - Save more with coupons</span> */}
                 </div>
-                
-                <div
-                  className="col-md-2 col-xxl-1 text-end d-none d-lg-block"
-                  style={{ marginLeft: "20px"}}
-                >
-                  <div className="list-inline">
-                    {isAuthenticated && !localStorage.getItem("company_name") && (
-                <div
-                  ref={dropdownRef}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "20px",
-                    position: "relative", 
-                  }}
-                >
-                  {/* Notification Icon */}
-                  
-                  <i
-                    ref={notificationRef}
-                    className="bi bi-bell notification-icon"
-                    onClick={handleNotificationClick}
-                    style={{
-                      fontSize: "20px",
-                      position: "relative", // Positioning the bell icon itself
-                      cursor: "pointer",
-                    }}
-                  >
-                    {/* Notification Badge */}
-                    {notificationCount > 0 && (
-                      <span
-                        style={{
-                          position: "absolute",
-                          top: "-5px",
-                          right: "-5px",
-                          backgroundColor: "green",
-                          color: "white",
-                          borderRadius: "50%",
-                          padding: "2px 6px",
-                          fontSize: "12px",
-                          fontWeight: "bold",
-                          lineHeight: "1",
-                        }}
-                      >
-                        {notificationCount}
-                      </span>
-                    )}
-                  </i>
 
-                  {/* Notification Dropdown */}
-                  {notificationDropdownOpen && (
+                <div className="col-md-2 col-xxl-1 text-end d-none d-lg-block" style={{ marginLeft: "20px" }}>
+                  <div className="list-inline">
                     <div
-                      className="absolute right-0 mt-2 w-96 bg-white shadow-2xl rounded-xl border border-gray-300 z-50"
                       style={{
-                        top: "30px", // Place it below the bell icon
-                        right: "0", // Align it to the right side of the parent container
-                        width: "320px", // Dropdown width
-                        position:"absolute",
-                        zIndex: 9999
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "20px",
+                        position: "relative", 
                       }}
                     >
-                      <div className="p-4 border-b border-gray-200 bg-blue-50 rounded-t-xl">
-                        <h4 className="text-lg font-semibold text-blue-700"><Trans i18nKey="notifications" ns="header">Notifications</Trans></h4>
-                      </div>
+                      {/* Notification Icon (only for authenticated users) */}
+                      {isAuthenticated && (
+                        <div style={{ position: "relative" }}>
+                          <i
+                            ref={notificationRef}
+                            className="bi bi-bell notification-icon"
+                            onClick={handleNotificationClick}
+                            style={{
+                              fontSize: "20px",
+                              position: "relative",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {notificationCount > 0 && (
+                              <span
+                                style={{
+                                  position: "absolute",
+                                  top: "-5px",
+                                  right: "-5px",
+                                  backgroundColor: "green",
+                                  color: "white",
+                                  borderRadius: "50%",
+                                  padding: "2px 6px",
+                                  fontSize: "12px",
+                                  fontWeight: "bold",
+                                  lineHeight: "1",
+                                }}
+                              >
+                                {notificationCount}
+                              </span>
+                            )}
+                          </i>
 
-                      {notifications.length > 0 ? (
-                        <ul className="max-h-80 overflow-y-auto divide-y divide-gray-200">
-                          {notifications.map((notification,index) => (
-                            <li
-                              key={notification.id}
-                              onClick={() => handleNotificationMessageClick(notification.campaignId)}
-                              className="px-4 py-3 cursor-pointer hover:bg-blue-100 transition-colors text-gray-800"
-                              style={{cursor:"pointer"}}
+                          {/* === Notification Dropdown === */}
+                          {notificationDropdownOpen && (
+                            <div
+                              ref={dropdownRef}
+                              style={{
+                                position: "absolute",
+                                top: "30px",
+                                right: "0",
+                                backgroundColor: "#fff",
+                                border: "1px solid #ccc",
+                                borderRadius: "5px",
+                                width: "300px",
+                                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                                zIndex: 9999,
+                                padding: "10px",
+                              }}
                             >
-                              {notification.message}
-                              {index < notifications.length - 1 && (
-                                <hr className="my-2 border-t-2 border-gray-200" />
+                              {notifications.length > 0 ? (
+                                notifications.map((notification) => (
+                                  <div
+                                    key={notification.id}
+                                    style={{
+                                      padding: "8px",
+                                      borderBottom: "1px solid #eee",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() => handleNotificationMessageClick(notification.campaign_id)}
+                                  >
+                                    {notification.message}
+                                  </div>
+                                ))
+                              ) : (
+                                <div style={{ padding: "10px", textAlign: "center" }}>
+                                  No new notifications
+                                </div>
                               )}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="px-4 py-6 text-gray-500 text-center"><Trans i18nKey = "no_notifications" ns="header" ></Trans>No notifications.</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Cart Icon (shown if NOT authenticated wholesaler) */}
+                      {localStorage.getItem("user_type") !== "wholesaler" && (
+                        <Link
+                          className="text-muted position-relative"
+                          to="/shopCart"
+                          role="button"
+                          aria-controls="offcanvasRight"
+                          style={{ cursor: "pointer" }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width={20}
+                            height={20}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="feather feather-shopping-bag"
+                          >
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                            <line x1={3} y1={6} x2={21} y2={6} />
+                            <path d="M16 10a4 4 0 0 1-8 0" />
+                          </svg>
+
+                          <span
+                            style={{
+                              position: "absolute",
+                              top: "-5px",
+                              right: "-10px",
+                              backgroundColor: "green",
+                              color: "white",
+                              borderRadius: "50%",
+                              padding: "2px 6px",
+                              fontSize: "12px",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {cartItems.length}
+                          </span>
+                        </Link>
                       )}
                     </div>
-                  )}
-
-
-                      {/* Shopping Cart Icon */}
-                      <Link
-                        className="text-muted position-relative"
-                        to="/shopCart"
-                        role="button"
-                        aria-controls="offcanvasRight"
-                        style={{ cursor: "pointer" }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width={20}
-                          height={20}
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="feather feather-shopping-bag"
-                        >
-                          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                          <line x1={3} y1={6} x2={21} y2={6} />
-                          <path d="M16 10a4 4 0 0 1-8 0" />
-                        </svg>
-
-                        {/* Cart Badge */}
-                        <span
-                          style={{
-                            position: "absolute",
-                            top: "-5px",
-                            right: "-10px",
-                            backgroundColor: "green",
-                            color: "white",
-                            borderRadius: "50%",
-                            padding: "2px 6px",
-                            fontSize: "12px",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {cartItems.length} {/* Dynamic cart items count */}
-                        </span>
-                      </Link>
-                    </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -366,6 +362,7 @@ const Header = ({onSearch}) => {
           </div>
         </div>
       </>
+
       <>
         <div className="container  displaydesign">
           <div className="row g-4">

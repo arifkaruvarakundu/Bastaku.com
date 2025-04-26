@@ -4,7 +4,7 @@ import { MagnifyingGlass } from "react-loader-spinner";
 import ScrollToTop from "../ScrollToTop";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { setCart, removeFromCart, addToCart } from "../../redux/cartSlice";
+import { setCart, removeFromCart } from "../../redux/cartSlice";
 
 const ShopCart = () => {
   // const [cartItems, setCartItems] = useState([]);
@@ -117,7 +117,7 @@ const ShopCart = () => {
                                   <h6 className="mb-0">{item.variant.product_name}</h6>
                                   <span>
                                     <small className="text-muted">
-                                    {t("currency_kd")}: {Number(item.variant.price).toFixed(2)} {t("per_unit")}
+                                    {t("currency_kd")}: {Number(item.variant.price).toFixed(3)} {t("per_unit")}
                                     </small>
                                   </span>
                                   <div className="mt-2 small">
@@ -184,7 +184,7 @@ const ShopCart = () => {
                                 </div>
                                 <div className="col-2 text-lg-end text-start text-md-end col-md-2">
                                   <span className="fw-bold">
-                                    {t("currency_kd")}: {item.variant.price * item.quantity}
+                                  {t("currency_kd")}: {(item.variant.price * item.quantity).toFixed(3)}
                                   </span>
                                 </div>
                               </div>
@@ -214,7 +214,7 @@ const ShopCart = () => {
                           <div className="me-auto">
                             <div>{t("item_subtotal")} </div>
                           </div>
-                          <span> {t("currency_kd")}: {totalPrice.toFixed(2)}</span>
+                          <span> {t("currency_kd")}: {totalPrice.toFixed(3)}</span>
                         </li>
                       </ul>
                       <div className="d-grid mb-1 mt-4">
@@ -222,7 +222,7 @@ const ShopCart = () => {
                           className="btn btn-primary btn-lg d-flex justify-content-between align-items-center"
                           onClick={handleCheckout}
                         >
-                          {t("go_to_checkout")} <span className="fw-bold">{t("currency_kd")}: {totalPrice.toFixed(2)}</span>
+                          {t("go_to_checkout")} <span className="fw-bold">{t("currency_kd")}: {totalPrice.toFixed(3)}</span>
                         </button>
                       </div>
                       <p>

@@ -38,6 +38,10 @@
     "active": "Active",
     "inactive": "Inactive",
     "price" : "Price",
-    "volume" : "Volume"
+    "volume" : "Volume",
+    "confirmCancelMessage": "Are you sure you want to cancel this campaign?",
+    "cancelSuccess": "Campaign canceled successfully!",
+    "cancelError": "Failed to cancel campaign. Please try again."
+
   }
   
