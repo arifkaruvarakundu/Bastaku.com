@@ -29,7 +29,7 @@ class UserModelAdmin(BaseUserAdmin):
     # For fields that should be displayed in the detail view
     fieldsets = [
         ("User Credentials", {"fields": ["email", "password"]}),
-        ("Personal info", {"fields": ["company_name", "first_name", "last_name", "street_address", "phone_number", "city", "zipcode", "country", "license_number", "license_image", "mobile_number1", "mobile_number2", "mobile_number3"]}),
+        ("Personal info", {"fields": ["profile_img","company_name", "first_name", "last_name", "street_address", "phone_number", "city", "zipcode", "country", "license_number", "license_image", "mobile_number1", "mobile_number2", "mobile_number3"]}),
         ("Role", {"fields": ["user_type"]}),  # Display user type here
         ("Permissions", {"fields": ["is_active", "is_admin", "is_staff", "is_superuser"]}),
     ]

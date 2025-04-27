@@ -9,9 +9,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.exceptions import AuthenticationFailed
 from .models import ProductCategory, User
-from .serializers import ProductCategorySerializer
+from .serializers import ProductCategorySerializer, ProfileImageSerializer, UserSerializer
 import os
 from dotenv import load_dotenv
+from rest_framework.generics import RetrieveAPIView
 
 # Load environment variables from .env file
 load_dotenv()
@@ -277,3 +278,21 @@ class CustomTokenObtainPairView(APIView):
             )
             
             return response
+    
+class ProfileImageUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, *args, **kwargs):
+        user = request.user
+        serializer = ProfileImageSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Profile image updated successfully.'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class CurrentUserView(RetrieveAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user

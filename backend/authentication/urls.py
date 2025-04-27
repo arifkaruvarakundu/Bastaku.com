@@ -17,4 +17,7 @@ urlpatterns = [
     path('wholesaler/login/', WholesalerLoginView.as_view(), name='wholesaler-login'),
     path('wholesaler/logout/', WholesalerLogoutView.as_view(), name='wholesaler-logout'),
     path('api/token/', TokenObtainPairView.as_view(serializer_class=CustomTokenObtainPairSerializer)),
+    path('current_user/', CurrentUserView.as_view(), name='current_user'),
+    path('update_profile_image/', ProfileImageUpdateView.as_view(), name='update-profile-image'),
+
 ]

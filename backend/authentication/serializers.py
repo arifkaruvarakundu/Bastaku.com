@@ -201,3 +201,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             data['user_type'] = 'user'
 
         return data
+    
+class ProfileImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['profile_img']
