@@ -82,8 +82,8 @@ const MyAccountSignUp = () => {
         const user = { name: formData.first_name};
         localStorage.setItem('user_name', user.name);
         localStorage.setItem('user_type', response.data.user_type);
-        const email = { email: formData.email};
-        localStorage.setItem('email', email.email);
+        // const email = { email: formData.email};
+        localStorage.setItem('email', response.data.email);
         localStorage.setItem('access_token', response.data.token.access);
         dispatch(setAuthenticated(true))
         navigate('/Grocery-react');
