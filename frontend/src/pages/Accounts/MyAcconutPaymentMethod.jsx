@@ -11,6 +11,7 @@ import ScrollToTop from "../ScrollToTop";
 import axios from "axios";
 import { Modal } from "bootstrap";
 import { useTranslation } from "react-i18next";
+import API_BASE_URL from '../../config'
 
 const MyAcconutPaymentMethod = () => {
   // loading
@@ -48,7 +49,7 @@ const MyAcconutPaymentMethod = () => {
         const token = localStorage.getItem("access_token");
 
         // Correct way to pass query parameters
-        const response = await axios.get("http://127.0.0.1:8000/wholesaler/bank_details/", {
+        const response = await axios.get(`${API_BASE_URL}/wholesaler/bank_details/`, {
           params: { email: wholesalerEmail},
           headers:{
             'Authorization': `Bearer ${token}`
@@ -133,7 +134,7 @@ const MyAcconutPaymentMethod = () => {
       const token = localStorage.getItem("access_token")
       const email = localStorage.getItem("email");
       const response = await axios.post(
-        "http://127.0.0.1:8000/wholesaler/add_bank_details/",
+        `${API_BASE_URL}/wholesaler/add_bank_details/`,
         bankData,
         {
           headers: {

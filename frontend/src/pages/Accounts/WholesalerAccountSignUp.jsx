@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+import API_BASE_URL from '../../config';
 
 const WholesalerAccountSignUp = () => {
   const [formData, setFormData] = useState({
@@ -79,7 +80,7 @@ const WholesalerAccountSignUp = () => {
     // }
 
     axios
-      .post("http://127.0.0.1:8000/wholesaler/register/", payload, {
+      .post(`${API_BASE_URL}/wholesaler/register/`, payload, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       })

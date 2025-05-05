@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useTranslation } from "react-i18next";
+import API_BASE_URL from '../../config'
 
 const ProductsList = () => {
   const{t, i18n} = useTranslation('add_added_edit_prod')
@@ -33,7 +34,7 @@ const ProductsList = () => {
         try {
           const wholesalerEmail = localStorage.getItem("email");
           const token = localStorage.getItem("access_token");
-          const response = await axios.get("http://127.0.0.1:8000/wholesaler/products/", {
+          const response = await axios.get(`${API_BASE_URL}/wholesaler/products/`, {
             params: { email: wholesalerEmail },
             headers: {
               'Authorization': `Bearer ${token}`

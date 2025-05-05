@@ -11,6 +11,8 @@ import axios from "axios";
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import { Trans } from 'react-i18next';
+import API_BASE_URL from "../config";
+
 
 
 const Footer = () => {
@@ -33,7 +35,7 @@ const Footer = () => {
     const fetchData = async () => {
       try {
         // const productsResponse = await axios.get("http://127.0.0.1:8000/products/");
-        const categoriesResponse = await axios.get("http://127.0.0.1:8000/productcategories/");
+        const categoriesResponse = await axios.get(`${API_BASE_URL}/productcategories/`);
 
         // setProducts(productsResponse.data);
         // setDisplayedProducts(productsResponse.data.slice(0, 12));

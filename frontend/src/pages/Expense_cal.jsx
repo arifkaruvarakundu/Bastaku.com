@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import API_BASE_URL from '../config';
 
 function ExpenseCal() {
   const [formData, setFormData] = useState({
@@ -36,7 +37,7 @@ function ExpenseCal() {
     setLoading(true);  // Set loading to true when starting calculation
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/calculate_expense/", {
+      const response = await axios.post(`${API_BASE_URL}/calculate_expense/`, {
         ...formData,
         user_email: userEmail}, // Send email in API request
         {headers:{

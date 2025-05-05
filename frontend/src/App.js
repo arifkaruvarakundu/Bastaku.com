@@ -19,7 +19,7 @@ import Footer from "./Component/Footer";
 // pages
 import Home from "./pages/Home";
 // About pages
-// import AboutUs from "./pages/About/AboutUs";
+import AboutUs from "./pages/About/AboutUs";
 // import Blog from "./pages/About/Blog";
 // import BlogCategory from "./pages/About/BlogCategory";
 // import Contact from "./pages/About/Contact";
@@ -94,6 +94,7 @@ const App = () => {
           <Route path="/Grocery-react/" element={<Home />} />
           {/* Shop pages */}
           <Route path="/Shop" element={<Shop />} />
+          <Route path="/AboutUs" element={<AboutUs />} />
           {/* <Route path="/ShopGridCol3" element={<ShopGridCol3 />} /> */}
           {/* <Route path="/ShopListCol" element={<ShopListCol />} /> */}
           {/* <Route path="/ShopWishList" element={<ShopWishList />} /> */}
@@ -128,7 +129,7 @@ const App = () => {
           {/* <Route path="/Blog" element={<Blog />} /> */}
           {/* <Route path="/BlogCategory" element={<BlogCategory />} /> */}
           {/* <Route path="/Contact" element={<Contact />} /> */}
-          {/* <Route path="/AboutUs" element={<AboutUs />} /> */}
+          
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <Footer/>

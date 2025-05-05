@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { setAuthenticated } from "../../redux/authSlice";
 import { useTranslation } from "react-i18next";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import API_BASE_URL from '../../config';
 
 const WholesalerAccountSignIn = () => {
   const [formData, setFormData] = useState({
@@ -35,7 +36,7 @@ const WholesalerAccountSignIn = () => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/wholesaler/login/", // Use the wholesaler login endpoint
+        `${API_BASE_URL}/wholesaler/login/`, // Use the wholesaler login endpoint
         formData
       );
       console.log(response.data);

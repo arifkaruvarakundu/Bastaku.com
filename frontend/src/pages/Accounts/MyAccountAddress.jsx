@@ -6,6 +6,7 @@ import ScrollToTop from "../ScrollToTop";
 import axios from 'axios';
 import { useTranslation } from "react-i18next";
 import { Modal } from "bootstrap";
+import API_BASE_URL from '../../config'
 
 const MyAccountAddress = () => {
   // loading
@@ -57,8 +58,8 @@ const MyAccountAddress = () => {
       }
 
       const endpoint = isCompany
-        ? "http://127.0.0.1:8000/wholesaler/details/"
-        : "http://127.0.0.1:8000/details/";
+        ? `${API_BASE_URL}/wholesaler/details/`
+        : `${API_BASE_URL}/details/`;
 
       const response = await axios.get(endpoint, {
         headers: {
@@ -160,8 +161,8 @@ const MyAccountAddress = () => {
       }
   
       const endpoint = isCompany
-        ? "http://127.0.0.1:8000/wholesaler/update_profile/"
-        : "http://127.0.0.1:8000/profile/update/";
+        ? `${API_BASE_URL}/wholesaler/update_profile/`
+        : `${API_BASE_URL}/profile/update/`;
   
       await axios.patch(endpoint, formData, {
         headers: {
@@ -384,7 +385,7 @@ const MyAccountAddress = () => {
                                       <br />
                                       {userDetails.license_image && (
                                         <img
-                                          src={`http://127.0.0.1:8000${userDetails.license_image}`} // Use the license image URL from userDetails
+                                          src={`${API_BASE_URL}${userDetails.license_image}`} // Use the license image URL from userDetails
                                           alt="License"
                                           style={{ width: '200px', height: 'auto', marginTop: '10px' }}
                                         />

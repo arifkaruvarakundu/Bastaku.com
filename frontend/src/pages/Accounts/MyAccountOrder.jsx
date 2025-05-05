@@ -6,6 +6,7 @@ import { MagnifyingGlass } from "react-loader-spinner";
 import ScrollToTop from "../ScrollToTop";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
+import API_BASE_URL from '../../config';
 
 const MyAccountOrder = () => {
   // loading
@@ -44,7 +45,7 @@ const MyAccountOrder = () => {
   
         if (companyName) {
           // Fetch orders for wholesaler
-          response = await axios.get("http://127.0.0.1:8000/wholesaler/orders/", {
+          response = await axios.get(`${API_BASE_URL}/wholesaler/orders/`, {
             headers: {
               ...headers,
               company_name: companyName,
@@ -52,7 +53,7 @@ const MyAccountOrder = () => {
           });
         } else {
           // Fetch orders for regular user
-          response = await axios.get("http://127.0.0.1:8000/user_orders/", {
+          response = await axios.get(`${API_BASE_URL}/user_orders/`, {
             headers: {
               ...headers,
               // Authorization: `Bearer ${token}`,

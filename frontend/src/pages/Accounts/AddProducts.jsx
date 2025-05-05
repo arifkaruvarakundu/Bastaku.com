@@ -8,6 +8,7 @@ import axios from "axios";
 import { useTranslation } from "react-i18next";
 import AddProductButton from "../../Component/AddProductButton";
 import VariantList from "../../Component/variant_form";
+import API_BASE_URL from "../../config";
 
 const AddProducts = () => {
   const { t: tCommon, i18n } = useTranslation('accounts_common');
@@ -100,7 +101,7 @@ const AddProducts = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/productcategories/');
+        const response = await axios.get(`${API_BASE_URL}/productcategories/`);
         setCategories(response.data); // Assuming the response data is an array of categories
       } catch (err) {
         console.error("Error fetching categories", err);
@@ -206,7 +207,7 @@ const removeVariant = (index) => {
   
     try {
       const token = localStorage.getItem("access_token")
-      const response = await axios.post("http://127.0.0.1:8000/add_product/", formData, {
+      const response = await axios.post(`${API_BASE_URL}/add_product/`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           'Authorization': `Bearer ${token}`

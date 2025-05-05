@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import API_BASE_URL from '../../config';
 
 const StartCampaignPage = () => {
   const [variant, setVariant] = useState(null);
@@ -85,7 +86,7 @@ const StartCampaignPage = () => {
     try {
       const token = localStorage.getItem("access_token");
       
-      const response = await axios.post("http://127.0.0.1:8000/start_campaign/", data, 
+      const response = await axios.post(`${API_BASE_URL}/start_campaign/`, data, 
         { 
           headers: { 
             Authorization: `Bearer ${token}` 

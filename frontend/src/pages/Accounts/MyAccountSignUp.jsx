@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import API_BASE_URL from '../../config';
 
 const MyAccountSignUp = () => {
 
@@ -69,7 +70,7 @@ const MyAccountSignUp = () => {
     }
   
     axios
-      .post('http://127.0.0.1:8000/register/', payload, {
+      .post(`${API_BASE_URL}/register/`, payload, {
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true,
       })

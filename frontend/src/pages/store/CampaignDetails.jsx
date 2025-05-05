@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {useSelector} from 'react-redux';
 import { toast } from 'react-toastify';
+import API_BASE_URL from '../../config'
 
 const CampaignDetailPage = () => {
   const [variant, setVariant] = useState(null);
@@ -34,7 +35,7 @@ const CampaignDetailPage = () => {
   
     // Fetch campaign details
     axios
-      .get(`http://127.0.0.1:8000/campaigns/${id}/`)
+      .get(`${API_BASE_URL}/campaigns/${id}/`)
       .then((response) => {
         const campaignData = response.data;
         console.log("Campaign Data:", campaignData);
@@ -113,7 +114,7 @@ const CampaignDetailPage = () => {
     setIsLoading(true); // Start loading
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/campaigns/${id}/join/`,
+        `${API_BASE_URL}/campaigns/${id}/join/`,
         data,
         {
           headers: {

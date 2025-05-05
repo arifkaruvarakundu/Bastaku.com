@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import API_BASE_URL from '../config';
 
 const ProductItem = () => {
   const{t, i18n} = useTranslation('home_wh')
@@ -24,7 +25,7 @@ const ProductItem = () => {
       try {
         const token = localStorage.getItem("access_token");
         const wholesalerEmail = localStorage.getItem("email");
-        const response = await axios.get("http://127.0.0.1:8000/wholesaler/products/", {
+        const response = await axios.get(`${API_BASE_URL}/wholesaler/products/`, {
           params: { email: wholesalerEmail },
           headers:{
             'Authorization': `Bearer ${token}`

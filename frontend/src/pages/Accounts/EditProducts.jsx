@@ -7,6 +7,7 @@ import axios from "axios";
 import { useTranslation } from "react-i18next";
 import VariantItem from "../../Component/variant_edit_form";
 import UpdateProductButton from "../../Component/update_product_button";
+import API_BASE_URL from "../../config";
 
 const EditProduct = () => {
   const { t: tCommon, i18n } = useTranslation("accounts_common");
@@ -53,7 +54,7 @@ const EditProduct = () => {
     
     const fetchProductDetails = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/product_details/${id}/`);
+        const response = await axios.get(`${API_BASE_URL}/product_details/${id}/`);
         
         setProductData(response.data || {});
         setVariants(response.data.variants);
@@ -69,7 +70,7 @@ const EditProduct = () => {
 
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/productcategories/");
+        const response = await axios.get(`${API_BASE_URL}/productcategories/`);
         setCategories(response.data);
       } catch (err) {
         console.error("Error fetching categories", err);
@@ -270,7 +271,7 @@ const EditProduct = () => {
   
     try {
       const token = localStorage.getItem("access_token")
-      const response = await axios.put(`http://127.0.0.1:8000/wholesaler/product_edit/${id}/`, formData, {
+      const response = await axios.put(`${API_BASE_URL}/wholesaler/product_edit/${id}/`, formData, {
         headers: { "Content-Type": "multipart/form-data",
                     "Authorization": `Bearer ${token}`
 

@@ -6,6 +6,7 @@ import ScrollToTop from "../ScrollToTop";
 // import { formatDistanceToNow } from "date-fns";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import API_BASE_URL from '../../config';
 
 const MyAcconutNotification = () => {
   // loading
@@ -22,7 +23,7 @@ const MyAcconutNotification = () => {
         const token = localStorage.getItem("access_token");
         if (!email || !token) return;
 
-        const response = await axios.get("http://127.0.0.1:8000/notifications/", {
+        const response = await axios.get(`${API_BASE_URL}/notifications/`, {
           headers: {
             "Content-Type": "application/json",
             email: email,

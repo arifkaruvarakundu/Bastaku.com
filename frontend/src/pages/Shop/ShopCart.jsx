@@ -5,6 +5,7 @@ import ScrollToTop from "../ScrollToTop";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { setCart, removeFromCart } from "../../redux/cartSlice";
+import API_BASE_URL from "../../config";
 
 const ShopCart = () => {
   // const [cartItems, setCartItems] = useState([]);

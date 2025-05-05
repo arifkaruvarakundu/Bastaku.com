@@ -19,8 +19,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 dotenv_path = BASE_DIR / '.env'
 load_dotenv(dotenv_path=dotenv_path)
 
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -30,7 +28,7 @@ SECRET_KEY = 'django-insecure-bm6u09%+cd#581_xrbu!w7pg6wq+9!#ixk^ar6878m806ov1pg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','testserver','192.168.8.68']
+ALLOWED_HOSTS = ['localhost','127.0.0.1','testserver','192.168.8.68', '2e3b-37-39-114-50.ngrok-free.app']
 
 AUTH_USER_MODEL = 'authentication.User'
 # Application definition
@@ -299,17 +297,17 @@ cloudinary.config(
 # Upload an image
 upload_result = cloudinary.uploader.upload("https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg",
                                            public_id="shoes")
-print(upload_result["secure_url"])
+
 
 # Optimize delivery by resizing and applying auto-format and auto-quality
 optimize_url, _ = cloudinary_url("shoes", fetch_format="auto", quality="auto")
-print(optimize_url)
+
 
 # Transform the image: auto-crop to square aspect_ratio
 auto_crop_url, options = cloudinary_url(
     "shoes", width=120, height=120, crop="fill", gravity="auto"
 )
-print(auto_crop_url)
+
 
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.getenv("CLOUD_NAME"),

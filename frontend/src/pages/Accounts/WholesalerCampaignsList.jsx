@@ -4,6 +4,7 @@ import axios from "axios";
 import { MagnifyingGlass } from "react-loader-spinner";
 import ScrollToTop from "../ScrollToTop";
 import { useTranslation } from "react-i18next";
+import API_BASE_URL from '../../config';
 
 const WholesalerCampaigns = () => {
   // loading
@@ -29,7 +30,7 @@ const WholesalerCampaigns = () => {
         }
 
         // Fetch campaigns
-        const response = await axios.get("http://127.0.0.1:8000/wholesaler/campaigns/", {
+        const response = await axios.get(`${API_BASE_URL}/wholesaler/campaigns/`, {
           headers: {
             "Content-Type": "application/json",
              email: email,

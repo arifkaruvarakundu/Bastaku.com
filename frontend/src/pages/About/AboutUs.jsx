@@ -11,15 +11,12 @@ import member8 from "../../images/member8.jpg";
 import idea from "../../images/idea.gif";
 import team from "../../images/team.gif";
 import award from "../../images/award.gif";
-
 import flipkartlogo from "../../images/flipkartlogo.png";
 import amazonlogo from "../../images/amazonlogo.png";
 import blinkit from "../../images/blinkit.png";
 import smartshop from "../../images/smartshop.png";
-
 // import bgimage from "../../images/contact-bg.png";
 // import cover from "../../images/cover.jpg";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Link } from "react-router-dom";
 import SocialNetworksCarousel from "./SocialNetworksCarousel";
@@ -27,10 +24,14 @@ import CaseStudySlider from "./CaseStudySlider";
 import { MagnifyingGlass } from "react-loader-spinner";
 import { Slide, Zoom } from "react-awesome-reveal";
 import ScrollToTop from "../ScrollToTop";
+import { useTranslation } from "react-i18next";
+import CountUp from 'react-countup';
 
 const AboutUs = () => {
   // loading
   const [loaderStatus, setLoaderStatus] = useState(true);
+  const { t } = useTranslation('aboutus');
+
   useEffect(() => {
     setTimeout(() => {
       setLoaderStatus(false);
@@ -80,15 +81,13 @@ const AboutUs = () => {
 
                       {/* Text */}
                       <Slide direction="down">
-                      <h1 className="pb-2 pb-md-3">About Fresh Cart</h1>
-                      <h3 className="pb-2 pb-md-3">The Future of Grocery Delivery:</h3>
+                      <h1 className="pb-2 pb-md-3">{t("about_bastaku")}</h1>
+                      <h3 className="pb-2 pb-md-3">{t("tagline")}</h3>
                       <p
                         className="fs-xl pb-4 mb-1 mb-md-2 mb-lg-3"
                         style={{ maxWidth: 526 }}
                       >
-                  By powering the future of grocery with our retail partners, 
-                  we give everyone access to the food they love and more time 
-                  to enjoy it together.
+                      {t("about_description")}
                       </p>
                       <img
                         src={clutch}
@@ -104,22 +103,22 @@ const AboutUs = () => {
                       />
                       <div className="row row-cols-3 pt-4 pt-md-5 mt-2 mt-xl-4">
                         <div className="col">
-                          <h3 className="h2 mb-2">2,480</h3>
-                          <p className="mb-0">
-                            <strong>Remote</strong> Sales Experts
-                          </p>
+                          <h3 className="h2 mb-2">
+                            <CountUp end={100} duration={2} />+
+                          </h3>
+                          <p className="mb-0">{t("listing_info")}</p>
                         </div>
                         <div className="col">
-                          <h3 className="h2 mb-2">760</h3>
-                          <p className="mb-0">
-                            <strong>New Clients</strong> per Month
-                          </p>
+                          <h3 className="h2 mb-2">
+                            <CountUp end={100} duration={2} />+
+                          </h3>
+                          <p className="mb-0">{t("successful_purchases")}</p>
                         </div>
                         <div className="col">
-                          <h3 className="h2 mb-2">1,200</h3>
-                          <p className="mb-0">
-                            <strong>Requests</strong> per Week
-                          </p>
+                          <h3 className="h2 mb-2">
+                            <CountUp end={89} duration={2} />%
+                          </h3>
+                          <p className="mb-0">{t("customer_satisfaction_rate")}</p>
                         </div>
                       </div>
                       </Slide>
@@ -161,7 +160,6 @@ const AboutUs = () => {
                 </div>
               </section>
             </>
-
             <>
               <section className="container mt-8 mb-5 pt-lg-5" id="benefits">
                 <Swiper
@@ -186,7 +184,7 @@ const AboutUs = () => {
                         />
                         </Zoom>
                         <Slide direction="up">
-                        <h4 className="mb-2 pb-1">Creative Solutions</h4>
+                        <h4 className="mb-2 pb-1">{t("creative_solutions")}</h4>
                         <p className="mx-auto" style={{ maxWidth: "336px" }}>
                           Sed morbi nulla pulvinar lectus tempor vel euismod
                           accumsan.
@@ -205,7 +203,7 @@ const AboutUs = () => {
                         />
                         </Zoom>
                         <Slide direction="up">
-                        <h4 className="mb-2 pb-1">Award Winning</h4>
+                        <h4 className="mb-2 pb-1">{t("award_winning")}</h4>
                         <p className="mx-auto" style={{ maxWidth: "336px" }}>
                           Sit facilisis dolor arcu, fermentum vestibulum arcu
                           elementum imperdiet.
@@ -224,7 +222,7 @@ const AboutUs = () => {
                         />
                         </Zoom>
                         <Slide direction="up">
-                        <h4 className="mb-2 pb-1">Team of Professionals</h4>
+                        <h4 className="mb-2 pb-1">{t("team_of_professionals")}</h4>
                         <p className="mx-auto" style={{ maxWidth: "336px" }}>
                           Nam venenatis urna aenean quis feugiat et senectus
                           turpis.
@@ -237,7 +235,6 @@ const AboutUs = () => {
                 </Swiper>
               </section>
             </>
-
             <>
               {/* Video showreel */}
               {/* <section className="container text-center pb-5 mt-n2 mt-md-0 mb-md-2 mb-lg-4">
@@ -262,11 +259,11 @@ const AboutUs = () => {
               {/* Gallery */}
               <section className="container pb-5 mb-2 mb-md-4 mb-lg-5 mt-8">
                 <div className="d-flex align-items-center justify-content-between pb-4 mb-2">
-                  <h2 className="h1 mb-0">We are Powerful</h2>
-                  <Link to="#" className="btn btn-outline-primary btn-lg">
+                  <h2 className="h1 mb-0">{t("our_mission")}</h2>
+                  {/* <Link to="#" className="btn btn-outline-primary btn-lg">
                     <i className="bx bx-images fs-4 lh-1 me-2" />
                     See all photos
-                  </Link>
+                  </Link> */}
                 </div>
                 <div
                   className="gallery row g-4"
@@ -274,7 +271,10 @@ const AboutUs = () => {
                   data-thumbnails="true"
                 >
                   <div className="col-md-5">
-                    <a
+                    <p className="fs-xl mb-4 mb-md-0">
+                      {t("our_mission_description")}                    
+                    </p>
+                    {/* <a
                       href="https://www.youtube.com/watch?v=zPo5ZaH6sW8"
                       className="gallery-item video-item is-hovered rounded-3"
                       data-sub-html='<h6 class="fs-sm text-light">Silicon Inc. Showreel by Marvin McKinney</h6>'
@@ -284,7 +284,25 @@ const AboutUs = () => {
                         <h4 className="text-light mb-1">Fresh Cart Inc.</h4>
                         <p className="mb-0">Showreel by Marvin McKinney</p>
                       </div>
-                    </a>
+                    </a> */}
+                    <div className="d-flex align-items-center justify-content-between pb-4 mb-2 mt-4">
+                      <h2 className="h1 mb-0">{t("what_we_offer_buyers")}</h2>
+                    </div>
+                      <p className="fs-xl mb-4 mb-md-0">
+                        {t("what_we_offer_buyers_description")}                      
+                      </p>
+                      <div className="d-flex align-items-center justify-content-between pb-4 mb-2 mt-4">
+                      <h2 className="h1 mb-0">{t("what_we_offer_suppliers")}</h2>
+                    </div>
+                      <p className="fs-xl mb-4 mb-md-0">
+                        {t("what_we_offer_suppliers_description")}                      
+                      </p>
+                      <div className="d-flex align-items-center justify-content-between pb-4 mb-2 mt-4">
+                      <h2 className="h1 mb-0">{t("our_vision")}</h2>
+                    </div>
+                      <p className="fs-xl mb-4 mb-md-0">
+                        {t("our_vision_description")}                      
+                      </p>
                   </div>
                   <div className="col-md-3 col-sm-5">
                     <a
@@ -338,6 +356,18 @@ const AboutUs = () => {
                       </div>
                     </a>
                   </div>
+                  <div className="d-flex align-items-center justify-content-between pb-4 mb-2 mt-4">
+                    <h2 className="h1 mb-0">{t("why_we're_different")}</h2>
+                  </div>
+                  <p className="fs-xl mb-4 mb-md-0">
+                    {t("why_we're_different_description")}                  
+                  </p>
+                  <div className="d-flex align-items-center justify-content-between pb-4 mb-2 mt-4">
+                    <h2 className="h1 mb-0">{t("in_closing")}</h2>
+                  </div>
+                  <p className="fs-xl mb-4 mb-md-0">
+                    {t("in_closing_description")}               
+                  </p>
                 </div>
               </section>
             </>
@@ -351,7 +381,7 @@ const AboutUs = () => {
                       <div className="section-title-left pt-80">
                         <h3 className="party" style={{ fontSize: "38px" }}>
                           <Slide direction="down" delay={0.5}>
-                          Our Partners
+                          {t("our_partners")}
                           </Slide>
                         </h3>
                       </div>
@@ -437,13 +467,12 @@ const AboutUs = () => {
                 </div>
               </section>
             </>
-
             <>
               <CaseStudySlider />
             </>
-            <>
+            {/* <> */}
               {/* Contact form */}
-              <section className="container pb-5 mb-2 mt-8 mb-md-4 mb-lg-5">
+              {/* <section className="container pb-5 mb-2 mt-8 mb-md-4 mb-lg-5">
                 <div className="position-relative bg-secondaryy rounded-3 py-5 mb-2">
                   <div className="row pb-2 py-md-3 py-lg-5 px-4 px-lg-0 position-relative zindex-3">
                     <div className="col-xl-3 col-lg-4 col-md-5 offset-lg-1">
@@ -513,7 +542,7 @@ const AboutUs = () => {
                       </button>
                        
                     </form>
-                  </div>
+                  </div> */}
                   {/* Pattern */}
                   {/* <div className="position-absolute end-0 bottom-0 text-primary">
               <svg
@@ -539,10 +568,9 @@ const AboutUs = () => {
                 />
               </svg>
             </div> */}
-                </div>
+                {/* </div>
               </section>
-            </>
-
+            </> */}
             <>
               <SocialNetworksCarousel />
             </>
@@ -552,4 +580,5 @@ const AboutUs = () => {
     </div>
   );
 };
+
 export default AboutUs;

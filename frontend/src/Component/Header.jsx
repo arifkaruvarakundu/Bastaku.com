@@ -14,6 +14,7 @@ import { Trans } from "react-i18next";
 import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
 import { toast } from 'react-toastify';
+import API_BASE_URL from "../config";
 
 const Header = ({onSearch}) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +56,7 @@ const Header = ({onSearch}) => {
     const fetchData = async () => {
       try {
         // const productsResponse = await axios.get("http://127.0.0.1:8000/products/");
-        const categoriesResponse = await axios.get("http://127.0.0.1:8000/productcategories/");
+        const categoriesResponse = await axios.get(`${API_BASE_URL}/productcategories/`);
 
         // setProducts(productsResponse.data);
         // setDisplayedProducts(productsResponse.data.slice(0, 12));
@@ -79,7 +80,7 @@ const Header = ({onSearch}) => {
         const token = localStorage.getItem("access_token");
         if (!email || !token) return;
 
-        const response = await axios.get("http://127.0.0.1:8000/notifications/", {
+        const response = await axios.get(`${API_BASE_URL}/notifications/`, {
           headers: {
             "Content-Type": "application/json",
             email: email,
@@ -172,7 +173,7 @@ const Header = ({onSearch}) => {
   
     if (value.length >= 4) {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/search/?query=${value}`);
+        const response = await axios.get(`${API_BASE_URL}/search/?query=${value}`);
 
         console.log("response",response.data)
         
@@ -687,7 +688,7 @@ const Header = ({onSearch}) => {
                   {/* <Link className="dropdown-item" to="/BlogCategory">
                     Blog Category
                   </Link> */}
-                  <Link className="dropdown-item" to="*">
+                  <Link className="dropdown-item" to="/AboutUs">
                     <Trans i18nKey="about_us" ns="header">About us</Trans>
                   </Link>
                   {/* <Link className="dropdown-item" to="pages/404error.html">

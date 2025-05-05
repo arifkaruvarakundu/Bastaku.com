@@ -4,6 +4,7 @@ import axios from "axios";
 import { MagnifyingGlass } from "react-loader-spinner";
 import ScrollToTop from "../ScrollToTop";
 import { useTranslation } from "react-i18next";
+import API_BASE_URL from '../../config';
 
 const MyAccountCampaigns = () => {
   // loading
@@ -29,7 +30,7 @@ const MyAccountCampaigns = () => {
         }
 
         // Fetch campaigns
-        const response = await axios.get("http://127.0.0.1:8000/user_campaigns/", {
+        const response = await axios.get(`${API_BASE_URL}/user_campaigns/`, {
           headers: {
             "Content-Type": "application/json",
             email: email,
@@ -53,7 +54,7 @@ const MyAccountCampaigns = () => {
       try {
         const token = localStorage.getItem("access_token");
         const response = await axios.post(
-          `http://127.0.0.1:8000/cancel_campaign/${campaignId}/`,
+          `${API_BASE_URL}/cancel_campaign/${campaignId}/`,
           {},
           {
             headers: {

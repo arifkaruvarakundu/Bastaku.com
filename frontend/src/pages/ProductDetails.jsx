@@ -8,6 +8,7 @@ import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/cartSlice";
+import API_BASE_URL from '../config'
 // import { Line } from "react-chartjs-2";
 // import { Bar, Pie } from "react-chartjs-2";
 // import {Chart as ChartJS,CategoryScale, LinearScale,PointElement,LineElement,BarElement,ArcElement,Title,Tooltip,Legend,Filler,} from "chart.js";
@@ -99,7 +100,7 @@ const ProductDetails = () => {
         useEffect(() => {
           const fetchProduct = async () => {
             try {
-              const response = await axios.get(`http://127.0.0.1:8000/product_details/${id}/`);
+              const response = await axios.get(`${API_BASE_URL}/product_details/${id}/`);
               const fetchedProduct = response.data;
         
               setProduct(fetchedProduct);
@@ -161,7 +162,7 @@ const ProductDetails = () => {
           console.log("Campaign Variants:", campaignVariants);
         
           if (campaignVariants.length > 0) {
-            axios.get("http://127.0.0.1:8000/campaigns/")
+            axios.get(`${API_BASE_URL}/campaigns/`)
               .then((response) => {
                 console.log("Campaigns Data from API:", response.data);
         

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import API_BASE_URL from '../../config';
 
 
 
@@ -11,7 +12,7 @@ const Campaigns = () => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/campaigns/")
+      .get(`${API_BASE_URL}/campaigns/`)
       .then((response) => {
         console.log("Campaigns Data:", response.data); // Log response data
         // Filter out campaigns with 0 participants and 0 quantity

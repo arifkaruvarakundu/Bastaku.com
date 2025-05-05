@@ -10,6 +10,7 @@ import { useDispatch} from 'react-redux';
 import { setAuthenticated } from '../../redux/authSlice';
 import { useTranslation } from "react-i18next";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import API_BASE_URL from "../../config";
 // import Grocerylogo from '../../images/Grocerylogo.png'
 
 const MyAccountSignIn = () => {
@@ -38,7 +39,7 @@ const MyAccountSignIn = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/login/', formData);
+      const response = await axios.post(`${API_BASE_URL}/login/`, formData);
       console.log(response.data)
 
       Swal.fire({

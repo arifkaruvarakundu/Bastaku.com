@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/cartSlice"
 import {toast} from 'react-toastify'
+import API_BASE_URL from '../config'
 
 const ProductItem = () => {
   const{t,i18n} = useTranslation('productItem');
@@ -28,7 +29,7 @@ const ProductItem = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productsResponse = await axios.get("http://127.0.0.1:8000/products/");
+        const productsResponse = await axios.get(`${API_BASE_URL}/products/`);
         console.log('products',productsResponse.data)
         setProducts(productsResponse.data);
         setVariants(productsResponse.data.variants)

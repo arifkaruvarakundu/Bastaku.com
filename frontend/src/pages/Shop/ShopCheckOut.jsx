@@ -6,6 +6,7 @@ import ScrollToTop from "../ScrollToTop";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import API_BASE_URL from "../../config";
 
 const ShopCheckOut = () => {
   // loading
@@ -37,7 +38,7 @@ const ShopCheckOut = () => {
       try {
         const token = localStorage.getItem('access_token');
         const email = localStorage.getItem('email'); 
-        const response = await axios.get('http://127.0.0.1:8000/details/', {
+        const response = await axios.get(`${API_BASE_URL}/details/`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
@@ -112,7 +113,7 @@ const ShopCheckOut = () => {
         const email = localStorage.getItem('email');
         const token = localStorage.getItem('access_token');
     
-        const response = await axios.patch('http://127.0.0.1:8000/profile/update/', formData, {
+        const response = await axios.patch(`${API_BASE_URL}/profile/update/`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
              email,

@@ -47,6 +47,7 @@ import { useEffect } from "react";
 import { MagnifyingGlass } from "react-loader-spinner";
 import { useSelector, useDispatch } from 'react-redux';
 import i18n from "../i18n";
+import API_BASE_URL from "../config";
 
 
 
@@ -69,7 +70,7 @@ const Home = () => {
     const fetchData = async () => {
       try {
         // const productsResponse = await axios.get("http://127.0.0.1:8000/products/");
-        const categoriesResponse = await axios.get("http://127.0.0.1:8000/productcategories/");
+        const categoriesResponse = await axios.get(`${API_BASE_URL}/productcategories/`);
 
         // setProducts(productsResponse.data);
         // setDisplayedProducts(productsResponse.data.slice(0, 12));
@@ -493,7 +494,7 @@ const Home = () => {
                             {/* img */}
                             <div onClick={() => handleCategoryClick(category)}>
                             <img
-                                src={`http://127.0.0.1:8000${category.category_image}`}
+                                src={`${API_BASE_URL}${category.category_image}`}
                                 alt={category.name}
                                 className="card-image rounded-circle"
                                 style={{ width: "150px", height: "150px", objectFit: "cover" }}

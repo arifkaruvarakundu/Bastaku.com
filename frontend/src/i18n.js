@@ -35,7 +35,8 @@ import start_campaignEN from './locales/en/startCampaign.json';
 import start_campaignAR from './locales/ar/startCampaign.json';
 import CampaignDetailPageEN from './locales/en/campaignDetails.json';
 import CampaignDetailPageAR from './locales/ar/campaignDetails.json';
-
+import AboutUsEN from './locales/en/AboutUs';
+import AboutUsAR from './locales/ar/AboutUs';
 
 i18next
   .use(initReactI18next) // Passing i18n instance to react-i18next
@@ -58,8 +59,10 @@ i18next
         home_wh: home_whEN,
         product_details: product_detailsEN,
         start_campaign: start_campaignEN,
-        campaign_detail: CampaignDetailPageEN
+        campaign_detail: CampaignDetailPageEN,
+        aboutus : AboutUsEN,
       },
+
       ar: {
         home: homeAR,
         header: headerAR,
@@ -77,7 +80,8 @@ i18next
         home_wh: home_whAR,
         product_details: product_detailsAR,
         start_campaign: start_campaignAR,
-        campaign_detail: CampaignDetailPageAR
+        campaign_detail: CampaignDetailPageAR,
+        aboutus : AboutUsAR,
       },
 
     },
@@ -86,7 +90,7 @@ i18next
     interpolation: {
       escapeValue: false, // React already does escaping
     },
-    ns: ['home', 'header','productItem','footer','shop','signIn','wh_signIn','signup', 'cart_check', 'accounts_common', 'add_added_edit_prod', 'accounts_others','modal','home_wh', 'product_details', 'start_campaign', 'campaign_detail'], // List of namespaces
+    ns: ['home', 'header','productItem','footer','shop','signIn','wh_signIn','signup', 'cart_check', 'accounts_common', 'add_added_edit_prod', 'accounts_others','modal','home_wh', 'product_details', 'start_campaign', 'campaign_detail', 'aboutus' ], // List of namespaces
     defaultNS: 'home', // Default namespace to use
   });
 
