@@ -10,6 +10,8 @@ from authentication.models import User
 from wholesaler.models import Product
 from django.http import JsonResponse
 from wholesaler.serializers import ProductSerializer
+from authentication.models import ProductCategory
+from authentication.serializers import ProductCategorySerializer
 
 # Create your views here.
 
@@ -117,8 +119,7 @@ class AllProductsView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
         
-from authentication.models import ProductCategory
-from authentication.serializers import ProductCategorySerializer
+
 
 class SearchProductsView(APIView):
     permission_classes = [AllowAny]
@@ -146,3 +147,4 @@ class SearchProductsView(APIView):
                 {"detail": "An error occurred while retrieving search results."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+    

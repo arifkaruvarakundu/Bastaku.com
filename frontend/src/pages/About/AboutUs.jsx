@@ -26,6 +26,12 @@ import { Slide, Zoom } from "react-awesome-reveal";
 import ScrollToTop from "../ScrollToTop";
 import { useTranslation } from "react-i18next";
 import CountUp from 'react-countup';
+import StatsCarousel from "../../Component/AboutUs_count";
+import { Trans } from 'react-i18next';
+import map from "../../images/map.png";
+import appstore from "../../images/appstore-btn.svg";
+import googleplay from "../../images/googleplay-btn.svg";
+import iphone from "../../images/iphone-2.png";
 
 const AboutUs = () => {
   // loading
@@ -101,26 +107,7 @@ const AboutUs = () => {
                         width={175}
                         alt="Clutch"
                       />
-                      <div className="row row-cols-3 pt-4 pt-md-5 mt-2 mt-xl-4">
-                        <div className="col">
-                          <h3 className="h2 mb-2">
-                            <CountUp end={100} duration={2} />+
-                          </h3>
-                          <p className="mb-0">{t("listing_info")}</p>
-                        </div>
-                        <div className="col">
-                          <h3 className="h2 mb-2">
-                            <CountUp end={100} duration={2} />+
-                          </h3>
-                          <p className="mb-0">{t("successful_purchases")}</p>
-                        </div>
-                        <div className="col">
-                          <h3 className="h2 mb-2">
-                            <CountUp end={89} duration={2} />%
-                          </h3>
-                          <p className="mb-0">{t("customer_satisfaction_rate")}</p>
-                        </div>
-                      </div>
+                      
                       </Slide>
                     </div>
                     {/* Images */}
@@ -162,8 +149,9 @@ const AboutUs = () => {
             </>
             <>
               <section className="container mt-8 mb-5 pt-lg-5" id="benefits">
+                  <StatsCarousel />
                 <Swiper
-                  className="swiper pt-3"
+                  className="swiper pt-3 mt-8"
                   modules={[]} // Use the modules prop to include the Pagination module
                   slidesPerView={1}
                   pagination={{ clickable: true }}
@@ -172,7 +160,8 @@ const AboutUs = () => {
                     991: { slidesPerView: 3 },
                   }}
                 >
-                  <div className="swiper-wrapper pt-4">
+                  {/* <div className="swiper-wrapper pt-4">
+                    
                     <SwiperSlide className="swiper-slide border-end-lg px-2">
                       <div className="text-center">
                         <Zoom>
@@ -230,7 +219,7 @@ const AboutUs = () => {
                         </Slide>
                       </div>
                     </SwiperSlide>
-                  </div>
+                  </div> */}
                   <div className="swiper-pagination position-relative pt-2 pt-sm-3 mt-4"></div>
                 </Swiper>
               </section>
@@ -571,6 +560,126 @@ const AboutUs = () => {
                 {/* </div>
               </section>
             </> */}
+            <>
+                          {/* cta section */}
+                          <section className="container mt-8 mb-5 pt-lg-5">
+                            <div className="coming-soon"><Trans>coming_soon</Trans></div>
+                            <div
+                              className="container"
+                              style={{
+                                background: `url(${map})no-repeat`,
+                                backgroundSize: "cover",
+                              }}
+                            >
+                              {/* <hr className="my-lg-14 my-8"> */}
+                              {/* row */}
+                              <div className="row align-items-center text-center justify-content-center">
+                                <div className=" col-lg-6 col-md-6 fade-in-left">
+                                  <Slide direction="left">
+                                    <div className="mb-6">
+                                      <div className="mb-7">
+                                        {/* heading */}
+                                        <h1><Trans>get_app</Trans></h1>
+                                        <h5 className="mb-0">
+                                          <Trans>get_app_description</Trans>
+                                        </h5>
+                                      </div>
+                                      <div className="mb-5">
+                                        {/* form check */}
+                                        <div className="form-check form-check-inline">
+                                          <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            name="flexRadioDefault"
+                                            id="flexRadioDefault1"
+                                          />
+                                          <label
+                                            className="form-check-label"
+                                            htmlFor="flexRadioDefault1"
+                                          >
+                                            Email
+                                          </label>
+                                        </div>
+                                        {/* form check */}
+                                        <div className="form-check form-check-inline">
+                                          <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            name="flexRadioDefault"
+                                            id="flexRadioDefault2"
+                                            defaultChecked
+                                          />
+                                          <label
+                                            className="form-check-label"
+                                            htmlFor="flexRadioDefault2"
+                                          >
+                                            Phone
+                                          </label>
+                                        </div>
+                                        {/* form */}
+                                        {/* <form className="row g-3 mt-2">
+            
+                      
+                                          <div className="col-6 ">
+                                            
+                                            <input type="text" className="form-control" placeholder="Phone">
+                                          </div>
+                                          
+                                          <div className="col-6">
+                                            <button type="submit" className="btn btn-primary mb-3">Share app link</button>
+                                          </div>
+                                        </form> */}
+                                      </div>
+                                      <div>
+                                        {/* app */}
+                                        {/* <small>Download app from</small> */}
+            
+                                        <ul className="list-inline mb-0 mt-2 ">
+                                          {/* list item */}
+                                          <li className="list-inline-item">
+                                            {/* img */}
+                                            <Link to="#!">
+                                              {" "}
+                                              <img
+                                                src={appstore}
+                                                alt="appstore"
+                                                style={{ width: 140 }}
+                                              />
+                                            </Link>
+                                          </li>
+                                          <li className="list-inline-item">
+                                            {/* img */}
+                                            <Link to="#!">
+                                              {" "}
+                                              <img
+                                                src={googleplay}
+                                                alt="googleplay"
+                                                style={{ width: 140 }}
+                                              />
+                                            </Link>
+                                          </li>
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </Slide>
+                                </div>
+                                <div className=" offset-lg-2 col-lg-4 col-md-6 fade-zoom">
+                                  <Slide direction="right">
+                                    <div className="text-lg-start">
+                                      {/* img */}
+                                      <img
+                                        src={iphone}
+                                        alt="iphone"
+                                        className=" img-fluid"
+                                      />
+                                    </div>
+                                  </Slide>
+                                </div>
+                              </div>
+                              {/* <hr className="my-lg-14 my-8"> */}
+                            </div>
+                          </section>
+                        </>
             <>
               <SocialNetworksCarousel />
             </>
