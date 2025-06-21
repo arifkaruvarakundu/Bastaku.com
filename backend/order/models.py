@@ -198,3 +198,12 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification for {self.user.first_name} {self.user.last_name} - {self.message}"
+
+class Invoice(models.Model):
+    order = models.OneToOneField(Order, related_name="invoice", on_delete=models.CASCADE, null=True, blank=True)
+    campaign_order = models.OneToOneField(CampaignOrder, related_name ="invoice", on_delete=models.CASCADE, null=True, blank=True)
+    due_date = models.DateField()
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"Invoice for Order #{self.order.id}"

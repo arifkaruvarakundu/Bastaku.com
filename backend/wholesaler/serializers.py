@@ -182,7 +182,9 @@ class ProductSerializer(serializers.ModelSerializer):
             "wholesaler", "created_date", "modified_date", "slug", "variants"
         ]
     
+    
 from .models import WholesalerBankDetails
+
 class WholesalerBankDetailsSerializer(serializers.ModelSerializer):
     
     class Meta:

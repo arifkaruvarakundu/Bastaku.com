@@ -57,23 +57,20 @@ class UpdateUserProfileUpdationView(APIView):
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def patch(self, request, *args, **kwargs):
-        
-        email = request.headers.get('email')
-        
-        # Ensure the user profile exists
-        try:
-            user_profile = User.objects.get(email=email)
-        except User.DoesNotExist:
-            return Response({'error': 'User not found.'}, status=404)
+        user_profile = request.user  # safer and correct
 
-        # Update the profile with the new data, without affecting the email field if not changing
+        print("Incoming PATCH data:", request.data)  # debug line
+
         serializer = UserProfileSerializer(user_profile, data=request.data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
             return Response({'message': 'Profile updated successfully', 'data': serializer.data})
 
-        return Response({'error': serializer.errors}, status=400)
+        print("Serializer Errors:", serializer.errors)  # debug line
+        return Response(serializer.errors, status=400)
+
+
     
 # class AllProductsView(APIView):
 #     """

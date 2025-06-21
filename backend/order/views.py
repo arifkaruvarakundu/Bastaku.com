@@ -117,3 +117,4 @@ class MarkNotificationReadView(APIView):
         notification.is_read = True
         notification.save()
         return Response({"status": "success"})
+
