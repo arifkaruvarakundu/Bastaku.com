@@ -162,7 +162,10 @@ const VariantItem = ({ index, variant, handleVariantChange, onDrop, removeImage,
                     fontSize: "12px",
                     cursor: "pointer",
                   }}
-                  onClick={() => removeImage(index, imgIndex)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeImage(index, imgIndex);
+                  }}
                 >
                   ✕
                 </button>

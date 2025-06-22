@@ -44,6 +44,11 @@ const AboutUs = () => {
     }, 1500);
   }, []);
 
+  {/* Shared Styles */}
+  const containerClass = "grid md:grid-cols-2 gap-8 items-center";
+  const imageClass = "w-full h-[350px] object-cover rounded-xl shadow-lg";
+  const textClass = "max-w-xl";
+
   return (
     <div>
       <div>
@@ -87,17 +92,18 @@ const AboutUs = () => {
 
                       {/* Text */}
                       <Slide direction="down">
-                      <h1 className="pb-2 pb-md-3">{t("about_bastaku")}</h1>
+                      <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}>{t("about_bastaku")}</h1>
                       <h3 className="pb-2 pb-md-3">{t("tagline")}</h3>
                       <p
                         className="fs-xl pb-4 mb-1 mb-md-2 mb-lg-3"
-                        style={{ maxWidth: 526 }}
+                        // style={{ maxWidth: 526 }}
+                        style={{ fontSize: '1.125rem', color: '#4B5563' }}
                       >
                       {t("about_description")}
                       </p>
                       <img
                         src={clutch}
-                        className=" d-dark-mode-none"
+                        className="d-dark-mode-none"
                         width={175}
                         alt="Clutch"
                       />
@@ -246,119 +252,135 @@ const AboutUs = () => {
           </div>
         </section> */}
               {/* Gallery */}
-              <section className="container pb-5 mb-2 mb-md-4 mb-lg-5 mt-8">
-                <div className="d-flex align-items-center justify-content-between pb-4 mb-2">
-                  <h2 className="h1 mb-0">{t("our_mission")}</h2>
-                  {/* <Link to="#" className="btn btn-outline-primary btn-lg">
-                    <i className="bx bx-images fs-4 lh-1 me-2" />
-                    See all photos
-                  </Link> */}
+              <section style={{ maxWidth: '1500px', margin: '0 auto', padding: '4rem 1rem' }}>
+              {/* Section 1: Text Left, Image Right */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'center' }}>
+                <div style={{ flex: '3 1 75%', maxWidth: '1000px' }}>
+                  <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}>{t("our_mission")}</h2>
+                  <p style={{ fontSize: '1.125rem', color: '#4B5563' }}>{t("our_mission_description")}</p>
                 </div>
-                <div
-                  className="gallery row g-4"
-                  data-video="true"
-                  data-thumbnails="true"
-                >
-                  <div className="col-md-5">
-                    <p className="fs-xl mb-4 mb-md-0">
-                      {t("our_mission_description")}                    
-                    </p>
-                    {/* <a
-                      href="https://www.youtube.com/watch?v=zPo5ZaH6sW8"
-                      className="gallery-item video-item is-hovered rounded-3"
-                      data-sub-html='<h6 class="fs-sm text-light">Silicon Inc. Showreel by Marvin McKinney</h6>'
-                    >
-                      <img src={member8} alt="Gallery thumbnail" />
-                      <div className="gallery-item-caption p-4">
-                        <h4 className="text-light mb-1">Fresh Cart Inc.</h4>
-                        <p className="mb-0">Showreel by Marvin McKinney</p>
-                      </div>
-                    </a> */}
-                    <div className="d-flex align-items-center justify-content-between pb-4 mb-2 mt-4">
-                      <h2 className="h1 mb-0">{t("what_we_offer_buyers")}</h2>
-                    </div>
-                      <p className="fs-xl mb-4 mb-md-0">
-                        {t("what_we_offer_buyers_description")}                      
-                      </p>
-                      <div className="d-flex align-items-center justify-content-between pb-4 mb-2 mt-4">
-                      <h2 className="h1 mb-0">{t("what_we_offer_suppliers")}</h2>
-                    </div>
-                      <p className="fs-xl mb-4 mb-md-0">
-                        {t("what_we_offer_suppliers_description")}                      
-                      </p>
-                      <div className="d-flex align-items-center justify-content-between pb-4 mb-2 mt-4">
-                      <h2 className="h1 mb-0">{t("our_vision")}</h2>
-                    </div>
-                      <p className="fs-xl mb-4 mb-md-0">
-                        {t("our_vision_description")}                      
-                      </p>
+                {/* Image Section */}
+                  <div style={{ flex: '1 1 25%', display: 'flex', justifyContent: 'center' }}>
+                    <img
+                      src={member2}
+                      alt="Mission"
+                      style={{
+                        width: '100%',
+                        maxWidth: '350px',
+                        height: 'auto',
+                        borderRadius: '1rem',
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+                        objectFit: 'cover'
+                      }}
+                    />
                   </div>
-                  <div className="col-md-3 col-sm-5">
-                    <a
-                      href={member2}
-                      className="gallery-item rounded-3 mb-4"
-                      data-sub-html='<h6 class="fs-sm text-light">Program for apprentices</h6>'
-                    >
-                      <img
-                        src={member2}
-                        alt="Gallery thumbnail"
-                        style={{ height: "310px" }}
-                      />
-                      <div className="gallery-item-caption fs-sm fw-medium">
-                        Program for apprentices
-                      </div>
-                    </a>
-                    <a
-                      href={member5}
-                      className="gallery-item rounded-3"
-                      data-sub-html='<h6 class="fs-sm text-light">Modern bright offices</h6>'
-                    >
-                      <img src={member5} alt="Gallery thumbnail" />
-                      <div className="gallery-item-caption fs-sm fw-medium">
-                        Modern bright offices
-                      </div>
-                    </a>
-                  </div>
-                  <div className="col-md-4 col-sm-7">
-                    <a
-                      href={member6}
-                      className="gallery-item rounded-3 mb-4"
-                      data-sub-html='<h6 class="fs-sm text-light">Friendly professional team</h6>'
-                    >
-                      <img
-                        src={member6}
-                        alt="Gallery thumbnail"
-                        style={{ height: "360px" }}
-                      />
-                      <div className="gallery-item-caption fs-sm fw-medium">
-                        Friendly professional team
-                      </div>
-                    </a>
-                    <a
-                      href={member7}
-                      className="gallery-item rounded-3"
-                      data-sub-html='<h6 class="fs-sm text-light">Efficient project management</h6>'
-                    >
-                      <img src={member7} alt="Gallery thumbnail" />
-                      <div className="gallery-item-caption fs-sm fw-medium">
-                        Efficient project management
-                      </div>
-                    </a>
-                  </div>
-                  <div className="d-flex align-items-center justify-content-between pb-4 mb-2 mt-4">
-                    <h2 className="h1 mb-0">{t("why_we're_different")}</h2>
-                  </div>
-                  <p className="fs-xl mb-4 mb-md-0">
-                    {t("why_we're_different_description")}                  
-                  </p>
-                  <div className="d-flex align-items-center justify-content-between pb-4 mb-2 mt-4">
-                    <h2 className="h1 mb-0">{t("in_closing")}</h2>
-                  </div>
-                  <p className="fs-xl mb-4 mb-md-0">
-                    {t("in_closing_description")}               
-                  </p>
                 </div>
-              </section>
+
+      {/* Section 2: Image Left, Text Right */}
+      <div style={{ flex: '1 1 25%', display: 'flex', justifyContent: 'center' }}>
+        <img 
+          src={member5} 
+          alt="Buyers" 
+          style={{
+            width: '100%',
+            maxWidth: '350px',
+            height: 'auto',
+            borderRadius: '1rem',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+            objectFit: 'cover'
+          }} 
+        />
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'center' }}>
+        <div style={{ flex: '3 1 75%', maxWidth: '1000px', marginLeft: '4rem' }}>
+          <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}>{t("what_we_offer_buyers")}</h2>
+          <p style={{ fontSize: '1.125rem', color: '#4B5563' }}>{t("what_we_offer_buyers_description")}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Section 3: Text Left, Image Right */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'center', marginTop: '4rem' }}>
+        <div style={{ flex: '3 1 75%', maxWidth: '1000px' }}>
+          <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}>{t("what_we_offer_suppliers")}</h2>
+          <p style={{ fontSize: '1.125rem', color: '#4B5563' }}>{t("what_we_offer_suppliers_description")}</p>
+        </div>
+        <div style={{ flex: '1 1 25%', display: 'flex', justifyContent: 'center' }}>
+        <img 
+          src={member6} 
+          alt="Suppliers" 
+          style={{
+            width: '100%',
+            maxWidth: '350px',
+            height: 'auto',
+            borderRadius: '1rem',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+            objectFit: 'cover'
+          }}
+          />
+        </div>
+      </div>
+
+      {/* Section 4: Image Left, Text Right */}
+      <div style={{ flex: '1 1 25%', display: 'flex', justifyContent: 'center' }}>
+        <img 
+          src={member7} 
+          alt="Vision" 
+          className={imageClass} 
+          style={{
+            width: '100%',
+            maxWidth: '350px',
+            height: 'auto',
+            borderRadius: '1rem',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+            objectFit: 'cover'
+          }}
+        />
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'center', marginLeft: '4rem' }}>
+          <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}>{t("our_vision")}</h2>
+          <p style={{ fontSize: '1.125rem', color: '#4B5563' }}>{t("our_vision_description")}</p>
+        </div>
+      </div>
+
+      {/* Section 5: Text Left, Image Right */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'center' }}>
+        <div style={{ flex: '3 1 75%', maxWidth: '1000px' }}>
+          <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}>{t("why_we're_different")}</h2>
+          <p style={{ fontSize: '1.125rem', color: '#4B5563' }}>{t("why_we're_different_description")}</p>
+        </div>
+        <img 
+          src={member8} 
+          alt="Why We're Different" 
+          style={{
+            width: '100%',
+            maxWidth: '350px',
+            height: 'auto',
+            borderRadius: '1rem',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+            objectFit: 'cover'
+          }} 
+        />
+      </div>
+
+      {/* Section 6: Image Left, Text Right */}
+      <div style={{ flex: '1 1 25%', display: 'flex', justifyContent: 'center' }}>
+        <img 
+          src={member5} 
+          alt="Closing" 
+          style={{
+            width: '100%',
+            maxWidth: '350px',
+            height: 'auto',
+            borderRadius: '1rem',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+            objectFit: 'cover'
+          }} 
+        />
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'center', marginLeft: '4rem' }}>
+          <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem'}}>{t("in_closing")}</h2>
+          <p style={{ fontSize: '1.125rem', color: '#4B5563' }}>{t("in_closing_description")}</p>
+        </div>
+      </div>
+    </section>
             </>
             <>
               {/* Awards */}
