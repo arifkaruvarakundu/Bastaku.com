@@ -270,6 +270,9 @@ PASSWORD_RESET_TIMEOUT = 900
 
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://www.bastaku.com",
+    "https://bastaku.com",
+    "https://api.bastaku.com",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:8000",
