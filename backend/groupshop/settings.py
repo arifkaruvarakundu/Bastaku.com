@@ -230,6 +230,7 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
+    "https://bastaku-com.vercel.app",
     "https://bastaku-7zk0b9tb0-muhammed-harifs-projects.vercel.app",
     "https://bastaku.com",  # Add this once your frontend uses the real domain
     "https://api.bastaku.com",
