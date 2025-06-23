@@ -230,6 +230,7 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
+    "https://bastaku-7zk0b9tb0-muhammed-harifs-projects.vercel.app",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "http://localhost:3000",
