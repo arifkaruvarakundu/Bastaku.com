@@ -26,7 +26,7 @@ load_dotenv(dotenv_path=dotenv_path)
 SECRET_KEY = 'django-insecure-bm6u09%+cd#581_xrbu!w7pg6wq+9!#ixk^ar6878m806ov1pg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '165.22.94.137', 'api.bastaku.com']
 
@@ -213,8 +213,6 @@ EMAIL_USE_TLS = True
 
 TIME_ZONE = 'UTC'
 
-APPEND_SLASH=False
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
@@ -230,6 +228,7 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
+    "https://www.bastaku.com",
     "https://bastaku-com.vercel.app",
     "https://bastaku-7zk0b9tb0-muhammed-harifs-projects.vercel.app",
     "https://bastaku.com",  # Add this once your frontend uses the real domain
