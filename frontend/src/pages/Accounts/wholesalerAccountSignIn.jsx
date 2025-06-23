@@ -55,7 +55,7 @@ const WholesalerAccountSignIn = () => {
       localStorage.setItem("user_type", response.data.user_type);
 
       dispatch(setAuthenticated(true));
-      navigate("/Grocery-react/"); // Redirect to wholesaler dashboard
+      navigate("/"); // Redirect to wholesaler dashboard
 
     } catch (error) {
       const errorMessage =

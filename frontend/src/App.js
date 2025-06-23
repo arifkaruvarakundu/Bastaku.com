@@ -91,7 +91,7 @@ const App = () => {
         <ScrollToTop />
         <Header/>
         <Routes>
-          <Route path="/Grocery-react/" element={<Home />} />
+          <Route path="/" element={<Home />} />
           {/* Shop pages */}
           <Route path="/Shop" element={<Shop />} />
           <Route path="/AboutUs" element={<AboutUs />} />

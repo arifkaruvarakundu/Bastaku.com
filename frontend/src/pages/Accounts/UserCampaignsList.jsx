@@ -153,7 +153,7 @@ const MyAccountCampaigns = () => {
                                                             </Link>
                                                           </li>
                                                            <li className="nav-item">
-                                                              <Link className="nav-link " to="/Grocery-react/">
+                                                              <Link className="nav-link " to="/">
                                                                                   <i className="fas fa-sign-out-alt me-2" />
                                                                                   {tCommon('home')}
                                                                                 </Link>

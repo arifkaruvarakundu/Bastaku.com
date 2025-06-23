@@ -66,6 +66,8 @@ const Home = () => {
         setCurrentLang(i18n.language);
       }, [i18n.language]);
 
+  const isArabic = currentLang === "ar";
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -528,7 +530,7 @@ const Home = () => {
                 <div className="container ">
                   <div className="row">
                     <div className="col-12 col-lg-6 mb-3 mb-lg-0  fade-in-left">
-                      <Slide direction="left">
+                      <Slide direction={isArabic ? "right" : "left"}>
                         <div>
                           <div
                             className="py-10 px-8 rounded-3"
@@ -536,9 +538,10 @@ const Home = () => {
                               background: `url(${grocerybanner}) no-repeat`,
                               backgroundSize: "cover",
                               backgroundPosition: "center",
+                              transform: isArabic ? "scaleX(-1)" : "none",
                             }}
                           >
-                            <div>
+                            <div style={{ transform: isArabic ? "scaleX(-1)" : "none" }}>
                               <h3 className="fw-bold mb-1">
                                 Fruits &amp; Vegetables
                               </h3>
@@ -555,7 +558,7 @@ const Home = () => {
                       </Slide>
                     </div>
                     <div className="col-12 col-lg-6 fade-in-left ">
-                      <Slide direction="right">
+                      <Slide direction={isArabic ? "left" : "right"}>
                         <div>
                           <div
                             className="py-10 px-8 rounded-3"
@@ -563,9 +566,10 @@ const Home = () => {
                               background: `url(${grocerybanner2}) no-repeat`,
                               backgroundSize: "cover",
                               backgroundPosition: "center",
+                              transform: isArabic ? "scaleX(-1)" : "none",
                             }}
                           >
-                            <div>
+                            <div style={{ transform: isArabic ? "scaleX(-1)" : "none" }}>
                               <h3 className="fw-bold mb-1">
                                 Freshly Baked Buns
                               </h3>
@@ -592,7 +596,7 @@ const Home = () => {
                   {/* row */}
                   <div className="row">
                     <div className="col-lg-4 col-md-6 col-12 fade-in-left">
-                      <Slide direction="left">
+                      <Slide direction={isArabic ? "left" : "right"}>
                         <div className=" banner mb-3">
                           {/* Banner Content */}
                           <div className="position-relative">
@@ -601,8 +605,17 @@ const Home = () => {
                               src={adbanner1}
                               alt="ad-banner"
                               className="img-fluid rounded-3 w-100"
+                              style={{
+                                transform: isArabic ? "scaleX(-1)" : "none",
+                              }}
                             />
-                            <div className="banner-text">
+                            <div
+                              className="banner-text"
+                              style={{
+                              direction: isArabic ? "rtl" : "ltr",
+                              textAlign: isArabic ? "right" : "left",
+                            }}
+                            >
                               <h3 className="mb-0 fw-bold">
                                 10% cashback on <br />
                                 personal care{" "}
@@ -637,8 +650,17 @@ const Home = () => {
                               src={adbanner2}
                               alt="ad-banner-2"
                               className="img-fluid rounded-3 w-100"
+                              style={{
+                                transform: isArabic ? "scaleX(-1)" : "none",
+                              }}
                             />
-                            <div className="banner-text">
+                            <div
+                              className="banner-text"
+                              style={{
+                              direction: isArabic ? "rtl" : "ltr",
+                              textAlign: isArabic ? "right" : "left",
+                            }}
+                            >
                               {/* Banner Content */}
                               <h3 className=" fw-bold mb-2">
                                 Say yes to <br />
@@ -657,7 +679,7 @@ const Home = () => {
                       </Zoom>
                     </div>
                     <div className="col-lg-4 col-12 fade-in-left ">
-                      <Slide direction="right">
+                      <Slide direction={isArabic ? "left" : "right"}>
                         <div className="banner mb-3">
                           <div className="banner-img">
                             {/* Banner Image */}
@@ -665,9 +687,18 @@ const Home = () => {
                               src={adbanner3}
                               alt="ad-banner-3"
                               className="img-fluid rounded-3 w-100"
+                              style={{
+                                transform: isArabic ? "scaleX(-1)" : "none",
+                              }}
                             />
                             {/* Banner Content */}
-                            <div className="banner-text">
+                            <div
+                              className="banner-text"
+                              style={{
+                              direction: isArabic ? "rtl" : "ltr",
+                              textAlign: isArabic ? "right" : "left",
+                            }}
+                            >
                               <h3 className="fs-2 fw-bold lh-1 mb-2">
                                 When in doubt,
                                 <br />

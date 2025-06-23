@@ -125,7 +125,7 @@ const CampaignDetailPage = () => {
 
       if (response.status === 200) {
         alert("Successfully joined the campaign!");
-        navigate("/Grocery-react/");
+        navigate("/");
       } else {
         alert("Failed to join the campaign.");
       }

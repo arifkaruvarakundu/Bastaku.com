@@ -1,5 +1,5 @@
 import React, { useState,useEffect,useRef } from "react";
-import Grocerylogo from "../images/Grocerylogo.png";
+import Grocerylogo from "../images/logo basta ku 2.png";
 import productimage1 from "../images/product-img-1.jpg";
 import productimage2 from "../images/product-img-2.jpg";
 import productimage3 from "../images/product-img-3.jpg";
@@ -40,6 +40,8 @@ const Header = ({onSearch}) => {
 
   console.log("language",i18n.language)
 
+  const isArabic = i18n.language === "ar";
+
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -48,7 +50,7 @@ const Header = ({onSearch}) => {
     localStorage.clear();
     dispatch(setAuthenticated(null)); // Reset the authenticated state
     toast.success("Successfully logged out");
-    navigate("/Grocery-react/");
+    navigate("/");
   };
   const cartItems = useSelector((state) => state.cart.cartItems);
 
@@ -373,7 +375,9 @@ const Header = ({onSearch}) => {
                 position: window.innerWidth <= 480 ? "relative" : "static",
                 right: window.innerWidth <= 480 ? "0" : "auto",
                 width: window.innerWidth <= 480 ? "100%" : "auto",
+                marginInlineStart: window.innerWidth > 480 ? (isArabic ? "0" : "1rem") : "0",
               }}
+
             >
               <input
                 type="search"
@@ -483,14 +487,19 @@ const Header = ({onSearch}) => {
       </>
       <nav className="navbar navbar-expand-lg navbar-light sticky-top">
         <div className="container">
-          <Link className="navbar-brand" to="/Grocery-react/">
+          <Link className="navbar-brand" to="/">
             <img
               src={Grocerylogo}
               style={{ width: 150, marginBottom: 10, marginLeft: "-15px" }}
               alt="eCommerce HTML Template"
             />
           </Link>
-          <div style={{ position: "relative" }}>
+          <div
+            style={{
+              position: "relative",
+              marginInlineEnd: isArabic ? "8rem" : "0", // shifts it left in RTL
+            }}
+          >
             <input
               className="form-control"
               style={{ width: "200%" }}
@@ -654,7 +663,7 @@ const Header = ({onSearch}) => {
                 </li>
               </li> */}
               <li className="nav-item">
-                <Link className="nav-link" to="/Grocery-react/">
+                <Link className="nav-link" to="/">
                 <Trans i18nKey="home" ns="header">Home</Trans>
                 </Link>
               </li>

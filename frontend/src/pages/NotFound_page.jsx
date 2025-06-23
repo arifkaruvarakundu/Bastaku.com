@@ -6,7 +6,7 @@ function NotFoundPage() {
       <div style={styles.content}>
         <h1 style={styles.heading}>404</h1>
         <p style={styles.message}>Oops! The page you're looking for doesn't exist.</p>
-        <p style={styles.suggestion}>Perhaps you want to go back to the <a href="/Grocery-react/" style={styles.link}>Home Page</a>?</p>
+        <p style={styles.suggestion}>Perhaps you want to go back to the <a href="/" style={styles.link}>Home Page</a>?</p>
       </div>
     </div>
   );

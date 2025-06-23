@@ -262,7 +262,7 @@ const MyAcconutPaymentMethod = () => {
                   </li>
                   )}
                   <li className="nav-item">
-                    <Link className="nav-link" to="/Grocery-react/">
+                    <Link className="nav-link" to="/">
                       <i className="fas fa-sign-out-alt me-2" />
                       {tCommon("home")}
                     </Link>
@@ -608,7 +608,7 @@ const MyAcconutPaymentMethod = () => {
                 <ul className="nav flex-column nav-pills nav-pills-dark">
                   {/* nav item */}
                   <li className="nav-item">
-                    <a className="nav-link " href="/Grocery-react/">
+                    <a className="nav-link " href="/">
                       <i className="fas fa-sign-out-alt me-2" />
                       Home
                     </a>

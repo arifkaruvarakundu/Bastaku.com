@@ -95,7 +95,7 @@ const StartCampaignPage = () => {
 
       if (response.status === 201) {
         alert("Campaign started successfully!");
-        navigate("/Grocery-react/")
+        navigate("/")
       } else {
         alert("Failed to start the campaign.");
       }

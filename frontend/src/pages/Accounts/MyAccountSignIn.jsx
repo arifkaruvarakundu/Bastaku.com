@@ -55,7 +55,7 @@ const MyAccountSignIn = () => {
       localStorage.setItem('user_type', response.data.user_type);
 
       dispatch(setAuthenticated(true));
-      navigate("/Grocery-react/")
+      navigate("/")
 
     } catch (error) {
       const errorMessage =
