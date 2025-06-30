@@ -2,6 +2,7 @@ from django.db import models
 from authentication.models import User
 from wholesaler.models import ProductVariant
 from campaign.models import Campaign
+from django.utils import timezone
 # # Create your models here.
 
 # class Payment(models.Model):
@@ -83,40 +84,53 @@ from campaign.models import Campaign
 #         return self.product.product_name
 
 class Order(models.Model):
+
+    class Status(models.TextChoices):
+        PENDING = 'Pending', 'Pending'
+        CONFIRMED = 'Order Confirmed', 'Order Confirmed'
+        OUT_FOR_DELIVERY = 'Out for Delivery', 'Out for Delivery'
+        CANCELLED = 'Cancelled', 'Cancelled'
+        DELIVERED = 'Delivered', 'Delivered'
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
-    variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, related_name="orders", null=True, blank=True)
-    quantity = models.PositiveIntegerField()
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    is_paid = models.BooleanField(default=False)
-    payment_status = models.CharField(
-        max_length=50, choices=[('pending', 'Pending'), ('completed', 'Completed')], default='pending'
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=50, choices=Status.choices, default=Status.PENDING)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def total_amount(self):
+        return sum(item.total_price() for item in self.items.all())
 
     def __str__(self):
-        return f"Order {self.id} - {self.user.first_name}"
+        return f"Order #{self.id} - {self.user.first_name} {self.user.last_name}"
+    
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    product_variant = models.ForeignKey(ProductVariant, on_delete=models.PROTECT)
+    quantity = models.PositiveIntegerField(default=1)
 
-    def update_payment_status(self):
-        """
-        Method to update order's payment status based on associated payments.
-        """
-        if self.payments.filter(status='full_paid').exists():
-            self.payment_status = 'completed'
-            self.is_paid = True
-        else:
-            self.payment_status = 'pending'
-            self.is_paid = False
-        self.save()
+    def total_price(self):
+        if self.product_variant.price is None:
+            return 0
+        return self.product_variant.price * self.quantity
 
+
+    def __str__(self):
+        return f"{self.product_variant.product.product_name} x {self.quantity}"
 
 class CampaignOrder(models.Model):
+    class Status(models.TextChoices):
+        PENDING = 'Pending', 'Pending'
+        CONFIRMED = 'Order Confirmed', 'Order Confirmed'
+        OUT_FOR_DELIVERY = 'Out for Delivery', 'Out for Delivery'
+        CANCELLED = 'Cancelled', 'Cancelled'
+        DELIVERED = 'Delivered', 'Delivered'
+
     participant = models.ForeignKey(User, on_delete=models.CASCADE, related_name="campaign_orders")
-    variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, related_name="campaign_orders", null=True, blank=True)
+    status = models.CharField(max_length=50, choices=Status.choices, default=Status.PENDING)
     campaign = models.ForeignKey(Campaign, on_delete=models.PROTECT, related_name="orders")
-    quantity = models.PositiveIntegerField()
-    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
-    remaining_balance =models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+    remaining_balance =models.DecimalField(max_digits=10, decimal_places=3, default=0)
     # Add a field for payment status
     payment_status = models.CharField(
         max_length=50, choices=[('pending', 'Pending'), ('advance_paid', 'Advance Paid'), ('full_paid', 'Full Paid')],
@@ -137,6 +151,22 @@ class CampaignOrder(models.Model):
         else:
             self.payment_status = 'pending'
         self.save()
+
+    def total_amount(self):
+        return sum(item.total_price() for item in self.items.all())
+
+class CampaignOrderItem(models.Model):
+    order = models.ForeignKey(CampaignOrder, on_delete=models.CASCADE, related_name='items')
+    product_variant = models.ForeignKey(ProductVariant, on_delete=models.PROTECT)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def total_price(self):
+        if self.product_variant.price is None:
+            return 0
+        return self.product_variant.price * self.quantity
+
+    def __str__(self):
+        return f"{self.product_variant.product.product_name} x {self.quantity}"
 
 class Payment(models.Model):
     PAYMENT_TYPES = (

@@ -26,7 +26,7 @@ load_dotenv(dotenv_path=dotenv_path)
 SECRET_KEY = 'django-insecure-bm6u09%+cd#581_xrbu!w7pg6wq+9!#ixk^ar6878m806ov1pg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '165.22.94.137', 'api.bastaku.com']
 
@@ -217,8 +217,9 @@ TIME_ZONE = 'UTC'
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR/'static'
-# STATICFILES_DIRS = [BASE_DIR/'static']
+# STATIC_ROOT = BASE_DIR/'static'
+STATICFILES_DIRS = [BASE_DIR/'static']
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 

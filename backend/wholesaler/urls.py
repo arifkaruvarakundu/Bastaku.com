@@ -11,4 +11,11 @@ urlpatterns = [
     path('product_details/<int:pk>/', ProductDetailView.as_view(), name='user-product-detail'),
     path('wholesaler/add_bank_details/', WholesalerAddBankDetailsView.as_view(), name='wholesaler-bank-details'),
     path('wholesaler/bank_details/', WholesalerBankDetailsView.as_view(), name='wholesaler-bank-details'),
+    path('admin_products/', AdminAllProductsView.as_view(), name='all-products'),
+    path('admin-delete-product/<int:pk>/', AdminDeleteProductView.as_view(), name='admin-delete-product'),
+    path('admin-add-category/', AdminAddCategoryView.as_view(), name='admin-add-category'),
+    path('admin-edit-category/<int:pk>/', AdminEditCategoryView.as_view(), name='admin-edit-category'),
+    path('category_details/<int:pk>/', CategoryDetailView.as_view(), name = 'category-details'),
+    path('deletecategory/<int:pk>/', DeleteCategoryView.as_view(), name = 'delete-category'),
+
 ]

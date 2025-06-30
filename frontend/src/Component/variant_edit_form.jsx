@@ -78,8 +78,8 @@ const VariantItem = ({ index, variant, handleVariantChange, onDrop, removeImage,
       <label className="form-label">Campaign Discount (%)</label>
       <input
         type="number"
-        name="campaign_discount_percentage"
-        value={variant.campaign_discount_percentage}
+        name="campaign_discount_wholesaler"
+        value={variant.campaign_discount_wholesaler}
         onChange={(e) => handleVariantChange(index, e)}
         className="form-control"
       />
@@ -88,8 +88,8 @@ const VariantItem = ({ index, variant, handleVariantChange, onDrop, removeImage,
       <input
         type="number"
         className="form-control"
-        name="minimum_order_quantity_for_offer"
-        value={variant.minimum_order_quantity_for_offer}
+        name="minimum_order_quantity_for_offer_by_wholesaler"
+        value={variant.minimum_order_quantity_for_offer_by_wholesaler}
         onChange={(e) => handleVariantChange(index, e)}
         placeholder={tProduct("enter_minimum_quantity_for_offer")}
       />

@@ -58,6 +58,8 @@ class OrderAdmin(admin.ModelAdmin):
 
 # Register your model with the admin site
 admin.site.register(Order, OrderAdmin)
+admin.site.register(OrderItem)
 admin.site.register(CampaignOrder)
+admin.site.register(CampaignOrderItem)
 admin.site.register(Payment)
 admin.site.register(Notification)

@@ -34,7 +34,7 @@ const EditProduct = () => {
       stock:"",
       weight:"",
       liter:"",
-      campaign_discount_percentage:"",
+      campaign_discount_wholesaler:"",
       minimum_order_quantity_for_offer:"",
       existingImages: [], // Preserving existing images
       newImages: [], // Storing new images
@@ -122,8 +122,8 @@ const EditProduct = () => {
           liter: "",
           price: "",
           stock: "",
-          campaign_discount_percentage: "",
-          minimum_order_quantity_for_offer: "",
+          campaign_discount_wholesaler: "",
+          minimum_order_quantity_for_offer_by_wholesaler: "",
           existingImages: [],  
           newImages: [],  
         },

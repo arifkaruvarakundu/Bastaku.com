@@ -3,7 +3,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Campaign, CampaignParticipant
-from .serializers import CampaignSerializer,CampaignListSerializer
+from .serializers import CampaignSerializer,CampaignListSerializer, AdminCampaignListSerializer, AdminCampaignSerializer
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from wholesaler.models import Product, ProductVariant
 from order.models import CampaignOrder,Payment,Notification
@@ -92,7 +92,7 @@ class JoinCampaignView(APIView):
         participant_quantity = request.data.get('participant_quantity', 1)
         payment_amount = Decimal(request.data.get('payment_amount', 0))
         price = Decimal(variant.price)
-        discount_percentage = Decimal(variant.campaign_discount_percentage)
+        discount_percentage = Decimal(variant.campaign_discount_admin)
         discounted_price_per_unit = price * (Decimal(1) - discount_percentage / Decimal(100))
         total_price = discounted_price_per_unit * Decimal(participant_quantity)
 
@@ -137,7 +137,7 @@ class JoinCampaignView(APIView):
         campaign.save()
 
         # Check if campaign is ready to disperse
-        if campaign.current_quantity >= campaign.variant.minimum_order_quantity_for_offer:
+        if campaign.current_quantity >= campaign.variant.minimum_order_quantity_for_offer_by_admin:
             self.disperse_campaign(campaign)
 
         return Response({'message': 'Successfully joined or updated the campaign!'}, status=status.HTTP_200_OK)
@@ -149,12 +149,12 @@ class JoinCampaignView(APIView):
 
         # Dynamically calculate the discounted price
         variant = campaign.variant
-        if variant.campaign_discount_percentage is None or variant.price is None:
+        if variant.campaign_discount_admin is None or variant.price is None:
             raise ValueError("Product's actual price or discount percentage is not set.")
 
         # Convert actual_price and campaign_discount_percentage to Decimal for calculations
         price = Decimal(variant.price)
-        discount_percentage = Decimal(variant.campaign_discount_percentage)
+        discount_percentage = Decimal(variant.campaign_discount_admin)
         discounted_price_per_unit = price * (Decimal(1) - discount_percentage / Decimal(100))
 
         total_campaign_quantity = Decimal(0)
@@ -347,7 +347,7 @@ class StartCampaignView(APIView):
 
         campaign.save()
 
-        if campaign.current_quantity >= campaign.variant.minimum_order_quantity_for_offer:
+        if campaign.current_quantity >= campaign.variant.minimum_order_quantity_for_offer_by_admin:
             self.disperse_campaign(campaign)
 
     def disperse_campaign(self, campaign):
@@ -359,7 +359,7 @@ class StartCampaignView(APIView):
             raise ValueError("Product's actual price or discount percentage is not set.")
 
         price = Decimal(variant.price)
-        discount_percentage = Decimal(variant.campaign_discount_percentage)
+        discount_percentage = Decimal(variant.campaign_discount_admin)
         discounted_price_per_unit = price * (Decimal(1) - discount_percentage / Decimal(100))
 
         total_campaign_quantity = Decimal(0)
@@ -606,3 +606,66 @@ class CancelCampaignView(APIView):
         participant.delete()
 
         return Response({"message": "Campaign participation cancelled successfully."}, status=status.HTTP_200_OK)
+
+class AdminCampaignsView(APIView):
+
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        # Check if the user is an admin
+        # if not request.user.is_staff:
+        #     return Response({"error": "You do not have permission to view this resource."}, status=status.HTTP_403_FORBIDDEN)
+
+        # Get all campaigns
+        campaigns = Campaign.objects.all()
+
+        # Serialize the campaigns and pass request context
+        serializer = AdminCampaignListSerializer(campaigns, many=True, context={'request': request})
+
+        return Response(serializer.data)
+    
+class AdminStartCampaignView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        data = request.data
+        print("Admin Data received:", data)
+
+        try:
+            variant = ProductVariant.objects.get(id=pk)  # Get the variant by ID
+
+            # ✅ Check if already in a campaign
+            if variant.is_in_campaign:
+                return Response(
+                    {"message": "This product variant is already in a campaign."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            serializer = CampaignListSerializer(data=data, context={'request': request})
+            if serializer.is_valid():
+                campaign = serializer.save(started_by=request.user)
+
+                # Set the variant and product as being in the campaign
+                variant.is_in_campaign = True
+                variant.product.is_in_campaign = True
+                variant.product.save()
+                variant.save()
+
+                return Response({
+                    "message": "Campaign started successfully by admin",
+                    "data": serializer.data
+                }, status=status.HTTP_201_CREATED)
+
+            print("Serializer errors:", serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except ProductVariant.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+
+class AdminCampaignDetailsView(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request, pk):
+        campaign = get_object_or_404(Campaign, id=pk)
+        serializer = AdminCampaignSerializer(campaign)
+        return Response(serializer.data, status=200)
+    

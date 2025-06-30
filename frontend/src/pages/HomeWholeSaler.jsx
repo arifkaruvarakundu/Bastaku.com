@@ -3,37 +3,14 @@ import carousel1 from "../images/carousel1.jpg";
 import carousel_ar1 from "../images/carousel_ar1.jpg"
 import carousel_ar2 from "../images/carousel_ar2.jpg"
 import slider2_en from "../images/slider-2.jpg";
-// import abouticon from "../images/about-icons-1.svg";
 import slider2 from "../images/slider-2.jpg";
-// import slider_2 from "../images/slider_2.jpeg";
-// import adbanner1 from "../images/ad-banner-1.jpg";
 import add_product from "../images/add_product.jpeg";
-// import adbanner2 from "../images/ad-banner-2.jpg";
 import address_image from "../images/address_image.jpeg"
-// import adbanner3 from "../images/ad-banner-3.jpg";
 import add_bank from "../images/add_bank.jpeg";
-// import grocerybanner from "../images/grocery-banner.png";
 import order2 from "../images/order2.jpeg";
-// import grocerybanner2 from "../images/grocery-banner-2.jpg";
 import campaigns from "../images/campaigns.jpeg";
-// import map from "../images/map.png";
-// import iphone from "../images/iphone-2.png";
-// import googleplay from "../images/googleplay-btn.svg";
-// import appstore from "../images/appstore-btn.svg";
-// import product1 from "../images/category-baby-care.jpg";
-// import product2 from "../images/category-atta-rice-dal.jpg";
-// import product3 from "../images/category-bakery-biscuits.jpg";
-// import product4 from "../images/category-chicken-meat-fish.jpg";
-// import product5 from "../images/category-cleaning-essentials.jpg";
-// import product6 from "../images/category-dairy-bread-eggs.jpg";
-// import product7 from "../images/category-instant-food.jpg";
-// import product8 from "../images/category-pet-care.jpg";
-// import product9 from "../images/category-snack-munchies.jpg";
-// import product10 from "../images/category-tea-coffee-drinks.jpg";
 import { Link,useNavigate } from "react-router-dom";
 import React, { useState } from "react";
-// import ProductItem from "../ProductList/ProductItem";
-// import Slider from "react-slick";
 import axios from 'axios'
 import { Slide, Zoom } from "react-awesome-reveal";
 import { useEffect } from "react";

@@ -35,6 +35,7 @@ class User(AbstractBaseUser):
     USER_TYPE_CHOICES = (
         ('customer', 'Customer'),
         ('wholesaler', 'Wholesaler'),
+        ('admin', 'Admin')
     )
 
     email = models.EmailField(verbose_name='Email', max_length=255, unique=True)

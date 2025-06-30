@@ -31,7 +31,7 @@ const StartCampaignPage = () => {
   
       // Base price after discount
       let calculatedPrice =
-        (start_campaign_details.variant.price * (100 - start_campaign_details.variant.campaign_discount_percentage)) / 100;
+        (start_campaign_details.variant.price * (100 - start_campaign_details.variant.campaign_discount_admin)) / 100;
   
       // Apply additional discount based on payment option
       if (paymentOption === "basic") {
@@ -43,7 +43,7 @@ const StartCampaignPage = () => {
       setVariant(start_campaign_details.variant);
       setCampaignPrice(calculatedPrice);
       setQuantity(storedQuantity);
-      setProgress((storedQuantity / start_campaign_details.minimum_order_quantity_for_offer) * 100);
+      setProgress((storedQuantity / start_campaign_details.minimum_order_quantity_for_offer_by_admin) * 100);
 
     } else {
       console.error("No product details or campaign details found in localStorage.");
@@ -55,7 +55,7 @@ const StartCampaignPage = () => {
       const newQuantity = quantity + 1;
       setQuantity(newQuantity);
       localStorage.setItem("productQuantity", newQuantity);
-      setProgress((newQuantity / variant.minimum_order_quantity_for_offer) * 100);
+      setProgress((newQuantity / variant.minimum_order_quantity_for_offer_by_admin) * 100);
     }
   };
 
@@ -64,7 +64,7 @@ const StartCampaignPage = () => {
       const newQuantity = quantity - 1;
       setQuantity(newQuantity);
       localStorage.setItem("productQuantity", newQuantity);
-      setProgress((newQuantity / variant.minimum_order_quantity_for_offer) * 100);
+      setProgress((newQuantity / variant.minimum_order_quantity_for_offer_by_admin) * 100);
     }
   };
 
@@ -227,7 +227,7 @@ const StartCampaignPage = () => {
 
                 {/* Progress Bar */}
                 <div>
-                <p><strong>{t("minOrderQty")}</strong> {variant.minimum_order_quantity_for_offer} Kg</p>
+                <p><strong>{t("minOrderQty")}</strong> {variant.minimum_order_quantity_for_offer_by_admin}</p>
                     <label>{t("progress")}</label>
                     <div style={{ height: "20px", backgroundColor: "#rgb(155, 227, 192)", borderRadius: "5px", overflow: "hidden" }}>
                         <div
@@ -250,7 +250,7 @@ const StartCampaignPage = () => {
                     <p style={{ textAlign: "center", marginTop: "5px" }}>
                         {progress >= 100
                             ? "Target Achieved!" // Show only "Target Achieved!" when progress reaches or exceeds 100%
-                            : `${Math.max(0, (variant.minimum_order_quantity_for_offer - quantity).toFixed(2))} more to unlock!`} 
+                            : `${Math.max(0, (variant.minimum_order_quantity_for_offer_by_admin - quantity).toFixed(2))} more to unlock!`} 
                         {/* Prevent negative quantities */}
                     </p>
                 </div>

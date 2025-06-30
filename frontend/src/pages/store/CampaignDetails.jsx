@@ -45,7 +45,7 @@ const CampaignDetailPage = () => {
   
         let calculatedPrice =
           (campaignData.variant.price *
-            (100 - campaignData.variant.campaign_discount_percentage)) /
+            (100 - campaignData.variant.campaign_discount_admin)) /
           100;
   
         if (selectedPaymentOption === "basic") {
@@ -57,7 +57,7 @@ const CampaignDetailPage = () => {
         setCampaignPrice(calculatedPrice);
         const initialProgress =
           ((campaignData.current_quantity + storedQuantity) /
-            campaignData.variant.minimum_order_quantity_for_offer) *
+            campaignData.variant.minimum_order_quantity_for_offer_by_admin) *
           100;
         setProgress(initialProgress);
       })
@@ -70,7 +70,7 @@ const CampaignDetailPage = () => {
   
     const totalQuantity = currentQuantity + newAdditionalQuantity;
     setProgress(
-      Math.min((totalQuantity / variant.minimum_order_quantity_for_offer) * 100, 100) // Progress capped at 100%
+      Math.min((totalQuantity / variant.minimum_order_quantity_for_offer_by_admin) * 100, 100) // Progress capped at 100%
     );
   };
   
@@ -81,7 +81,7 @@ const CampaignDetailPage = () => {
   
       const totalQuantity = currentQuantity + newAdditionalQuantity;
       setProgress(
-        Math.min((totalQuantity / variant.minimum_order_quantity_for_offer) * 100, 100) // Progress capped at 100%
+        Math.min((totalQuantity / variant.minimum_order_quantity_for_offer_by_admin) * 100, 100) // Progress capped at 100%
       );
     }
   };
@@ -225,7 +225,7 @@ const CampaignDetailPage = () => {
                   color: "#059669",
                 }}
               >
-                {t("minOrderQty")} {campaign.variant.minimum_order_quantity_for_offer}
+                {t("minOrderQty")} {campaign.variant.minimum_order_quantity_for_offer_by_admin}
               </p>
               </p>
             </div>
@@ -402,7 +402,7 @@ const CampaignDetailPage = () => {
             {progress >= 100
               ? "Target Achieved!"
               : `${(
-                  variant.minimum_order_quantity_for_offer - totalQuantity
+                  variant.minimum_order_quantity_for_offer_by_admin - totalQuantity
                 ).toFixed(2)} Kg more to unlock!`}
           </p>
         </div>

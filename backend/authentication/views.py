@@ -13,7 +13,10 @@ from .serializers import ProductCategorySerializer, ProfileImageSerializer, User
 import os
 from dotenv import load_dotenv
 from rest_framework.generics import RetrieveAPIView
-
+from rest_framework.parsers import JSONParser
+from rest_framework.renderers import JSONRenderer
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 # Load environment variables from .env file
 load_dotenv()
 
@@ -25,8 +28,7 @@ def get_tokens_for_user(user):
         'refresh': str(refresh),
         'access': str(refresh.access_token),
     }
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UserRegistrationView(APIView):
@@ -296,3 +298,38 @@ class CurrentUserView(RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+    
+################################################################################################################################################################################################
+
+class AdminLoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, format=None):
+        serializer = UserLoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.data.get('email')
+        password = serializer.data.get('password')
+
+        try:
+            user = User.objects.get(email=email, user_type='admin')
+        except User.DoesNotExist:
+            return Response({'errors': {'non_field_errors': ['Admin user not found']}}, status=status.HTTP_404_NOT_FOUND)
+
+        user = authenticate(email=email, password=password)
+        if user is not None and user.user_type == 'admin':
+            profile_img_url = user.profile_img.url if user.profile_img else None
+            token = get_tokens_for_user(user)
+            return Response({
+                'token': token,
+                'msg': 'Admin Login Success',
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+                'profile_img': profile_img_url,
+                'user_type': user.user_type
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                'errors': {'non_field_errors': ['Email or Password is not Valid']}
+            }, status=status.HTTP_401_UNAUTHORIZED)

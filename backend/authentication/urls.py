@@ -19,5 +19,6 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(serializer_class=CustomTokenObtainPairSerializer)),
     path('current_user/', CurrentUserView.as_view(), name='current_user'),
     path('update_profile_image/', ProfileImageUpdateView.as_view(), name='update-profile-image'),
-
+    path('api/admin-login/', AdminLoginView.as_view(), name='admin_login'),
+    
 ]

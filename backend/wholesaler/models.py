@@ -4,55 +4,18 @@ from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from cloudinary.models import CloudinaryField
 from authentication.models import ProductCategory, User
+from django.utils import timezone
+
 # Create your models here.
-
-# class Product(models.Model):
-#     product_name = models.CharField(max_length=200)
-#     slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
-#     description = models.TextField(max_length=500, blank=True)
-#     actual_price = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
-#     stock = models.IntegerField(null=True, blank=True)
-#     is_in_campaign = models.BooleanField(default=False)
-#     is_available = models.BooleanField(default=True)
-#     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, null=True, blank=True)
-#     campaign_discount_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=0.0, help_text="Enter discount as a percentage (e.g., 20 for 20%)")
-#     minimum_order_quantity_for_offer = models.PositiveIntegerField(default=1)
-#     created_date = models.DateTimeField(auto_now_add=True)
-#     modified_date = models.DateTimeField(auto_now=True)
-#     wholesaler = models.ForeignKey(Wholesaler, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
-
-#     # weight = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, help_text="Enter the weight of the product in kilograms (e.g., 5.0 for 5kg)")
-#     unit = models.TextField(max_length=100, null=True, blank=True)
-
-
-#     def get_url(self):
-#         return reverse('product_detail', args=[self.category.name, self.slug])
-
-#     def get_campaign_discounted_price(self):
-#         """
-#         Calculate and return the discounted price.
-#         """
-#         if self.campaign_discount_percentage > 0:
-#             discount_amount = (self.actual_price * self.campaign_discount_percentage) / 100
-#             return self.actual_price - discount_amount
-#         return self.actual_price
-
-#     def __str__(self):
-#         return self.product_name
 
 class Product(models.Model):
     product_name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
     description = models.TextField(max_length=500, blank=True)
-    # actual_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)  # Increased max_digits
-    # stock = models.IntegerField(null=True, blank=True)
+    is_active = models.BooleanField(default = True)
     is_in_campaign = models.BooleanField(default=False)
     is_available = models.BooleanField(default=True)
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, null=True, blank=True)
-    # campaign_discount_percentage = models.DecimalField(
-    #     max_digits=5, decimal_places=2, default=0.0, help_text="Enter discount as a percentage (e.g., 20 for 20%)"
-    # )
-    # minimum_order_quantity_for_offer = models.PositiveIntegerField(default=1)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     wholesaler = models.ForeignKey(
@@ -67,13 +30,6 @@ class Product(models.Model):
     def get_url(self):
         return reverse('product_detail', args=[self.category.name, self.slug])
 
-    # def get_campaign_discounted_price(self):
-    #     """Calculate and return the discounted price."""
-    #     if self.actual_price > 0 and self.campaign_discount_percentage > 0:
-    #         discount_amount = (self.actual_price * self.campaign_discount_percentage) / 100
-    #         return self.actual_price - discount_amount
-    #     return self.actual_price
-
     def __str__(self):
         return self.product_name
 
@@ -82,12 +38,27 @@ class ProductVariant(models.Model):
     brand = models.CharField(max_length=100, null=True, blank=True, help_text="Enter brand name")
     weight = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, help_text="Weight in kg")
     liter = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, help_text="Volume in liters")
+    is_default = models.BooleanField(default=False)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField(null=True, blank=True)
-    campaign_discount_percentage = models.DecimalField(
-        max_digits=5, decimal_places=2, default=0.0, help_text="Enter discount as a percentage (e.g., 20 for 20%)"
+    campaign_discount_admin = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0.0,
+        help_text="Admin discount as a percentage (e.g., 20 for 20%)",
+        null=True,
+        blank=True,
     )
-    minimum_order_quantity_for_offer = models.PositiveIntegerField(default=1)
+    campaign_discount_wholesaler = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0.0,
+        help_text="Wholesaler discount as a percentage (e.g., 10 for 10%)",
+        null=True,
+        blank=True,
+    )
+    minimum_order_quantity_for_offer_by_wholesaler = models.PositiveIntegerField(default=1, null=True, blank=True)
+    minimum_order_quantity_for_offer_by_admin = models.PositiveIntegerField(default=1, null=True, blank=True)
     wholesaler = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
@@ -100,9 +71,9 @@ class ProductVariant(models.Model):
     is_available = models.BooleanField(default=True)
 
     def get_discounted_price(self):
-        """Calculate and return the discounted price for the variant."""
-        if self.price > 0 and self.campaign_discount_percentage > 0:
-            discount_amount = (self.price * self.campaign_discount_percentage) / 100
+        """Calculate and return the discounted price using only the admin discount."""
+        if self.price > 0 and self.campaign_discount_admin > 0:
+            discount_amount = (self.price * self.campaign_discount_admin) / 100
             return self.price - discount_amount
         return self.price
 
@@ -121,6 +92,7 @@ class ProductVariantImage(models.Model):
     variant = models.ForeignKey(ProductVariant, related_name="variant_images", on_delete=models.CASCADE)
     image_url = models.URLField(default="")   # Store the image in Cloudinary
     public_id = models.CharField(max_length=255, default="")  # Store the public_id for Cloudinary images
+    is_default = models.BooleanField(default=False)
     wholesaler = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
@@ -133,8 +105,6 @@ class ProductVariantImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.variant.product.product_name} - Variant: {self.variant}"
-
-from django.utils import timezone
 
 class WholesalerBankDetails(models.Model):
     wholesaler = models.ForeignKey(

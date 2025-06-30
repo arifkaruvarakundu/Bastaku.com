@@ -3,13 +3,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from .models import Order, CampaignOrder, Payment, Notification
-from .serializers import OrderSerializer, CampaignOrderSerializer, NotificationSerializer
+from .serializers import OrderSerializer, CampaignOrderSerializer, NotificationSerializer, AdminRegularOrdersListsSerializer, AdminCampaignOrdersSerializer, RegularOrderDetailSerializer, CampaignOrderDetailSerializer
 from authentication.models import User
 from authentication.renderers import UserRenderer
 from rest_framework.exceptions import PermissionDenied
 from django.db.models import Q
 from django.utils.crypto import get_random_string
 from rest_framework import status
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -33,6 +34,29 @@ class UserOrdersView(APIView):
             
         })
     
+class AdminRegularOrdersView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        # Get all regular orders
+        orders = Order.objects.all()
+        order_serializer = AdminRegularOrdersListsSerializer(orders, many=True)
+        
+        return Response({
+            'orders': order_serializer.data
+        })
+    
+class AdminCampaignOrdersView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        # Get all campaign orders
+        campaign_orders = CampaignOrder.objects.all()
+        campaign_order_serializer = AdminCampaignOrdersSerializer(campaign_orders, many=True)
+
+        return Response({
+            'orders': campaign_order_serializer.data
+        })
 
 class WholesalerOrdersView(APIView):
     permission_classes = [IsAuthenticated]
@@ -118,3 +142,70 @@ class MarkNotificationReadView(APIView):
         notification.save()
         return Response({"status": "success"})
 
+class AdminRegularOrderDetailsView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, order_id):
+        order = get_object_or_404(Order, id=order_id)
+
+        serializer = RegularOrderDetailSerializer(order)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class AdminEditRegularOrderView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, order_id):
+        order = get_object_or_404(Order, id=order_id)
+        serializer = RegularOrderDetailSerializer(order, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class AdminDeleteRegularOrderView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, order_id, *args, **kwargs):
+        try:
+            order = Order.objects.get(pk=order_id)
+            order.delete()
+            return Response({"detail":"Order deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        except Order.DoesNotExist:
+            return Response({"detail": "Order not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+class AdminCampaignOrderDetailsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, order_id):
+        order = get_object_or_404(CampaignOrder, id=order_id)
+
+        serializer = CampaignOrderDetailSerializer(order)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class AdminEditCampaignOrderView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, order_id):
+        order = get_object_or_404(CampaignOrder, id=order_id)
+        serializer = CampaignOrderDetailSerializer(order, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class AdminDeleteCampaignOrderView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, order_id, *args, **kwargs):
+        try:
+            order = CampaignOrder.objects.get(pk=order_id)
+            order.delete()
+            return Response({"detail":"Order deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        except CampaignOrder.DoesNotExist:
+            return Response({"detail": "Order not found."}, status=status.HTTP_404_NOT_FOUND)

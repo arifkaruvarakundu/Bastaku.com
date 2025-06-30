@@ -497,7 +497,7 @@ const Header = ({onSearch}) => {
           <div
             style={{
               position: "relative",
-              marginInlineEnd: isArabic ? "8rem" : "0", // shifts it left in RTL
+              marginInlineEnd: isArabic ? "1rem" : "0", // shifts it left in RTL
             }}
           >
             <input

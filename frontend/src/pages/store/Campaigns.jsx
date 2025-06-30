@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import API_BASE_URL from '../../config';
 
-
-
 const Campaigns = () => {
   const [campaigns, setCampaigns] = useState([]);
   const navigate = useNavigate(); // Initialize useNavigate for navigation
@@ -16,16 +14,15 @@ const Campaigns = () => {
       .then((response) => {
         console.log("Campaigns Data:", response.data); // Log response data
         // Filter out campaigns with 0 participants and 0 quantity
-        const filteredCampaigns = response.data.filter((campaign) =>
-          !(campaign.has_ended) && !(campaign.current_quantity===0|| campaign.current_participants===0));
-        setCampaigns(filteredCampaigns);
+        // const filteredCampaigns = response.data.filter((campaign) =>
+        //   !(campaign.has_ended) && !(campaign.current_quantity===0|| campaign.current_participants===0));
+        setCampaigns(response.data);
       })
       .catch((error) => console.error("Error fetching campaigns:", error));
   }, []);
 
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   
-
   const handleCampaignClick = (campaign) => {
     console.log("Campaign Clicked:", campaign);
     const productId = campaign.product_id; // Extract product ID from the campaign
@@ -49,12 +46,12 @@ const Campaigns = () => {
             // Calculate the sale price
             const salePrice = (
               campaign.variant.price -
-              (campaign.variant.price * campaign.variant.campaign_discount_percentage) / 100
+              (campaign.variant.price * campaign.variant.campaign_discount_admin) / 100
             ).toFixed(2);
 
             // Calculate progress
             const progress = Math.min(
-              (campaign.current_quantity / campaign.variant.minimum_order_quantity_for_offer) * 100,
+              (campaign.current_quantity / campaign.variant.minimum_order_quantity_for_offer_by_admin) * 100,
               100
             );
 
@@ -97,7 +94,7 @@ const Campaigns = () => {
                     )}
                     <h2 className="fs-6">
                       <a href="#!" className="text-inherit text-decoration-none">
-                        {campaign.current_quantity} of {campaign.variant.minimum_order_quantity_for_offer}{" "}
+                        {campaign.current_quantity} of {campaign.variant.minimum_order_quantity_for_offer_by_admin}{" "}
                       </a>
                     </h2>
                     <div className="d-flex justify-content-between align-items-center mt-3">

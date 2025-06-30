@@ -13,6 +13,7 @@ class Campaign(models.Model):
     end_time = models.DateTimeField(null=True, blank=True)
     current_quantity = models.PositiveIntegerField(default=0)  # New field added
     is_active = models.BooleanField(default=True)
+    started_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='started_campaigns')
     # payment_option = models.CharField(max_length=20,choices=[
     #         ('free', 'Free'),
     #         ('10_percent', '10% Advance'),

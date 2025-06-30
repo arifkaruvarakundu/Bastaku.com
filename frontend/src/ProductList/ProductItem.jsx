@@ -179,7 +179,7 @@ const ProductItem = () => {
                   </div>
                 </div>
                 <div>
-                  <span style={{ color: 'red' }}>{t('campaign_price_label')}: {((product?.variants?.[0].price * (100 - product?.variants?.[0].campaign_discount_percentage)) / 100).toFixed(3)} {t('kd')}</span>
+                  <span style={{ color: 'red' }}>{t('campaign_price_label')}: {((product?.variants?.[0].price * (100 - product?.variants?.[0].campaign_discount_admin)) / 100).toFixed(3)} {t('kd')}</span>
                 </div>
               </div>
             </div>

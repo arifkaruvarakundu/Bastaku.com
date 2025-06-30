@@ -30,7 +30,7 @@ class ProductAdmin(admin.ModelAdmin):
         return queryset
 
 class ProductVariantAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product', 'brand', 'weight', 'liter', 'price', 'is_in_campaign', 'stock', 'campaign_discount_percentage', 'minimum_order_quantity_for_offer', 'wholesaler' )  # Add fields you want to see
+    list_display = ('id', 'product', 'brand', 'weight', 'liter', 'price', 'is_in_campaign', 'stock', 'campaign_discount_admin', 'campaign_discount_wholesaler', 'minimum_order_quantity_for_offer_by_wholesaler', 'minimum_order_quantity_for_offer_by_admin', 'wholesaler' )  # Add fields you want to see
     search_fields = ('id', 'product__product_name')  # Allow search by ID and name
     # list_filter = ('price',)  # Optional: Add filter
 

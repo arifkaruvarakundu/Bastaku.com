@@ -87,9 +87,9 @@ const ProductDetails = () => {
       }, []);
 
         const calculateCampaignPrice = (variant) => {
-          if (variant && variant.price && variant.campaign_discount_percentage) {
+          if (variant && variant.price && variant.campaign_discount_admin) {
             const price = parseFloat(variant.price); // Convert price to a number
-            const discountPercentage = parseFloat(variant.campaign_discount_percentage); // Convert discount percentage to a number
+            const discountPercentage = parseFloat(variant.campaign_discount_admin); // Convert discount percentage to a number
             if (!isNaN(price) && !isNaN(discountPercentage)) {
               return ((price * (100 - discountPercentage)) / 100).toFixed(2); // Return the discounted price
             }
@@ -694,7 +694,7 @@ const ProductDetails = () => {
               <p className={styles.wholesalePrice}>
                 {calculateCampaignPrice(variants.find(v => v.id === selectedVariantId))} {t("kd")}
                 <span className={styles.savingsBadge}>
-                  {t('save')} {variants.find(v => v.id === selectedVariantId)?.campaign_discount_percentage}%
+                  {t('save')} {variants.find(v => v.id === selectedVariantId)?.campaign_discount_admin}%
                 </span>
               </p>
                 </div>
@@ -749,7 +749,7 @@ const ProductDetails = () => {
                       <p className={styles.groupStats}>
                       <strong>{campaignDetails?.current_participants ?? 0}</strong>{" "}
                         {t('participants')} ·
-                        <strong>{campaignDetails?.variant?.minimum_order_quantity_for_offer - campaignDetails?.current_quantity}</strong> 
+                        <strong>{campaignDetails?.variant?.minimum_order_quantity_for_offer_by_admin - campaignDetails?.current_quantity}</strong> 
                         {t('moreToUnlockCampaignPrice')}
                       </p>
                     </div>
@@ -768,10 +768,10 @@ const ProductDetails = () => {
                       </div>
                       <div className={styles.targetMarker}>
                         <div className={styles.targetTooltip}>
-                          <strong>{t('target')}: {product?.minimum_order_quantity_for_offer}</strong>
+                          <strong>{t('target')}: {product?.minimum_order_quantity_for_offer_by_admin}</strong>
                           <p>{t('minimumQuantityNeededForWholesale')}</p>
                           <p className={styles.remaining}>
-                            {product?.minimum_order_quantity_for_offer - product?.currentQuantity} more
+                            {product?.minimum_order_quantity_for_offer_by_admin - product?.currentQuantity} more
                             to go!
                           </p>
                         </div>
